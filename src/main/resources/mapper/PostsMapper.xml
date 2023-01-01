@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.PostsMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.Posts">
+        <id property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="tId" column="t_id" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="AllResultMap" type="com.neusoft.qingyi.pojo.Posts">
+        <id property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="tId" column="t_id" jdbcType="INTEGER"/>
+        <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
+        <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsCommentCountMapper.selectPostsCommentCount"/>
+        <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
+        <association property="tag" column="t_id" javaType="com.neusoft.qingyi.pojo.Tag"
+                     select="com.neusoft.qingyi.mapper.TagMapper.selectAllByTId"/>
+        <association property="postsLike" javaType="com.neusoft.qingyi.pojo.PostsLike">
+            <!--            <result property="pId" column="p_id" jdbcType="INTEGER"/>-->
+            <result property="status" column="status" jdbcType="INTEGER"/>
+        </association>
+        <association property="isAttentionPostsMiniUser" javaType="com.neusoft.qingyi.pojo.MiniUserAttention">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+        </association>
+        <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
+                    select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
+    </resultMap>
+    <resultMap id="PostsDetailsMap" type="com.neusoft.qingyi.pojo.Posts">
+        <id property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="sendTime" column="send_Time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
+        <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsMapper.selectLikeCountByPid"/>
+        <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsMapper.selectCommentCountById"/>
+        <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
+                    select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
+    </resultMap>
+    <resultMap id="PostsDetails" type="com.neusoft.qingyi.pojo.Posts">
+        <id property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
+        <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsCommentCountMapper.selectPostsCommentCount"/>
+        <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
+        <association property="postsLike" javaType="com.neusoft.qingyi.pojo.PostsLike">
+            <result property="status" column="status" jdbcType="INTEGER"/>
+        </association>
+        <collection property="postsCommentList" ofType="com.neusoft.qingyi.pojo.PostsComment" column="p_id"
+                    select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectCommentByPid"/>
+        <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
+                    select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
+    </resultMap>
+    <!--    <select id="selectPostLikeCount" parameterType="java.lang.Integer">-->
+
+    <!--    </select>-->
+    <sql id="Base_Column_List">
+        p_id
+        ,send_time,content,
+        openid,t_id
+    </sql>
+    <insert id="insertPosts" keyProperty="pId" useGeneratedKeys="true" parameterType="com.neusoft.qingyi.pojo.Posts">
+        insert into `t_posts` (send_time, content, openid, t_id)
+        values (#{posts.sendTime}, #{posts.content}, #{posts.openid}, #{posts.tId})
+    </insert>
+    <!--    <select id="selectAll" resultMap="AllResultMap" parameterType="java.lang.String">-->
+    <!--        select-->
+    <!--        <include refid="Base_Column_List"/>-->
+    <!--        from t_posts order by send_time desc-->
+    <!--    </select>-->
+    <select id="selectAll" resultMap="AllResultMap" parameterType="java.lang.String">
+        <choose>
+            <when test="openid!=null">
+                select
+                p.p_id,
+                p.send_time,
+                p.content,
+                p.openid,
+                p.t_id,
+                l.status,
+                a.id
+                from t_posts as p
+                left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
+                LEFT JOIN `t_mini_user_attention` AS a ON a.attentioned_openid = p.openid AND a.attention_openid =
+                #{openid} and a.is_cancel_attention=0
+                order by send_time desc
+            </when>
+            <when test="openid==null">
+                select
+                p.p_id,
+                p.send_time,
+                p.content,
+                p.openid,
+                p.t_id
+                from t_posts as p
+                order by send_time desc
+            </when>
+        </choose>
+    </select>
+    <select id="selectByPId" resultMap="PostsDetailsMap">
+        select p.p_id, p.send_time, p.content, p.openid
+        from `t_posts` as p
+        where p.p_id = #{pId};
+    </select>
+    <select id="selectLikeCountByPid" resultType="java.lang.Integer">
+        select count(*)
+        from `t_posts_like` as l
+        where l.p_id = #{pId}
+          and l.status = 1
+    </select>
+    <select id="selectCommentCountById" resultType="java.lang.Integer">
+        select count(*)
+        from `t_posts_comment` as c
+        where c.p_id = #{pId}
+    </select>
+    <select id="selectPostsDetailsByPid" resultMap="PostsDetails">
+        select p.p_id, p.send_time, p.content, p.openid, l.status
+        from `t_posts` as p
+                 left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
+        where p.p_id = #{pId}
+    </select>
+</mapper>

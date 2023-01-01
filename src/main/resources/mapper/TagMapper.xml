@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.TagMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.Tag">
+            <id property="tId" column="t_id" jdbcType="INTEGER"/>
+            <result property="bgColor" column="bg_color" jdbcType="VARCHAR"/>
+            <result property="text" column="text" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t_id,bg_color,text
+    </sql>
+    <select id="selectAllByTId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_tag
+        where
+        t_id = #{tId,jdbcType=NUMERIC}
+    </select>
+</mapper>

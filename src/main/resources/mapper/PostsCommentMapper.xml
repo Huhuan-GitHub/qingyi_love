@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.PostsCommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.PostsComment">
+        <id property="cId" column="c_id" jdbcType="INTEGER"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="commentDate" column="comment_date" jdbcType="TIMESTAMP"/>
+        <result property="cParentId" column="c_parent_id" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="PostsCommentAndReply" type="com.neusoft.qingyi.pojo.PostsComment">
+        <id property="cId" column="c_id" jdbcType="INTEGER"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="commentDate" column="comment_date" jdbcType="TIMESTAMP"/>
+        <result property="cParentId" column="c_parent_id" jdbcType="INTEGER"/>
+        <association property="commentMiniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
+        <association property="replyMiniUser" column="c_parent_id" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectCommentReplyParentMiniUser"/>
+        <collection property="postsCommentList" ofType="com.neusoft.qingyi.pojo.PostsComment" column="c_id"
+                    select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectCommentReply"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        c_id
+        ,openid,p_id,
+        comment,comment_date,c_parent_id
+    </sql>
+    <select id="selectCommentByPid" resultMap="PostsCommentAndReply">
+        select *
+        from `t_posts_comment` as c
+        where c.p_id = #{pId}
+          and c.c_parent_id = -1
+    </select>
+    <select id="selectCommentReply" resultMap="PostsCommentAndReply">
+        select *
+        from `t_posts_comment` as c1
+        where c1.c_parent_id = #{pId}
+    </select>
+    <select id="selectCommentReplyParentMiniUser" resultType="com.neusoft.qingyi.pojo.MiniUser">
+        SELECT *
+        FROM `t_mini_user` AS u
+        WHERE u.openid IN (SELECT c.openid
+                           FROM `t_posts_comment` AS c
+                           WHERE c.c_id = #{cParentId})
+    </select>
+</mapper>

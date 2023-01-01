@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/qingyi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: 123456
+  redis: # 配置redis相关信息
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher # springboot2.6.0后，要设置此配置兼容swagger2
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: t_
+      # 主键生成策略，自动增长
+      id-type: auto
+server:
+  port: 3033
+

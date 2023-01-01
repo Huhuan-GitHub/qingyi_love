@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.PostsLikeMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.PostsLike">
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="p_id" column="p_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        openid
+        ,p_id,
+            status
+    </sql>
+    <select id="selectByOpenid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_posts_like
+        where
+        openid = #{openid,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPostsLikeCount" resultType="java.lang.Integer">
+        select count(*)
+        from `t_posts_like` as l
+        where l.p_id = #{pId}
+    </select>
+</mapper>

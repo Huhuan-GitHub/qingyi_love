@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.MiniUserAttentionMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.MiniUserAttention">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="attentionOpenid" column="attention_openid" jdbcType="VARCHAR"/>
+            <result property="attentionedOpenid" column="attentioned_openid" jdbcType="VARCHAR"/>
+            <result property="attentionTime" column="attention_time" jdbcType="TIMESTAMP"/>
+            <result property="cancelAttentionTime" column="cancel_attention_time" jdbcType="TIMESTAMP"/>
+            <result property="isCancelAttention" column="is_cancel_attention" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,attention_openid,attentioned_openid,
+        attention_time,cancel_attention_time,is_cancel_attention
+    </sql>
+</mapper>
