@@ -1,0 +1,85 @@
+.card-list {
+  margin: 0 auto;
+}
+
+.card-item {
+  padding: 32rpx;
+  /* height: 400rpx; */
+  background-color: #ffffff;
+}
+
+.header {
+  /* background-color: rgb(238, 25, 25); */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+.header>.info {
+  margin-left: 24rpx;
+  flex: 3;
+}
+
+.info {
+  line-height: 40rpx;
+}
+
+.info>.username {
+  font-size: 26rpx;
+  font-weight: bold;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.info>.date {
+  font-size: 22rpx;
+  color: #d3d4d8;
+}
+
+.content>.content-text {
+  line-height: 60rpx;
+  font-weight: bold;
+}
+
+.content>.content-img {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.interaction {
+  margin-top: 10rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.interaction>.interaction-three {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.interaction-item{
+  margin-left: 30rpx;
+  display: flex;
+  align-items: center;
+}
+.interaction-icon{
+  margin-right: 10rpx;
+}
+
+.back-top{
+  border: 1px #409eff solid;
+  border-radius: 50%;
+  background-color: #409eff;
+  width: 80rpx;
+  height: 80rpx;
+  position: fixed;
+  bottom: 45rpx;
+  right: 30rpx;
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

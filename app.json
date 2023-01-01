@@ -1,0 +1,52 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/community/community",
+    "pages/matching/matching",
+    "pages/public/public",
+    "pages/mine/mine",
+    "pages/logs/logs",
+    "pages/postsDetails/postsDetails",
+    "pages/personal/personal"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarTextStyle":"black"
+  },
+  "tabBar": {
+    "selectedColor": "#8e9fa8",
+    "color": "#333333",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "表白墙",
+      "iconPath": "image/tabbar/index.png",
+      "selectedIconPath": "image/tabbar/index-active.png"
+    },{
+      "pagePath": "pages/matching/matching",
+      "text": "校园匹配",
+      "iconPath": "image/tabbar/matching.png",
+      "selectedIconPath": "image/tabbar/matching-active.png"
+    }
+    ,{
+      "pagePath": "pages/public/public",
+      "text": "发布墙墙",
+      "iconPath": "image/tabbar/public.png",
+      "selectedIconPath": "image/tabbar/public-active.png"
+    }
+    ,{
+      "pagePath": "pages/community/community",
+      "text": "星球",
+      "iconPath": "image/tabbar/community.png",
+      "selectedIconPath": "image/tabbar/community-active.png"
+    },
+    {
+      "pagePath": "pages/mine/mine",
+      "text": "我的",
+      "iconPath": "image/tabbar/mine.png",
+      "selectedIconPath": "image/tabbar/mine-active.png"
+    }]
+  },
+  "sitemapLocation": "sitemap.json"
+}

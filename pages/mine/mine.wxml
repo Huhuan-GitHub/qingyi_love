@@ -1,0 +1,71 @@
+<scroll-view scroll-y class="scrollPage">
+  <view class="UCenter-bg">
+    <image src="https://infomini6-1302213380.cos.ap-chengdu.myqcloud.com/%E5%A4%B4%E5%83%8F.jpg" class="png" mode="widthFix"></image>
+    <view class="text-xl" style="color: black;">游标卡尺
+      <text class="text-df">v2.0</text>
+    </view>
+    <view class="margin-top-sm" style="color: black;">
+      <text>By:根号三的立方</text>
+    </view>
+  </view>
+  <view class="padding flex text-center text-grey bg-white shadow-warp">
+    <view class="flex flex-sub flex-direction solid-right">
+      <view class="text-xxl text-orange">2.4W</view>
+      <view class="margin-top-sm">
+        <text class="cuIcon-appreciatefill"></text> View
+      </view>
+    </view>
+    <view class="flex flex-sub flex-direction solid-right">
+      <view class="text-xxl text-blue">3.0K</view>
+      <view class="margin-top-sm">
+        <text class="cuIcon-favorfill"></text> Star
+      </view>
+    </view>
+    <view class="flex flex-sub flex-direction">
+      <view class="text-xxl text-green">484</view>
+      <view class="margin-top-sm">
+        <text class="cuIcon-footprint"></text> Fork
+      </view>
+    </view>
+  </view>
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
+    <view class="cu-item arrow">
+      <view class="content" bindtap="CopyLink" data-link="https://github.com/weilanwl/ColorUI">
+        <text class="cuIcon-favorfill text-grey"></text>
+        <text class="text-grey">我的关注</text>
+      </view>
+    </view>
+    <!-- <view class="cu-item arrow">
+      <navigator class="content" url="/pages/about/about/about" hover-class="none">
+        <image src="/images/logo.png" class="png" mode="aspectFit"></image>
+        <text class="text-grey">关于卷弈刷题小程序</text>
+      </navigator>
+    </view> -->
+    <view class="cu-item arrow" bindtap="reward">
+      <view class="content" bindtap="showQrcode">
+        <text class="cuIcon-appreciatefill text-red"></text>
+        <text class="text-grey">赞赏支持</text>
+      </view>
+    </view>
+    <view class="cu-item arrow">
+      <button class="cu-btn content" open-type="feedback">
+        <text class="cuIcon-writefill text-cyan"></text>
+        <text class="text-grey">意见反馈</text>
+      </button>
+    </view>
+    <view class="cu-item arrow">
+      <button class="cu-btn content" open-type="feedback">
+        <text class="cuIcon-creativefill text-orange"></text>
+        <text class="text-grey">提个Bug</text>
+      </button>
+    </view>
+    <view class="cu-item arrow">
+      <navigator class="content" url="/pages/settings/settings" hover-class="none">
+        <text class="cuIcon-settingsfill"></text>
+        <text class="text-grey">设置</text>
+      </navigator>
+    </view>
+  </view>
+  <my-overlay isShow="{{isShowOverlay}}"></my-overlay>
+  <view class="cu-tabbar-height"></view>
+</scroll-view>

@@ -1,0 +1,6 @@
+<!--pages/posts-img/posts-img.wxml-->
+<view class="posts-img">
+  <view class="posts-img-item" wx:for="{{imgList}}" wx:key="{{index}}">
+    <van-image width="120" height="120" radius="5" bindtap="previewImage" data-src="{{item.imgUrl}}" fit="container" src="{{item.imgUrl}}" />
+  </view>
+</view>

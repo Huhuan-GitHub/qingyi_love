@@ -1,0 +1,29 @@
+.edit-panel {
+  width: 100%;
+  /* height: 300rpx; */
+  background-color: #fff;
+  margin: 24rpx auto;
+  padding: 32rpx;
+}
+
+.tag-item {
+  margin-right: 12rpx;
+}
+
+.sub-btn {
+  width: 90%;
+  margin: 24rpx auto;
+}
+.tag-panel-content > .tag-list{
+  margin: 40rpx;
+  margin-top: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: space-between;
+  flex-wrap: wrap;
+}
+.tag-list > .tag-item{
+  margin-right: 32rpx;
+  line-height: 60rpx;
+}

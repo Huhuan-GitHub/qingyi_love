@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "posts-img": "../posts-img/posts-img"
+  }
+}

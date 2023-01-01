@@ -1,0 +1,91 @@
+/* pages/postsDetails/postsDetails.wxss */
+.posts-panel {
+  background-color: #fff;
+  padding: 20rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  margin-right: 16rpx;
+}
+
+.userInfo {
+  line-height: 45rpx;
+}
+
+.userInfo>.nick-name {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.userInfo>.posts-time {
+  font-size: 24rpx;
+  color: gray;
+}
+
+.posts-content {
+  margin: 12rpx 0;
+}
+
+.posts-content>.posts-txt {
+  line-height: 45rpx;
+  margin: 12rpx 0;
+}
+
+.posts-content>.posts-img {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.posts-action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.posts-action>.look,
+.like {
+  display: flex;
+  align-items: center;
+}
+.like{
+  margin-left: 22rpx;
+}
+.action-txt{
+  margin-left: 6rpx;
+}
+.comment-area{
+  margin-top: 16rpx;
+  background-color: #fff;
+  /* padding: 24rpx; */
+}
+.comment-area>.comment-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+}
+.comment-area>.comment-header>.left{
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.comment-area>.comment-header>.right{
+  font-size: 24rpx;
+  color: #aaaaaa;
+}
+.comment-list{
+  /* margin: 36rpx 0; */
+}
+.reply-user-info{
+  display: flex;
+  align-items: center;
+}
+.reply-user-info>.reply-nick-name{
+  margin: 0 16rpx;
+}

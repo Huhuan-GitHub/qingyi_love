@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    
+  },
+  "navigationStyle":"custom",
+  "navigationBarTitleText": "个人主页"
+}

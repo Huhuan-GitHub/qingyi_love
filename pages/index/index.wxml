@@ -1,0 +1,20 @@
+<!--index.wxml-->
+<view>
+  <van-search value="{{ searchValue }}" shape="round" placeholder="请输入搜索关键词" />
+  <view>
+    <van-tabs active="{{ active }}" sticky animated swipeable bind:change="onChange">
+      <van-tab title="全部">
+        <view class="card-list">
+          <card-list wx:for="{{postsList}}" wx:key post="{{item}}"></card-list>
+        </view>
+        <view class="back-top" bindtap="backTop">
+          <view class="back-top-icon">
+            <van-icon name="back-top" class="back-top-icon" size="50rpx" color="white" />
+          </view>
+        </view>
+      </van-tab>
+      <van-tab title="最热">最热</van-tab>
+      <van-tab title="最新">最新</van-tab>
+    </van-tabs>
+  </view>
+</view>

@@ -1,0 +1,15 @@
+{
+  "usingComponents": {
+    "van-image": "@vant/weapp/image/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-action-sheet": "@vant/weapp/action-sheet/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-button": "@vant/weapp/button/index",
+    "post-comment-item": "../post-comment-item/post-comment-item",
+    "posts-img":"../posts-img/posts-img"
+  },
+  "navigationBarTitleText": "帖子详情"
+}
