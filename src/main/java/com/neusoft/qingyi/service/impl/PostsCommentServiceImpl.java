@@ -64,9 +64,12 @@ public class PostsCommentServiceImpl extends ServiceImpl<PostsCommentMapper, Pos
         if (incrRes <= 0) {
             throw new QingYiException(ResponseCode.OPERATION_ERROR);
         }
-        // 查询小程序用户信息
+        // 设置评论人的信息
         MiniUser commentMiniUser = miniUserMapper.selectMiniUserByOpenid(openid);
         postsComment.setCommentMiniUser(commentMiniUser);
+        // 设置这条评论是回复谁的
+        MiniUser replyMiniUser = postsCommentMapper.selectCommentReplyParentMiniUser(cParentId);
+        postsComment.setReplyMiniUser(replyMiniUser);
         return postsComment;
     }
 }
