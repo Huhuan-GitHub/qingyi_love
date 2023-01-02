@@ -23,7 +23,7 @@
     <view class="posts-action">
       <view class="text-gray text-sm text-right">
         <!-- <text class="cuIcon-attentionfill margin-lr-xs"></text> 10 -->
-        <text class="cuIcon-appreciatefill margin-lr-xs {{postsDetails.postsLike.status==1?'text-red':''}}"></text> {{postsDetails.currentPostsLikeCount}}
+        <text class="cuIcon-appreciatefill margin-lr-xs {{postsDetails.postsLike.status==1?'text-red':''}}" catchtap="likePosts"></text> {{postsDetails.currentPostsLikeCount}}
         <text class="cuIcon-messagefill margin-lr-xs" bindtap="commentUser"></text> {{postsDetails.currentPostsCommentCount}}
       </view>
     </view>
@@ -42,41 +42,12 @@
           <view class="cu-list menu-avatar comment solids-top">
           <!-- 评论列表 -->
           <comment-list postsCommentList="{{postsDetails.postsCommentList}}"></comment-list>
-            <!-- <view class="cu-item" wx:for="{{postsDetails.postsCommentList}}" wx:key="item">
-              <view bindtap="toPersonal" data-mini_id="mini_id" class="cu-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
-              <view class="content">
-                <view class="text-grey" bindtap="toPersonal" bindtap="toPersonal" data-mini_id="mini_id">{{item.commentMiniUser.username}}</view>
-                <view class="text-content text-df">
-                  {{item.comment}}
-                </view>
-                <view class="padding-sm radius  text-sm" wx:for="{{item.postsCommentList}}" wx:for-item="item2">
-                  <view class="">
-                    <view class="reply-user-info flex">
-                      <view class="cu-avatar sm reply-avatar round" style="background-image:url({{item2.commentMiniUser.avatar}});"></view>
-                      <view class="reply-nick-name text-grey">{{item2.commentMiniUser.username}}{{!item2.replyMiniUser?'':' > '+item2.replyMiniUser.username}}</view>
-                      <view class="text-gray text-sm">{{item2.commentDate}}</view>
-                    </view>
-                    <view class="flex" style="display: flex; align-items: flex-end;text-indent: 1rem;">
-                      <view class="flex-sub">{{item2.comment}}</view>
-                      <view bindtap="replyComment" class="reply" style="color: black;font-weight: bold;" data-replyId="replyId">回复</view>
-                    </view>
-                  </view>
-                </view>
-                <view class="margin-top-sm flex justify-between">
-                  <view class="text-gray text-df">{{item.commentDate}}</view>
-                  <view>
-                    <text class="cuIcon-appreciatefill text-red"></text>
-                    <text class="cuIcon-messagefill text-gray margin-left-sm" bindtap="commentUser"></text>
-                  </view>
-                </view>
-              </view>
-            </view> -->
           </view>
         </view>
       </view>
     </view>
   </view>
-  <van-popup close-on-click-overlay="{{true}}" show="{{ showReplyInput }}" position="bottom" custom-style="height: 1c0%;" bind:close="clostReplyInput" bind:click-overlay="closeReplyInput">
+  <van-popup close-on-click-overlay="{{true}}" show="{{ showReplyInput }}" position="bottom" custom-style="height: 1c0%;" bind:close="closeReplyInput" bind:click-overlay="closeReplyInput">
     <view class="comment-input">
       <van-cell-group>
         <!-- 回复输入框 -->
@@ -88,7 +59,6 @@
       </van-cell-group>
       <!-- 评论工具栏 -->
       <van-cell-group>
-
       </van-cell-group>
     </view>
   </van-popup>

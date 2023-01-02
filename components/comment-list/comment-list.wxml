@@ -4,7 +4,7 @@
     <view class="cu-item shadow">
       <view class="cu-list menu-avatar comment">
         <!-- 评论列表 -->
-        <view class="cu-item" >
+        <view class="cu-item">
           <view bindtap="toPersonal" data-mini_id="mini_id" class="cu-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
           <view class="content">
             <view class="text-grey" bindtap="toPersonal" bindtap="toPersonal" data-mini_id="mini_id">{{item.commentMiniUser.username}}</view>
@@ -15,8 +15,8 @@
             <view class="margin-top-sm flex justify-between">
               <view class="text-gray text-df">{{item.commentDate}}</view>
               <view>
-                <text class="cuIcon-appreciatefill text-red"></text>
-                <text class="cuIcon-messagefill text-gray margin-left-sm" bindtap="commentUser"></text>
+                <text class="cuIcon-appreciatefill text-red" catchtap="likeComment"></text>
+                <text class="cuIcon-messagefill text-gray margin-left-sm" catchtap="showCommentInput" data-commentInfo="{{item}}"></text>
               </view>
             </view>
           </view>
@@ -25,3 +25,18 @@
     </view>
   </view>
 </view>
+<van-popup close-on-click-overlay="{{true}}" show="{{ showReplyInput }}" position="bottom" custom-style="height: 1c0%;" bind:close="clostReplyInput" bind:click-overlay="closeReplyInput">
+    <view class="comment-input">
+      <van-cell-group>
+        <!-- 回复输入框 -->
+        <van-field model:value="{{ reply }}" type="textarea" placeholder="请输入回复" autosize auto-focus="{{true}}" border="{{ false }}" auto-focus="{{true}}" show-confirm-bar="{{false}}">
+          <van-button slot="button" size="small" type="primary" bind:click="sumbitReply">
+            发送
+          </van-button>
+        </van-field>
+      </van-cell-group>
+      <!-- 评论工具栏 -->
+      <van-cell-group>
+      </van-cell-group>
+    </view>
+  </van-popup>

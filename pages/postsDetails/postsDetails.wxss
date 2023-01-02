@@ -32,7 +32,9 @@
 }
 
 .posts-content>.posts-txt {
-  line-height: 45rpx;
+  /* line-height: 45rpx; */
+  line-height: 54rpx;
+  font-weight: bold;
   margin: 12rpx 0;
 }
 

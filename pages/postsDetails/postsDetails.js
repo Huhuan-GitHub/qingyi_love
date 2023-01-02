@@ -34,6 +34,16 @@ Page({
     })
   },
   /**
+   * 点赞帖子事件
+   * @param {*} e 
+   */
+  likePosts(e) {
+    wx.showToast({
+      title: '头发快掉完了，还没写的',
+      icon: "none"
+    })
+  },
+  /**
    * 回复主评论触发的事件
    * @param {*} e 
    */
@@ -57,6 +67,15 @@ Page({
    */
   sumbitReply(e) {
     const replyContent = this.data.reply;
+    const openid = wx.getStorageSync('openid');
+    // 如果小程序用户未登录
+    if (!openid) {
+      wx.showToast({
+        title: '请先登录',
+        icon: "none"
+      })
+      return;
+    }
     // 如果输入评论为空
     if (replyContent == '') {
       this.setData({
@@ -65,19 +84,69 @@ Page({
       return;
     }
     // 发送评论。。。。
-    if (200 == 200) {
-      // 发送评论成功
-      wx.showToast({
-        title: '评论成功！',
-        icon: "none"
+    const params = {
+      openid: openid,
+      pId: this.data.postsDetails.pid,
+      comment: replyContent
+    };
+    this.sendPostsCommentToServer(params).then(res => {
+        return this.updatePostsCommentList(res);
+      }).then(updateMsg => {
+        console.log(updateMsg);
+        // 发送评论成功
+        wx.showToast({
+          title: '评论成功！',
+          icon: "none"
+        })
+        // 清空输入框内容，隐藏遮罩层
+        this.setData({
+          showReplyInput: false,
+          reply: ''
+        })
       })
-    }
-    // 清空输入框内容，隐藏遮罩层
-    this.setData({
-      showReplyInput: false,
-      reply: ''
+      .catch(err => {
+        console.log(err);
+      })
+  },
+  /**
+   * 更新帖子评论列表
+   */
+  updatePostsCommentList(postsComment) {
+    return new Promise((resolve, reject) => {
+      // 如果是帖子的根评论，则直接添加到帖子的评论列表头部即可
+      if (postsComment.cparentId === -1) {
+        let newPostsDetails = this.data.postsDetails;
+        newPostsDetails.postsCommentList = [postsComment, ...newPostsDetails.postsCommentList];
+        console.log(newPostsDetails)
+        this.setData({
+          postsDetails: newPostsDetails
+        })
+        resolve("更新评论列表成功");
+      } else {
+        reject("更新评论列表失败");
+      }
     })
-
+  },
+  /**
+   * 发送评论到服务器
+   * @param {*} comment 
+   */
+  sendPostsCommentToServer(params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: baseUrl + '/postsComment/replyPostsComment',
+        method: "POST",
+        data: params,
+        success: res => {
+          if (res.data.code === 200) {
+            resolve(res.data.data);
+          }
+        },
+        fail: err => {
+          reject(err);
+        }
+      })
+    })
   },
   /**
    * 点击回复评论触发的事件
