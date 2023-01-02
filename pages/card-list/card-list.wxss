@@ -1,6 +1,6 @@
 /* pages/card-list/card-list.wxss */
 @import "../../colorui/main.wxss";
-@import "../../colorui//icon.wxss";
+@import "../../colorui/icon.wxss";
 .card-item {
   padding: 32rpx;
   /* height: 400rpx; */

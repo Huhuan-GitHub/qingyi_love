@@ -35,11 +35,14 @@
         <text>评论列表</text>
       </view>
     </view>
+    
     <view class="comment-list">
       <view class="cu-card dynamic no-card">
         <view class="cu-item shadow">
           <view class="cu-list menu-avatar comment solids-top">
-            <view class="cu-item" wx:for="{{postsDetails.postsCommentList}}" wx:key="item">
+          <!-- 评论列表 -->
+          <comment-list postsCommentList="{{postsDetails.postsCommentList}}"></comment-list>
+            <!-- <view class="cu-item" wx:for="{{postsDetails.postsCommentList}}" wx:key="item">
               <view bindtap="toPersonal" data-mini_id="mini_id" class="cu-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
               <view class="content">
                 <view class="text-grey" bindtap="toPersonal" bindtap="toPersonal" data-mini_id="mini_id">{{item.commentMiniUser.username}}</view>
@@ -50,7 +53,7 @@
                   <view class="">
                     <view class="reply-user-info flex">
                       <view class="cu-avatar sm reply-avatar round" style="background-image:url({{item2.commentMiniUser.avatar}});"></view>
-                      <view class="reply-nick-name text-grey">{{item2.commentMiniUser.username}}{{item2.replyMiniUser?'':'> 哆米校园客服'}}</view>
+                      <view class="reply-nick-name text-grey">{{item2.commentMiniUser.username}}{{!item2.replyMiniUser?'':' > '+item2.replyMiniUser.username}}</view>
                       <view class="text-gray text-sm">{{item2.commentDate}}</view>
                     </view>
                     <view class="flex" style="display: flex; align-items: flex-end;text-indent: 1rem;">
@@ -67,7 +70,7 @@
                   </view>
                 </view>
               </view>
-            </view>
+            </view> -->
           </view>
         </view>
       </view>

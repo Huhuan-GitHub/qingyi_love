@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "post-comment-item":"../../pages/post-comment-item/post-comment-item"
+  }
+}

@@ -1,1 +1,3 @@
 /* pages/post-comment-item/post-comment-item.wxss */
+@import "../../colorui/main.wxss";
+@import "../../colorui/icon.wxss";

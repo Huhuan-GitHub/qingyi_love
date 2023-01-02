@@ -1,1 +1,18 @@
-<!--pages/post-comment-item/post-comment-item.wxml-->
+<view wx:for="{{postsCommentList}}" wx:key="{{item}}">
+  <view class="padding-sm radius  text-sm">
+    <view class="">
+      <view class="reply-user-info flex">
+        <view class="cu-avatar sm reply-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
+        <view class="reply-nick-name text-grey">{{item.commentMiniUser.username}} > {{item.replyMiniUser.username}}</view>
+        <view class="text-gray text-sm">{{item.commentDate}}</view>
+      </view>
+      <view class="flex" style="display: flex; align-items: flex-end;text-indent: 1rem;">
+        <view class="flex-sub">{{item.comment}}</view>
+        <view bindtap="replyComment" class="reply" style="color: black;font-weight: bold;" data-replyId="replyId">回复</view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{item.postsCommentList}}">
+    <post-comment-item postsCommentList="{{item.postsCommentList}}"></post-comment-item>
+  </view>
+</view>

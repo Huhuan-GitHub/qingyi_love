@@ -1,4 +1,4 @@
-// pages/post-comment-item/post-comment-item.js
+// components/comment-list/comment-list.js
 Component({
   options:{
     addGlobalClass:true
@@ -13,7 +13,6 @@ Component({
       value: []
     }
   },
-
   /**
    * 组件的初始数据
    */
