@@ -28,7 +28,7 @@ public class Posts implements Serializable {
     /**
      * 发帖时间
      */
-    @JsonFormat(pattern = "yyyy年MM月dd日") //从数据库读出日期格式时，进行转换的规则
+    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8") //从数据库读出日期格式时，进行转换的规则
     private Date sendTime;
 
     /**

@@ -36,11 +36,13 @@
         from `t_posts_comment` as c
         where c.p_id = #{pId}
           and c.c_parent_id = -1
+        order by c.comment_date desc
     </select>
     <select id="selectCommentReply" resultMap="PostsCommentAndReply">
         select *
         from `t_posts_comment` as c1
         where c1.c_parent_id = #{pId}
+        order by c1.comment_date desc
     </select>
     <select id="selectCommentReplyParentMiniUser" resultType="com.neusoft.qingyi.pojo.MiniUser">
         SELECT *

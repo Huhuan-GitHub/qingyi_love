@@ -46,7 +46,7 @@ public class PostsController {
 
     @ApiOperation("上传帖子接口")
     @RequestMapping(value = "/addPosts", method = RequestMethod.POST)
-    public ResponseResult addPosts(@RequestBody Posts posts) {
+    public ResponseResult<?> addPosts(@RequestBody Posts posts) {
         // 是否匿名，暂时不用
         // Boolean notReveal = Boolean.valueOf(request.getParameter("notReveal"));
         if (posts.getOpenid() == null || posts.getOpenid().equals("")) {

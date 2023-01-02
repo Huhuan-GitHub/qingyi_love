@@ -10,6 +10,8 @@ public class RedisKeyUtils {
     // 缓存中能容纳的最大点赞数，超过这个阈值，就会清空点赞缓存，将数据上传至数据库
     public static final Integer MAX_LIKE_SIZE = 10;
 
+    public static final String POSTS_COMMENT_KEY = "posts::comment::root";
+
     /**
      * 拼接点赞人的openid和他点赞贴子主键作为redis的键key，例如：olG-q5aFDk6wc4tR446WUp3Gct1U::1
      *

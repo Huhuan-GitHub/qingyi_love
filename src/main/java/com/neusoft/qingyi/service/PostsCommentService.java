@@ -10,4 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface PostsCommentService extends IService<PostsComment> {
 
+    PostsComment miniUserCommentPosts(PostsComment postsComment);
 }

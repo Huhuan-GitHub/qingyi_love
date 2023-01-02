@@ -14,6 +14,11 @@
         id
         ,p_id,comment_count
     </sql>
+    <update id="commentCountIncrByPid">
+        update `t_posts_comment_count` as c
+        set c.comment_count = c.comment_count + 1
+        where c.p_id = #{pId}
+    </update>
     <select id="selectPostsCommentCount" resultType="java.lang.Integer">
         select count(*)
         from `t_posts_comment_count` as c

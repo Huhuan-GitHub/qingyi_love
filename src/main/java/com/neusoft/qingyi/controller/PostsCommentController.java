@@ -3,14 +3,12 @@ package com.neusoft.qingyi.controller;
 import com.neusoft.qingyi.mapper.PostsCommentMapper;
 import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.PostsComment;
+import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.PostsCommentService;
 import com.neusoft.qingyi.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,7 +23,7 @@ public class PostsCommentController {
     @Resource
     private PostsCommentMapper postsCommentMapper;
 
-    @ApiOperation(value = "分页获取帖子评论列表接口")
+    @ApiOperation("分页获取帖子评论列表接口")
     @GetMapping("/getPostsCommentListByPage")
     public ResponseResult<?> getPostsCommentListByPage(@RequestParam Integer currentPage, @RequestParam Integer pageSize, @RequestParam Integer pId) {
         if (currentPage == null || pageSize == null) {
@@ -36,8 +34,13 @@ public class PostsCommentController {
 //        return new ResponseResult<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMsg(), postsCommentList);
     }
 
-    @GetMapping("/testCommentReply")
-    public List<PostsComment> testCommentReply(@RequestParam("pId") Integer pId) {
-        return postsCommentMapper.selectCommentByPid(pId);
+    @ApiOperation("评论帖子接口")
+    @PostMapping("/replyPostsComment")
+    public ResponseResult<?> replyPostsComment(@RequestBody PostsComment postsComment) {
+        if (postsComment == null) {
+            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+        }
+        PostsComment newPostsComment = postsCommentService.miniUserCommentPosts(postsComment);
+        return new ResponseResult<>(200, "评论成功", newPostsComment);
     }
 }
