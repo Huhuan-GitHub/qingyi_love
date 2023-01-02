@@ -8,11 +8,9 @@
       </view>
       <view class="flex" style="display: flex; align-items: flex-end;text-indent: 1rem;">
         <view class="flex-sub">{{item.comment}}</view>
-        <view bindtap="replyComment" class="reply" style="color: black;font-weight: bold;" data-replyId="replyId">回复</view>
+        <view catchtap="showReplyInput" class="reply" style="color: black;font-weight: bold;" data-commentInfo="{{item}}">回复</view>
       </view>
     </view>
   </view>
-  <view wx:if="{{item.postsCommentList}}">
-    <post-comment-item postsCommentList="{{item.postsCommentList}}"></post-comment-item>
-  </view>
+  <post-comment-item wx:if="{{item.postsCommentList}}" postsCommentList="{{item.postsCommentList}}"></post-comment-item>
 </view>

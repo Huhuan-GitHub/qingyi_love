@@ -15,7 +15,6 @@ export function replyPostsComment(params) {
         if (res.data.code === 200) {
           resolve(res.data.data);
         }
-        console.log(res);
       },
       fail: err => {
         console.log(err);

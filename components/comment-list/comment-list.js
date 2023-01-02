@@ -72,7 +72,12 @@ Component({
         pId: pId
       };
       replyPostsComment(params).then(res => {
-        this.updateCommentList(res);
+        console.log(res);
+        let newPostsCommentList = this.data.postsCommentList;
+        this.updateCommentList(res, newPostsCommentList);
+        this.setData({
+          postsCommentList: this.data.postsCommentList
+        })
         // 发送评论成功
         wx.showToast({
           title: '评论成功！',
@@ -91,24 +96,34 @@ Component({
      * 更新帖子评论列表
      * @param {*} postsComment 
      */
-    updateCommentList(postsComment) {
+    updateCommentList(postsComment, oldPostsCommentList) {
+      if (!oldPostsCommentList) {
+        return;
+      }
       const {
         cParentId
       } = postsComment;
-      let oldPostsCommentList = this.properties.postsCommentList;
+      // let oldPostsCommentList = this.properties.postsCommentList;
       for (let i = 0; i < oldPostsCommentList.length; i++) {
         const {
           cId
         } = oldPostsCommentList[i];
-        console.log(cId)
         if (cParentId === cId) {
-          oldPostsCommentList[i].postsCommentList = [postsComment, ...oldPostsCommentList[i].postsCommentList]
-          break
+          if (oldPostsCommentList[i].postsCommentList === null) {
+            oldPostsCommentList[i].postsCommentList = [postsComment]
+          } else {
+            oldPostsCommentList[i].postsCommentList = [postsComment, ...oldPostsCommentList[i].postsCommentList]
+          }
+          return
+        } else {
+          // 递归查找
+          this.updateCommentList(postsComment, oldPostsCommentList[i].postsCommentList)
         }
       }
-      this.setData({
-        postsCommentList:oldPostsCommentList
-      })
+      // this.setData({
+      //   postsCommentList: oldPostsCommentList
+      // })
+      return oldPostsCommentList
     },
     /**
      * 显示输入评论框
@@ -125,6 +140,24 @@ Component({
       })
     },
     /**
+     * 供子组件调用的显示输入框
+     * @param {*} e 
+     */
+    showCommentInputChild(e) {
+      console.log("父组件调用组件的方法")
+      console.log(e)
+      const {
+        cId,
+        pId
+      } = e.detail;
+      this.setData({
+        showReplyInput: true,
+        cParentId: cId,
+        pId: pId
+      })
+      console.log(this.data)
+    },
+    /**
      * 关闭回复评论弹出层
      * @param {*} e 
      */
@@ -132,7 +165,7 @@ Component({
       this.setData({
         showReplyInput: false,
         cParentId: -1,
-        pid: -1
+        pId: -1
       })
     },
     /**

@@ -3,6 +3,9 @@
   "usingComponents": {
     "van-image": "@vant/weapp/image/index",
     "van-icon": "@vant/weapp/icon/index",
-    "post-comment-item": "../post-comment-item/post-comment-item"
+    "post-comment-item": "../post-comment-item/post-comment-item",
+    "van-field": "@vant/weapp/field/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-button": "@vant/weapp/button/index"
   }
 }

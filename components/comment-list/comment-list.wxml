@@ -11,7 +11,7 @@
             <view class="text-content text-df">
               {{item.comment}}
             </view>
-            <post-comment-item postsCommentList="{{item.postsCommentList}}"></post-comment-item>
+            <post-comment-item bind:showCommentInputChild='showCommentInputChild' postsCommentList="{{item.postsCommentList}}"></post-comment-item>
             <view class="margin-top-sm flex justify-between">
               <view class="text-gray text-df">{{item.commentDate}}</view>
               <view>
