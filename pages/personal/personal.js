@@ -1,4 +1,10 @@
 // pages/personal/personal.js
+const {
+  baseUrl
+} = require("../../utils/request")
+const {
+  getMiniUserHomePageDetails
+} = require("../../utils/miniUser")
 Page({
 
   /**
@@ -6,33 +12,41 @@ Page({
    */
   data: {
     // 帖子图片列表
-    imgList: ["https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg"]
-  },
-  /**
-   * 跳转到帖子详情页面
-   * @param {*} event 
-   */
-  toPostsDetails(event) {
-    const pid = event.currentTarget.dataset.pid;
-    wx.navigateTo({
-      url: '/pages/postsDetails/postsDetails?pid=' + pid,
-      success: res => {
-        console.log("跳转帖子详情页面成功")
+    imgList: [{
+        imgUrl: "https://img1.baidu.com/it/u=2396030750,606213290&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"
+      }, {
+        imgUrl: "https://img2.baidu.com/it/u=2592746298,1028958516&fm=253&fmt=auto&app=120&f=JPEG?w=571&h=500"
       },
-      fail: res => {
-        console.log("跳转帖子详情页面失败")
+      {
+        imgUrl: "https://img2.baidu.com/it/u=2592746298,1028958516&fm=253&fmt=auto&app=120&f=JPEG?w=571&h=500"
       }
-    })
+    ],
+    // 小程序用户主页数据
+    miniHomePageData: {}
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
     const mini_id = options.mini_id;
-    // 动态设置导航栏文字(用户昵称)
-    wx.setNavigationBarTitle({
-      title: '个人主页',
+    // 请求后端获取主页信息
+    getMiniUserHomePageDetails({
+      miniId: mini_id
+    }).then(res => {
+      if (res.data.code === 200) {
+        this.setData({
+          miniHomePageData: res.data.data
+        })
+        // 动态设置导航栏文字(用户昵称)
+        wx.setNavigationBarTitle({
+          title: res.data.data.username,
+        })
+      }
+      console.log(res)
+    }).catch(err => {
+      console.log("请求主页信息失败！", err);
     })
+
   },
 
   /**

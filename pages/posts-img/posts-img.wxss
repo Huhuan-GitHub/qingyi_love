@@ -1,7 +1,9 @@
 /* pages/posts-img/posts-img.wxss */
 .posts-img {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+}
+.posts-img-item{
+  margin-right: 10px;
 }

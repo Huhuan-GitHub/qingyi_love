@@ -1,7 +1,7 @@
-<view wx:for="{{postsCommentList}}" wx:key="{{item}}">
+<view wx:for="{{postsCommentList}}" wx:key="item">
   <view class="padding-sm radius  text-sm">
     <view class="">
-      <view class="reply-user-info flex">
+      <view class="reply-user-info flex" data-mini_id="{{item.commentMiniUser.miniId}}" bindtap="toPersonal">
         <view class="cu-avatar sm reply-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
         <view class="reply-nick-name text-grey">{{item.commentMiniUser.username}} > {{item.replyMiniUser.username}}</view>
         <view class="text-gray text-sm">{{item.commentDate}}</view>

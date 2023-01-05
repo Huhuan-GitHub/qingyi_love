@@ -178,5 +178,21 @@ Component({
         icon: "none"
       })
     },
+    /**
+     * 跳转到个人主页的事件
+     * @param {*} e 
+     */
+    toPersonal(e) {
+      const mini_id = e.currentTarget.dataset.mini_id;
+      wx.navigateTo({
+        url: '/pages/personal/personal?mini_id=' + mini_id,
+        success: res => {
+          console.log("跳转到个人主页成功")
+        },
+        fail: err => {
+          console.log("跳转到个人主页失败", err);
+        }
+      })
+    },
   }
 })

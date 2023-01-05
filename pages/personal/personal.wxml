@@ -1,15 +1,15 @@
 <!--pages/personal/personal.wxml-->
 <scroll-view scroll-y class="scrollPage">
   <view class="UCenter-bg">
-    <image src="https://qingyi-1302213380.cos.ap-chengdu.myqcloud.com/5b0988e595225.cdn.sohucs.jpeg" class="png" mode="widthFix"></image>
-    <view class="text-xl" style="color: black;font-weight: bold;">游标卡尺
+    <image src="{{miniHomePageData.avatar}}" class="png" mode="widthFix"></image>
+    <view class="text-xl" style="color: black;font-weight: bold;">{{miniHomePageData.username}}
       <text class="text-df">v2.0</text>
     </view>
     <view class="margin-top-sm" style="color: black;font-weight: bold;">
       <text>By:根号三的立方</text>
     </view>
   </view>
-  <view class="padding flex text-center text-grey bg-white shadow-warp">
+  <!-- <view class="padding flex text-center text-grey bg-white shadow-warp">
     <view class="flex flex-sub flex-direction solid-right">
       <view class="text-xxl text-orange">2.4W</view>
       <view class="margin-top-sm">
@@ -28,20 +28,20 @@
         <text class="cuIcon-footprint"></text> Fork
       </view>
     </view>
-  </view>
+  </view> -->
   <my-overlay isShow="{{isShowOverlay}}"></my-overlay>
   <view class="posts-list-container">
     <view class="posts-list">
-      <view class="posts-item" wx:for="{{3}}" wx:key="item">
+      <view class="posts-item" wx:for="{{miniHomePageData.postsList}}" wx:key="item">
         <view class="posts-header">
-          <view class="posts-date">2022-12-05 12:15</view>
+          <view class="posts-date">{{item.sendTime}}</view>
         </view>
         <view class="posts-content">
           <view class="posts-text" bindtap="toPostsDetails" data-pId="pid">
-            <text>长期蹲，找一个卷王一起学UE4，一起学图形学，一起学C++</text>
+            <text>{{item.content}}</text>
           </view>
           <view class="posts-img">
-          <posts-img imgList="{{imgList}}"></posts-img>
+          <posts-img imgList="{{item.postsImgList}}"></posts-img>
           </view>
         </view>
         <view class="posts-action">

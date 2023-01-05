@@ -1,6 +1,6 @@
 <view class="my-container">
   <view class="posts-panel">
-    <view class="header">
+    <view class="header" data-mini_id="{{postsDetails.miniUser.miniId}}" bindtap="toPersonal">
       <view class="avatar">
         <van-image round width="80rpx" height="80rpx" src="{{postsDetails.miniUser.avatar}}" />
       </view>

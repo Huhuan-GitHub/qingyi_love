@@ -5,7 +5,7 @@
     <van-tabs active="{{ active }}" sticky animated swipeable bind:change="onChange">
       <van-tab title="全部">
         <view class="card-list">
-          <card-list wx:for="{{postsList}}" wx:key post="{{item}}"></card-list>
+          <card-list wx:for="{{postsList}}" wx:key="item" post="{{item}}"></card-list>
         </view>
         <view class="back-top" bindtap="backTop">
           <view class="back-top-icon">
