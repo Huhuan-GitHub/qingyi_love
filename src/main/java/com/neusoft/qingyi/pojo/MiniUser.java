@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
@@ -49,6 +51,13 @@ public class MiniUser implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
+
+    @ApiModelProperty("小程序用户背景图")
+    private String backgroundImage;
+
+    @ApiModelProperty("小程序用户发的帖子")
+    @TableField(exist = false)
+    private List<Posts> postsList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

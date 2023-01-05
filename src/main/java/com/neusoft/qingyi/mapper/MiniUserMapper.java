@@ -16,7 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface MiniUserMapper extends BaseMapper<MiniUser> {
     List<MiniUser> selectByOpenid(@Param("openid") String openid);
 
-    MiniUser selectMiniUserByOpenid(@Param("openid")String openid);
+    MiniUser selectMiniUserByOpenid(@Param("openid") String openid);
+
+    MiniUser selectMiniUserHomePage(@Param("miniId") Integer miniId);
 }
 
 

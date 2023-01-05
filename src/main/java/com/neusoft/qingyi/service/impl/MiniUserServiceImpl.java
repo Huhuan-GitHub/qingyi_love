@@ -19,6 +19,13 @@ import java.util.Map;
 public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
         implements MiniUserService {
 
+    @Resource
+    private MiniUserMapper miniUserMapper;
+
+    @Override
+    public MiniUser getMiniUserHomePage(Integer miniId) {
+        return miniUserMapper.selectMiniUserHomePage(miniId);
+    }
 }
 
 

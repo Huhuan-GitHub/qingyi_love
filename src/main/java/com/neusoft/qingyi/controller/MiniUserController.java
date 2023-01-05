@@ -1,13 +1,14 @@
 package com.neusoft.qingyi.controller;
 
+import com.neusoft.qingyi.myenum.ResponseCode;
+import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
+import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.MiniUserAttentionService;
+import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.util.ResponseResult;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,9 @@ public class MiniUserController {
 
     @Resource
     private MiniUserAttentionService miniUserAttentionService;
+
+    @Resource
+    private MiniUserService miniUserService;
 
     @ApiOperation("关注小程序用户接口")
     @PostMapping("/attentionMiniUser")
@@ -44,5 +48,15 @@ public class MiniUserController {
         } else {
             return new ResponseResult<>(500, "取消失败");
         }
+    }
+
+    @ApiOperation("获取其他用户的主页信息接口")
+    @GetMapping("/getMiniUserHomePageDetails")
+    public ResponseResult<?> getMiniUserHomePageDetails(@RequestParam("miniId") Integer miniId) {
+        if (miniId == null) {
+            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+        }
+        MiniUser miniUserHomePage = miniUserService.getMiniUserHomePage(miniId);
+        return new ResponseResult<>(200, "请求成功", miniUserHomePage);
     }
 }

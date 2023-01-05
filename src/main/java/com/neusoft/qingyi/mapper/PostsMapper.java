@@ -31,6 +31,8 @@ public interface PostsMapper extends BaseMapper<Posts> {
     Integer selectCommentCountById(@Param("pId") Integer pId);
 
     Posts selectPostsDetailsByPid(@Param("pId") Integer pId, @Param("openid") String openid);
+
+    List<Posts> selectPostsByOpenid(@Param("openid") String openid);
 }
 
 

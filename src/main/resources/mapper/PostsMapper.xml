@@ -67,6 +67,16 @@
         <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
                     select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
     </resultMap>
+    <resultMap id="MiniUserPostsSimpleList" type="com.neusoft.qingyi.pojo.Posts">
+        <id property="pId" column="p_id" jdbcType="INTEGER"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="tId" column="t_id" jdbcType="INTEGER"/>
+        <association property="tag" column="t_id" javaType="com.neusoft.qingyi.pojo.Tag"
+                     select="com.neusoft.qingyi.mapper.TagMapper.selectAllByTId"/>
+        <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
+                    select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
+    </resultMap>
     <!--    <select id="selectPostLikeCount" parameterType="java.lang.Integer">-->
 
     <!--    </select>-->
@@ -134,5 +144,10 @@
         from `t_posts` as p
                  left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
         where p.p_id = #{pId}
+    </select>
+    <select id="selectPostsByOpenid" resultMap="MiniUserPostsSimpleList">
+        select p.p_id, p.send_time, p.content, p.t_id
+        from `t_posts` as p
+        where p.openid = #{openid}
     </select>
 </mapper>
