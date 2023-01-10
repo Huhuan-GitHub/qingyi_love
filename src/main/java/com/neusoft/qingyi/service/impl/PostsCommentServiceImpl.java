@@ -9,9 +9,7 @@ import com.neusoft.qingyi.pojo.PostsComment;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.PostsCommentService;
 import com.neusoft.qingyi.mapper.PostsCommentMapper;
-import com.neusoft.qingyi.util.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,10 +58,13 @@ public class PostsCommentServiceImpl extends ServiceImpl<PostsCommentMapper, Pos
         // 插入成功后，拿到帖子评论的主键，评论数量自增1
         int pId = postsComment.getPId();
         String openid = postsComment.getOpenid();
-        Integer incrRes = postsCommentCountMapper.commentCountIncrByPid(pId);
-        if (incrRes <= 0) {
+        // 暂时先不进行数据库点赞数量的处理
+        // TODO:如果数据库中有数据，则执行新增+1即可
+//        Integer incrRes = postsCommentCountMapper.commentCountIncrByPid(pId);
+        // TODO:数据库中没有评论内容时，执行新增操作
+        /*if (incrRes <= 0) {
             throw new QingYiException(ResponseCode.OPERATION_ERROR);
-        }
+        }*/
         // 设置评论人的信息
         MiniUser commentMiniUser = miniUserMapper.selectMiniUserByOpenid(openid);
         postsComment.setCommentMiniUser(commentMiniUser);
