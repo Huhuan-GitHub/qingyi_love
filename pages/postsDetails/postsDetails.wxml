@@ -24,7 +24,8 @@
       <view class="text-gray text-sm text-right">
         <!-- <text class="cuIcon-attentionfill margin-lr-xs"></text> 10 -->
         <text class="cuIcon-appreciatefill margin-lr-xs {{postsDetails.postsLike.status==1?'text-red':''}}" catchtap="likePosts"></text> {{postsDetails.currentPostsLikeCount}}
-        <text class="cuIcon-messagefill margin-lr-xs" bindtap="commentUser"></text> {{postsDetails.currentPostsCommentCount}}
+        <text class="cuIcon-messagefill margin-lr-xs" bindtap="commentUser"></text>
+         <!-- {{postsDetails.currentPostsCommentCount}} -->
       </view>
     </view>
   </view>

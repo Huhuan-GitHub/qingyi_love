@@ -5,9 +5,9 @@
       <view class="cu-list menu-avatar comment">
         <!-- 评论列表 -->
         <view class="cu-item">
-          <view bindtap="toPersonal" data-mini_id="mini_id" class="cu-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
+          <view bindtap="toPersonal" data-mini_id="{{item.commentMiniUser.miniId}}" class="cu-avatar round" style="background-image:url({{item.commentMiniUser.avatar}});"></view>
           <view class="content">
-            <view class="text-grey" bindtap="toPersonal" bindtap="toPersonal" data-mini_id="mini_id">{{item.commentMiniUser.username}}</view>
+            <view class="text-grey" bindtap="toPersonal" bindtap="toPersonal" data-mini_id="{{item.commentMiniUser.miniId}}">{{item.commentMiniUser.username}}</view>
             <view class="text-content text-df">
               {{item.comment}}
             </view>

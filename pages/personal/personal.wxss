@@ -1,6 +1,5 @@
 /* pages/personal/personal.wxss */
 .UCenter-bg {
-  background-image: url(https://img1.baidu.com/it/u=3341353014,1920506342&fm=253&fmt=auto&app=120&f=JPEG?w=989&h=500);
   background-size: cover;
   height: 400rpx;
   display: flex;

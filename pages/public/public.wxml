@@ -8,7 +8,7 @@
       <van-tag class="tag-item" bindtap="addTag" size="medium" color="#f3f3f3" text-color="#111111" round>
         <view slot="">
           <van-icon custom-style="font-weight:bold;" name="flag-o" color="{{currentTag!=''?'#0081ff':'#111111'}}" />
-          <text style="font-weight: bold;">{{currentTag===''?'添加标签':currentTag}}</text>
+          <text style="font-weight: bold;">{{currentTag.text===''?'添加标签':currentTag.text}}</text>
         </view>
       </van-tag>
       <van-tag class="tag-item" bindtap="addAddress" size="medium" color="#f3f3f3" text-color="#111111" round>
@@ -36,7 +36,7 @@
   <van-action-sheet round="{{false}}" show="{{ showTagSheet }}" bind:click-overlay="closeSheet" title="选择标签">
     <view class="tag-panel-content">
       <view class="tag-list">
-        <van-tag class="tag-item" bindtap="chooseTag" wx:for="{{tagList}}" wx:key="item" color="#0081ff" size="large" data-name="{{item.name}}" round>{{item.name}}</van-tag>
+        <van-tag class="tag-item" bindtap="chooseTag" wx:for="{{tagList}}" wx:key="item" color="{{item.bgColor}}" size="large" data-tag="{{item}}" round>{{item.text}}</van-tag>
       </view>
     </view>
   </van-action-sheet>

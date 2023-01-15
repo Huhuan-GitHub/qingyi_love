@@ -1,6 +1,6 @@
 <!--pages/personal/personal.wxml-->
 <scroll-view scroll-y class="scrollPage">
-  <view class="UCenter-bg">
+  <view class="UCenter-bg" catchtap="viewBackGroundImage" style="background-image: url({{miniHomePageData.backgroundImage}});">
     <image src="{{miniHomePageData.avatar}}" class="png" mode="widthFix"></image>
     <view class="text-xl" style="color: black;font-weight: bold;">{{miniHomePageData.username}}
       <text class="text-df">v2.0</text>

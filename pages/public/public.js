@@ -1,6 +1,11 @@
 // pages/public/public.js
 import Notify from '@vant/weapp/notify/notify';
 const app = getApp();
+const {
+  getAllTag,
+  uploadPostsImg,
+  publicPosts
+} = require("../../utils/public")
 Page({
 
   /**
@@ -11,42 +16,18 @@ Page({
     fileList: [],
     notReveal: false,
     showTagSheet: false,
-    currentTag: "",
-    tagList: [{
-        id: "1",
-        name: "校园表白"
-      },
-      {
-        id: "2",
-        name: "失物招领"
-      },
-      {
-        id: "3",
-        name: "卖室友"
-      },
-      {
-        id: "4",
-        name: "求助打听"
-      },
-      {
-        id: "5",
-        name: "游戏交友"
-      },
-      {
-        id: "6",
-        name: "学习交流"
-      },
-      {
-        id: "7",
-        name: "随手摄影"
-      },
-    ]
+    currentTag: {
+      tid: 0,
+      text: '',
+      bgColor: ''
+    },
+    tagList: []
   },
   /**
    * 点击发布按钮触发的事件
    * @param {*} event 
    */
-  submit(event) {
+  async submit(event) {
     const that = this;
     // 判断分享内容是否为空
     const content = this.data.value;
@@ -57,162 +38,37 @@ Page({
       });
       return;
     }
-    // 标签
-    const tag = this.data.currentTag;
-    // 是否匿名
-    const notReveal = this.data.notReveal;
-    // 文件列表
-    const fileList = this.data.fileList;
+    // 标签、是否匿名、文件列表
+    const {
+      currentTag,
+      notReveal,
+      fileList
+    } = this.data;
     // 附带上传参数
     const paramseFormData = {
       content: content,
-      tag: tag,
+      tid: currentTag.tid,
       notReveal: notReveal,
       openid: app.globalData.openid
     }
-    wx.request({
-      url: 'http://localhost:3033/posts/addPosts',
-      method: "POST",
-      data: {
-        content: content,
-        openid: app.globalData.openid,
-        notReveal: notReveal,
-        tag: {
-          text: tag
-        }
-      },
-      success: res => {
-        if (fileList.length <= 0) {
-          // 没有选择图片
-          this.setData({
-            value: "",
-            fileList: [],
-            notReveal: false,
-            showTagSheet: false,
-            currentTag: "",
-            tagList: [{
-                id: "1",
-                name: "校园表白"
-              },
-              {
-                id: "2",
-                name: "失物招领"
-              },
-              {
-                id: "3",
-                name: "卖室友"
-              },
-              {
-                id: "4",
-                name: "求助打听"
-              },
-              {
-                id: "5",
-                name: "游戏交友"
-              },
-              {
-                id: "6",
-                name: "学习交流"
-              },
-              {
-                id: "7",
-                name: "随手摄影"
-              },
-            ]
-          });
-          Notify({
-            type: 'success',
-            message: "发布成功！",
-            onOpened: () => {
-              wx.switchTab({
-                url: '/pages/index/index',
-                success: res => {
-                  const page = getCurrentPages().pop();
-                  if (page == undefined || page == null) return;  
-                  page.onLoad();  
-                }
-              })
-            }
-          });
-          return;
-        }
-        // 添加帖子成功后再上传图片
-        if (res.data.data > 0) {
-          for (let i in fileList) {
-            wx.uploadFile({
-              filePath: fileList[i].url,
-              name: 'file',
-              url: 'http://localhost:3033/postsImg/addPostsImg',
-              formData: {
-                pId: res.data.data,
-                openid: app.globalData.openid
-              },
-              success: res => {
-                // 上传成功后，清除数据
-                this.setData({
-                  value: "",
-                  fileList: [],
-                  notReveal: false,
-                  showTagSheet: false,
-                  currentTag: "",
-                  tagList: [{
-                      id: "1",
-                      name: "校园表白"
-                    },
-                    {
-                      id: "2",
-                      name: "失物招领"
-                    },
-                    {
-                      id: "3",
-                      name: "卖室友"
-                    },
-                    {
-                      id: "4",
-                      name: "求助打听"
-                    },
-                    {
-                      id: "5",
-                      name: "游戏交友"
-                    },
-                    {
-                      id: "6",
-                      name: "学习交流"
-                    },
-                    {
-                      id: "7",
-                      name: "随手摄影"
-                    },
-                  ]
-                });
-                Notify({
-                  type: 'success',
-                  message: "发布成功！",
-                  onOpened: () => {
-                    // 本来想通过跳转tabbar来实现数据刷新，后面发现不可行，故暂时弃用
-                    // wx.switchTab({
-                    //   url: '/pages/index/index',
-                    //   success: res => {
-                    //     const page = getCurrentPages().pop();
-                    //   }
-                    // })
-                  }
-                });
-                console.log("上传成功", res);
-              },
-              fail: res => {
-                console.log("上传失败", res);
-              }
-            })
-          }
-        }
-      },
-      fail: res => {
-        console.log(res);
-      }
+    const Multipart = require("../../utils/Multipart.min.js")
+    let m = new Multipart({
+      files: [],
+      fields: []
     })
-    // 遍历文件上传
+    m.field({
+      name: "username",
+      value: "张三"
+    })
+    for(let i =0;i<fileList.length;i++){
+      m.file({
+        name: "img",
+        filePath: fileList[i].url
+      })
+    }
+    m.submit("http://localhost:3033/posts/formDataTest");
   },
+
   /**
    * 添加地点
    * @param {*} event 
@@ -228,10 +84,10 @@ Page({
    * @param {*} event 
    */
   chooseTag(event) {
-    const tagName = event.currentTarget.dataset.name;
+    const tag = event.currentTarget.dataset.tag;
     this.setData({
       showTagSheet: false,
-      currentTag: tagName
+      currentTag: tag
     })
   },
   /**
@@ -304,6 +160,17 @@ Page({
    */
   onLoad(options) {
     // console.log(app.globalData.openid);
+    // 获取标签
+    getAllTag({}).then(res => {
+      if (res.data.code === 200) {
+        this.setData({
+          tagList: res.data.data
+        })
+      }
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
   },
 
   /**
