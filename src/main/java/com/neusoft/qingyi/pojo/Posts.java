@@ -47,6 +47,11 @@ public class Posts implements Serializable {
     private Integer tId;
 
     /**
+     * 是否匿名发布
+     */
+    private Integer notReveal;
+
+    /**
      * 帖子图片列表
      */
     @TableField(exist = false)

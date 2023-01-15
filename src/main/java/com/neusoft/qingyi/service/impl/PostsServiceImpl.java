@@ -2,21 +2,29 @@ package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.neusoft.qingyi.pojo.Posts;
+import com.neusoft.qingyi.pojo.PostsImg;
+import com.neusoft.qingyi.service.PostsImgService;
 import com.neusoft.qingyi.service.PostsService;
 import com.neusoft.qingyi.mapper.PostsMapper;
+import com.neusoft.qingyi.util.FileUtils;
 import com.neusoft.qingyi.util.RedisKeyUtils;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -29,6 +37,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
         implements PostsService {
+
+    @Resource
+    private PostsImgService postsImgService;
     @Resource
     private RedisTemplate redisTemplate;
 
@@ -36,6 +47,18 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
     private PostsMapper postsMapper;
 
     private String postsLikeKeyPre = "posts_like_count::";
+
+    @Value("${posts.file-path}")
+    private String postsFilePath;
+
+    @Value("${posts.file-root-folder}")
+    private String rootFolder;
+
+    @Value("${server.url}")
+    private String serverUrl;
+
+    @Value("${server.port}")
+    private String serverPort;
 
     @Override
     public List<Posts> getPostsByPage(Map<String, Object> pageMap) {
@@ -125,6 +148,40 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
     @Override
     public Posts getPostsDetails(Integer pId, String openid) {
         return postsMapper.selectPostsDetailsByPid(pId, openid);
+    }
+
+    /**
+     * 上传帖子图片到本地文件
+     *
+     * @param img    图片文件
+     * @param openid 小程序用户唯一标识符
+     * @param pid    帖子表主键
+     * @return 上传结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean uploadPostsImg(MultipartFile img, String openid, Integer pid) {
+        // 首先判断存放帖子图片的指定文件夹是否存在
+        if (!FileUtils.folderExists(postsFilePath)) {
+            return false;
+        }
+        String folderPath = postsFilePath + "\\" + openid + "__" + pid + "\\";
+        String fileName = UUID.randomUUID() + ".png";
+        if (FileUtils.folderExists(folderPath)) {
+            // 如果指定文件夹路径存在或者创建成功后，才执行写入操作
+            try {
+                FileUtils.writePostsImg(folderPath + "\\" + fileName, img.getInputStream());
+            } catch (Exception e) {
+                log.error("写入帖子图片失败");
+                e.printStackTrace();
+            }
+            String resUrl = serverUrl + ":" + serverPort + "/" + rootFolder + "/" + openid + "__" + pid + "/" + fileName;
+            // 将图片地址写入数据库
+            postsImgService.save(new PostsImg(pid, resUrl));
+        } else {
+            return false;
+        }
+        return true;
     }
 }
 

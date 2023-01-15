@@ -1,5 +1,6 @@
 package com.neusoft.qingyi.util;
 
+import com.neusoft.qingyi.common.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,5 +23,9 @@ public class ResponseResult<T> {
     public ResponseResult(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
+    }
+
+    public ResponseResult(ErrorCode errorCode) {
+        this(errorCode.getCode(), errorCode.getMessage(),null);
     }
 }

@@ -12,6 +12,8 @@ public class RedisKeyUtils {
 
     public static final String POSTS_COMMENT_KEY = "posts::comment::root";
 
+    public static final String PUBLIC_POSTS_IMG_AUTH = "public::posts::img::auth";
+
     /**
      * 拼接点赞人的openid和他点赞贴子主键作为redis的键key，例如：olG-q5aFDk6wc4tR446WUp3Gct1U::1
      *

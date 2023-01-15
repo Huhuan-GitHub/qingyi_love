@@ -10,6 +10,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="openid" column="openid" jdbcType="VARCHAR"/>
         <result property="tId" column="t_id" jdbcType="INTEGER"/>
+        <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap id="AllResultMap" type="com.neusoft.qingyi.pojo.Posts">
         <id property="pId" column="p_id" jdbcType="INTEGER"/>
@@ -17,6 +18,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="openid" column="openid" jdbcType="VARCHAR"/>
         <result property="tId" column="t_id" jdbcType="INTEGER"/>
+        <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
                      select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
         <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
@@ -40,6 +42,7 @@
         <result property="sendTime" column="send_Time" jdbcType="TIMESTAMP"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
                      select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
         <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
@@ -53,6 +56,7 @@
         <id property="pId" column="p_id" jdbcType="INTEGER"/>
         <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
                      select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
         <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
@@ -72,6 +76,7 @@
         <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="tId" column="t_id" jdbcType="INTEGER"/>
+        <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="tag" column="t_id" javaType="com.neusoft.qingyi.pojo.Tag"
                      select="com.neusoft.qingyi.mapper.TagMapper.selectAllByTId"/>
         <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
