@@ -119,4 +119,12 @@ public class PostsController {
         // 帖子写入成功，返回pid
         return ResultUtils.success(pid);
     }
+
+    @PostMapping("/formDataTest")
+    public ResponseResult<?> formDataTest(@RequestParam("img") MultipartFile[] img) {
+        for (MultipartFile file : img) {
+            postsService.uploadPostsImg(file, "openid", 1);
+        }
+        return ResultUtils.success(200);
+    }
 }
