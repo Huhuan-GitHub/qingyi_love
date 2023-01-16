@@ -98,7 +98,7 @@ Page({
   },
   onLoad() {
     // 初始化帖子列表
-    this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+    // this.getPostsByPage(this.data.currentPage, this.data.pageSize);
     // 初始化当前用户点赞列表
   },
   getUserProfile(e) {
@@ -124,7 +124,8 @@ Page({
   },
   onShow() {
     // 初始化帖子列表
-    // this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+    this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+    console.log("onShow")
   },
   /**
    * 页面下拉刷新事件

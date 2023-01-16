@@ -14,7 +14,7 @@ Page({
   data: {
     value: "",
     fileList: [],
-    notReveal: false,
+    notReveal: 0,
     showTagSheet: false,
     currentTag: {
       tid: 0,
@@ -51,22 +51,39 @@ Page({
       notReveal: notReveal,
       openid: app.globalData.openid
     }
-    const Multipart = require("../../utils/Multipart.min.js")
-    let m = new Multipart({
-      files: [],
-      fields: []
-    })
-    m.field({
-      name: "username",
-      value: "张三"
-    })
-    for(let i =0;i<fileList.length;i++){
-      m.file({
-        name: "img",
-        filePath: fileList[i].url
+    publicPosts(paramseFormData, fileList).then(res => {
+      wx.showToast({
+        title: '帖子发布成功',
+        icon: "success"
       })
-    }
-    m.submit("http://localhost:3033/posts/formDataTest");
+      // 清空表单
+      this.setData({
+        value: "",
+        fileList: [],
+        notReveal: 0,
+        showTagSheet: false,
+        currentTag: {
+          tid: 0,
+          text: '',
+          bgColor: ''
+        },
+        tagList: []
+      })
+      // 发布成功后跳转到tabbar
+      wx.switchTab({
+        url: '../index/index',
+        success: function (e) {
+          var page = getCurrentPages().pop();
+          if (page == undefined || page == null) return
+          page.onLoad();
+        }
+      })
+    }).catch(err => {
+      wx.showToast({
+        title: '系统错误',
+        icon: "error"
+      })
+    })
   },
 
   /**
@@ -160,17 +177,6 @@ Page({
    */
   onLoad(options) {
     // console.log(app.globalData.openid);
-    // 获取标签
-    getAllTag({}).then(res => {
-      if (res.data.code === 200) {
-        this.setData({
-          tagList: res.data.data
-        })
-      }
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
-    })
   },
 
   /**
@@ -184,7 +190,16 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    getAllTag({}).then(res => {
+      if (res.data.code === 200) {
+        this.setData({
+          tagList: res.data.data
+        })
+      }
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
   },
 
   /**

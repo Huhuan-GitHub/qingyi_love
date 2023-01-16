@@ -1,6 +1,7 @@
 const {
   baseUrl
 } = require("./request");
+const Multipart = require("../utils/Multipart.min.js")
 /**
  * 获取所有帖子标签接口
  * @param {*} params 
@@ -44,21 +45,26 @@ export function getPostsTagByPage(params) {
  * 发布帖子接基本信息接口
  * @param {*} params 
  */
-export function publicPosts(params) {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: baseUrl + '/posts/publicPosts',
-      method: "POST",
-      dataType: "json",
-      data: params,
-      success: res => {
-        resolve(res);
-      },
-      fail: err => {
-        reject(err);
-      }
-    })
+export function publicPosts(params, fileList) {
+  let m = new Multipart({
+    files: [],
+    fields: []
   })
+  // 构造FormData字段参数
+  for (let key of Object.keys(params)) {
+    m.field({
+      name: key,
+      value: params[key]
+    })
+  }
+  // 构建FormDate文件参数
+  for (let i = 0; i < fileList.length; i++) {
+    m.file({
+      name: "img",
+      filePath: fileList[i].url
+    })
+  }
+  return m.submit(baseUrl + "/posts/publicPosts");
 }
 
 /**
