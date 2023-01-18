@@ -33,6 +33,8 @@ public interface PostsMapper extends BaseMapper<Posts> {
     Posts selectPostsDetailsByPid(@Param("pId") Integer pId, @Param("openid") String openid);
 
     List<Posts> selectPostsByOpenid(@Param("openid") String openid);
+
+    List<Posts> selectPostsPage(Integer currentPage, Integer pageSize);
 }
 
 

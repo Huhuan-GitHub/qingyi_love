@@ -1,8 +1,11 @@
 package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.neusoft.qingyi.common.ErrorCode;
+import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.Posts;
 import com.neusoft.qingyi.pojo.PostsImg;
+import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.PostsImgService;
 import com.neusoft.qingyi.service.PostsService;
 import com.neusoft.qingyi.mapper.PostsMapper;
@@ -21,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -150,38 +150,53 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
         return postsMapper.selectPostsDetailsByPid(pId, openid);
     }
 
-    /**
-     * 上传帖子图片到本地文件
-     *
-     * @param img    图片文件
-     * @param openid 小程序用户唯一标识符
-     * @param pid    帖子表主键
-     * @return 上传结果
-     */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public boolean uploadPostsImg(MultipartFile img, String openid, Integer pid) {
+    public boolean publicPosts(Posts posts, MultipartFile[] img) {
+        // 先执行帖子写入操作
+        if (posts == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        // 执行帖子基本信息写入操作
+        if (postsMapper.insert(posts) <= 0) {
+            throw new QingYiException(ErrorCode.OPERATION_ERROR);
+        }
+        // 执行成功后，拿到pid和openid，进行帖子图片的操作
+        int pid = posts.getPId();
+        String openid = posts.getOpenid();
         // 首先判断存放帖子图片的指定文件夹是否存在
         if (!FileUtils.folderExists(postsFilePath)) {
             return false;
         }
         String folderPath = postsFilePath + "\\" + openid + "__" + pid + "\\";
-        String fileName = UUID.randomUUID() + ".png";
-        if (FileUtils.folderExists(folderPath)) {
+        if (img != null && FileUtils.folderExists(folderPath)) {
             // 如果指定文件夹路径存在或者创建成功后，才执行写入操作
             try {
-                FileUtils.writePostsImg(folderPath + "\\" + fileName, img.getInputStream());
+                // 循环写入图片
+                for (MultipartFile file : img) {
+                    String fileName = UUID.randomUUID() + ".png";
+                    FileUtils.writePostsImg(folderPath + "/" + fileName, file.getInputStream());
+                    String resUrl = serverUrl + ":" + serverPort + "/" + rootFolder + "/" + openid + "__" + pid + "/" + fileName;
+                    // 将图片地址写入数据库
+                    postsImgService.save(new PostsImg(pid, resUrl));
+                }
             } catch (Exception e) {
                 log.error("写入帖子图片失败");
+                // 如果出现异常，那么递归删除掉新创建的文件夹
+                FileUtils.deleteDir(folderPath);
                 e.printStackTrace();
+                return false;
             }
-            String resUrl = serverUrl + ":" + serverPort + "/" + rootFolder + "/" + openid + "__" + pid + "/" + fileName;
-            // 将图片地址写入数据库
-            postsImgService.save(new PostsImg(pid, resUrl));
         } else {
-            return false;
+            // 文件夹创建失败，抛出异常
+            throw new QingYiException(ErrorCode.OPERATION_ERROR);
         }
         return true;
+    }
+
+    @Override
+    public List<Posts> getPostsPage(Integer currentPage, Integer pageSize) {
+        return postsMapper.selectPostsPage((currentPage - 1) * pageSize, pageSize);
     }
 }
 

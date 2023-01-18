@@ -21,5 +21,7 @@ public interface PostsService extends IService<Posts> {
 
     Posts getPostsDetails(Integer pId, String openid);
 
-    boolean uploadPostsImg(MultipartFile img, String openid, Integer pid);
+    boolean publicPosts(Posts posts, MultipartFile[] img);
+
+    List<Posts> getPostsPage(Integer currentPage,Integer pageSize);
 }

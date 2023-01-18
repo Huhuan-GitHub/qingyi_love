@@ -45,4 +45,22 @@ public class FileUtils {
         }
         out.close();
     }
+
+    /**
+     * 递归删除文件夹
+     * @param path 文件/文件夹路径
+     */
+    public static void deleteDir(String path) {
+        File file = new File(path);
+        File[] list = file.listFiles();
+        for (File f : list) {
+            if (f.isDirectory()) {
+                deleteDir(f.getPath());
+            } else {
+                f.delete();
+            }
+        }
+        boolean deleted = file.delete();
+        System.out.println(deleted);
+    }
 }

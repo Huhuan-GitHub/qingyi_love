@@ -77,7 +77,7 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
     /**
      * 将点赞和点赞数量缓存上传数据库
      */
-    @Scheduled(fixedRate = RedisKeyUtils.UPDATE_TIME)
+//    @Scheduled(fixedRate = RedisKeyUtils.UPDATE_TIME)
     @Transactional
     @Override
     public void uploadLikeRedis() {

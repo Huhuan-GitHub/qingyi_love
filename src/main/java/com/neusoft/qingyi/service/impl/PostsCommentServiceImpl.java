@@ -1,6 +1,7 @@
 package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.mapper.MiniUserMapper;
 import com.neusoft.qingyi.mapper.PostsCommentCountMapper;
 import com.neusoft.qingyi.myenum.ResponseCode;
@@ -39,7 +40,7 @@ public class PostsCommentServiceImpl extends ServiceImpl<PostsCommentMapper, Pos
     @Override
     synchronized public PostsComment miniUserCommentPosts(PostsComment postsComment) {
         if (postsComment == null) {
-            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
         }
         Integer cParentId = postsComment.getCParentId();
         // 如果为空，表示是帖子的根评论，设置为-1
@@ -52,7 +53,7 @@ public class PostsCommentServiceImpl extends ServiceImpl<PostsCommentMapper, Pos
         postsComment.setCommentDate(new Date());
         int res = postsCommentMapper.insert(postsComment);
         if (res <= 0) {
-            throw new QingYiException(ResponseCode.OPERATION_ERROR);
+            throw new QingYiException(ErrorCode.OPERATION_ERROR);
         }
         log.info("评论写入评论表成功");
         // 插入成功后，拿到帖子评论的主键，评论数量自增1

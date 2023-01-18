@@ -1,6 +1,7 @@
 package com.neusoft.qingyi.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.Tag;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
@@ -34,7 +35,7 @@ public class TagController {
     public ResponseResult<?> getPostsTagByPage(@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize) {
         // 处理请求参数错误异常
         if (pageSize == null || pageNo == null) {
-            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
         }
         Page<Tag> tagPage = new Page<>(pageNo, pageSize);
         Page<Tag> page = tagService.page(tagPage);

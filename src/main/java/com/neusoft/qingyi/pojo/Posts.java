@@ -11,13 +11,17 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @TableName t_posts
  */
 @TableName(value = "t_posts")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Posts implements Serializable {
     /**
      * 帖子表主键
@@ -50,6 +54,15 @@ public class Posts implements Serializable {
      * 是否匿名发布
      */
     private Integer notReveal;
+
+    public Posts(Integer pId, Date sendTime, String content, String openid, Integer tId, Integer notReveal) {
+        this.pId = pId;
+        this.sendTime = sendTime;
+        this.content = content;
+        this.openid = openid;
+        this.tId = tId;
+        this.notReveal = notReveal;
+    }
 
     /**
      * 帖子图片列表

@@ -27,10 +27,18 @@ public class PostsController {
 
     @Resource
     private MiniUserService miniUserService;
+    @ApiOperation(value = "获取分页帖子接口")
+    @GetMapping("/getPostsPage")
+    public ResponseResult<?> postsPageTest(@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
+        if (currentPage <= 0 || pageSize <= 0) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize));
+    }
 
     @ApiOperation(value = "获取分页帖子接口")
     @GetMapping("/getPostsByPage")
-    public ResponseResult getPostsByPage(@RequestParam(required = false, name = "openid") String openid, @RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
+    public ResponseResult<?> getPostsByPage(@RequestParam(required = false, name = "openid") String openid, @RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
         Map<String, Object> pageParamsMap = new HashMap<>();
         pageParamsMap.put("currentPage", currentPage);
         pageParamsMap.put("pageSize", pageSize);
@@ -85,46 +93,24 @@ public class PostsController {
         }
     }
 
-    @ApiOperation("添加帖子接口（文本信息，不包含图片）")
+    @ApiOperation("发布帖子接口")
     @PostMapping("/publicPosts")
-    public ResponseResult<?> publicPosts(@RequestBody Posts posts) {
-        if (posts == null) {
+    public ResponseResult<?> publicPosts(HttpServletRequest request, @RequestParam(value = "img", required = false) MultipartFile[] img) {
+        String content = request.getParameter("content");
+        String openid = request.getParameter("openid");
+        Integer tId = Integer.valueOf(request.getParameter("tid"));
+        Integer notReveal = Integer.valueOf(request.getParameter("notReveal"));
+        if (content == null || openid == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         // 构建帖子对象
-        posts.setSendTime(new Date());
+        Posts posts = new Posts(null, new Date(), content, openid, tId, notReveal);
         // 上传帖子
-        boolean saveRes = postsService.save(posts);
+        boolean saveRes = postsService.publicPosts(posts, img);
         if (saveRes) {
             return ResultUtils.success(posts);
         } else {
             return ResultUtils.success(ErrorCode.SYSTEM_ERROR);
         }
-    }
-
-    @ApiOperation("上传帖子图片")
-    @PostMapping("/uploadPostsImg")
-    public ResponseResult<?> uploadPostsImg(@RequestParam("img") MultipartFile img, HttpServletRequest request) {
-        String openid = request.getParameter("openid");
-        Integer pid = Integer.valueOf(request.getParameter("pid"));
-        if (img == null || openid == null) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        // 上传图片业务逻辑
-        try {
-            postsService.uploadPostsImg(img, openid, pid);
-        } catch (Exception e) {
-            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
-        }
-        // 帖子写入成功，返回pid
-        return ResultUtils.success(pid);
-    }
-
-    @PostMapping("/formDataTest")
-    public ResponseResult<?> formDataTest(@RequestParam("img") MultipartFile[] img) {
-        for (MultipartFile file : img) {
-            postsService.uploadPostsImg(file, "openid", 1);
-        }
-        return ResultUtils.success(200);
     }
 }

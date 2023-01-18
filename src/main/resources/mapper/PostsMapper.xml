@@ -128,6 +128,11 @@
             </when>
         </choose>
     </select>
+    <select id="selectPostsPage" resultMap="AllResultMap">
+        select *
+        from t_posts as p
+        order by send_time desc limit #{currentPage}, #{pageSize}
+    </select>
     <select id="selectByPId" resultMap="PostsDetailsMap">
         select p.p_id, p.send_time, p.content, p.openid
         from `t_posts` as p

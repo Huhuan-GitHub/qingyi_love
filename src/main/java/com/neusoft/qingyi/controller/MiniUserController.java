@@ -1,5 +1,6 @@
 package com.neusoft.qingyi.controller;
 
+import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
@@ -54,7 +55,7 @@ public class MiniUserController {
     @GetMapping("/getMiniUserHomePageDetails")
     public ResponseResult<?> getMiniUserHomePageDetails(@RequestParam("miniId") Integer miniId) {
         if (miniId == null) {
-            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
         }
         MiniUser miniUserHomePage = miniUserService.getMiniUserHomePage(miniId);
         return new ResponseResult<>(200, "请求成功", miniUserHomePage);

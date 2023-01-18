@@ -1,5 +1,6 @@
 package com.neusoft.qingyi.controller;
 
+import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.mapper.PostsCommentMapper;
 import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.PostsComment;
@@ -38,7 +39,7 @@ public class PostsCommentController {
     @PostMapping("/replyPostsComment")
     public ResponseResult<?> replyPostsComment(@RequestBody PostsComment postsComment) {
         if (postsComment == null) {
-            throw new QingYiException(ResponseCode.PARAMS_ERROR);
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
         }
         PostsComment newPostsComment = postsCommentService.miniUserCommentPosts(postsComment);
         return new ResponseResult<>(200, "评论成功", newPostsComment);

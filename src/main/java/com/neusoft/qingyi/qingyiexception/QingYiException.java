@@ -1,20 +1,22 @@
 package com.neusoft.qingyi.qingyiexception;
 
+import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.myenum.ResponseCode;
 
-public class QingYiException extends RuntimeException{
+public class QingYiException extends RuntimeException {
     private final int code;
+
     public QingYiException(int code, String message) {
         super(message);
         this.code = code;
     }
 
-    public QingYiException(ResponseCode responseCode) {
-        super(responseCode.getMsg());
+    public QingYiException(ErrorCode responseCode) {
+        super(responseCode.getMessage());
         this.code = responseCode.getCode();
     }
 
-    public QingYiException(ResponseCode responseCode, String message) {
+    public QingYiException(ErrorCode responseCode, String message) {
         super(message);
         this.code = responseCode.getCode();
     }
