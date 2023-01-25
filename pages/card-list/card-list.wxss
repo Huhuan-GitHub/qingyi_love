@@ -40,12 +40,15 @@
   font-weight: bold;
 }
 
-.content>.content-img {
+/* .content>.content-img {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+} */
+.content>.content-img{
+  display: grid;
+  grid-template-columns: auto auto auto;
 }
-
 .interaction {
   margin-top: 10rpx;
   display: flex;

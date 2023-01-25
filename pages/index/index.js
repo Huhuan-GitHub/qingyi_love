@@ -42,7 +42,6 @@ Page({
     }).then(res => {
       if (res.statusCode === 200) {
         // 因为显示的帖子数量不会很多，最多不可能超过1000条，所以直接使用过滤器算了
-
         let arr = [...this.data.postsList, ...res.data.data]
         const res_arr = new Map();
         let new_data = arr.filter((item) => !res_arr.has(item["pid"]) && res_arr.set(item["pid"], 1));
