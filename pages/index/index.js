@@ -1,7 +1,12 @@
 // index.js
 // 获取应用实例
 const app = getApp()
-const {baseUrl} = require("../../utils/request");
+const {
+  baseUrl
+} = require("../../utils/request");
+const {
+  getPostsPage
+} = require("../../utils/index")
 Page({
   data: {
     active: 0,
@@ -10,7 +15,7 @@ Page({
     // 当前页码
     currentPage: 1,
     // 每页显示的条数
-    pageSize: 10,
+    pageSize: 5,
     // 帖子列表
     postsList: []
   },
@@ -30,38 +35,39 @@ Page({
    * @param {*} size 
    */
   getPostsByPage(page, size) {
-    const that = this;
-    app.getOpenid().then((openid) => {
-      wx.request({
-        url: baseUrl + '/posts/getPostsByPage',
-        method: "GET",
-        data: {
-          currentPage: page,
-          pageSize: size,
-          openid: openid
-        },
-        success: res => {
-          console.log(res);
-          const postList = res.data.data;
-          // 如果返回为空，就说明没有数据了，清空方法
-          if (postList.length <= 0) {
-            this.onReachBottom = () => {};
-          }
-          // 否则就开始追加数据
-          const posts = postList;
-          const newPosts = this.data.postsList;
-          for (let i = 0; i < posts.length; i++) {
-            newPosts.push(posts[i]);
-          }
+    console.log(this.data.currentPage)
+    getPostsPage({
+      currentPage: page,
+      pageSize: size
+    }).then(res => {
+      if (res.statusCode === 200) {
+        // 因为显示的帖子数量不会很多，最多不可能超过1000条，所以直接使用过滤器算了
+
+        let arr = [...this.data.postsList, ...res.data.data]
+        const res_arr = new Map();
+        let new_data = arr.filter((item) => !res_arr.has(item["pid"]) && res_arr.set(item["pid"], 1));
+        this.setData({
+          postsList: new_data
+        })
+        console.log(res.data.data)
+        // 这里判断当前页返回的数据是否为空
+        if (res.data.data.length && this.data.postsList.length % this.data.pageSize === 0) {
+          // 如果当前页返回的数据不为空，并且页码内的数据显示完了，那么就页码+1
+          console.log(123)
           this.setData({
-            postsList: newPosts
-          });
-          return postList;
-        },
-        fail: res => {
-          console.log(res);
+            currentPage: this.data.currentPage + 1
+          })
+        } else {
+          console.log(456)
         }
+        // 否则页码就不变
+      }
+    }).catch(err => {
+      wx.showToast({
+        title: '系统错误',
+        icon: "error"
       })
+      console.log(err)
     })
   },
   /**
@@ -76,12 +82,13 @@ Page({
    * 上拉到底部触发的事件
    */
   onReachBottom() {
-    // 滑动到底部了，页码+1
-    this.setData({
-      currentPage: this.data.currentPage + 1
-    });
+    // 这里应该先请求数据，如果返回的数据不为空，那么页码才加一，否则页码不变
     this.getPostsByPage(this.data.currentPage, this.data.pageSize);
-    console.log("上拉到底部了");
+    // 滑动到底部了，页码+1
+    // this.setData({
+    //   currentPage: this.data.currentPage + 1
+    // });
+    // console.log("上拉到底部了");
   },
   /**
    * 预览图片
@@ -125,7 +132,6 @@ Page({
   onShow() {
     // 初始化帖子列表
     this.getPostsByPage(this.data.currentPage, this.data.pageSize);
-    console.log("onShow")
   },
   /**
    * 页面下拉刷新事件

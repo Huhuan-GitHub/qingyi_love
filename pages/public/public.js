@@ -71,18 +71,19 @@ Page({
       })
       // 发布成功后跳转到tabbar
       wx.switchTab({
-        url: '../index/index',
-        success: function (e) {
-          var page = getCurrentPages().pop();
-          if (page == undefined || page == null) return
-          page.onLoad();
-        }
+        url: '../index/index'
+        // success: function (e) {
+        //   var page = getCurrentPages().pop();
+        //   if (page == undefined || page == null) return
+        //   page.onLoad();
+        // }
       })
     }).catch(err => {
       wx.showToast({
         title: '系统错误',
         icon: "error"
       })
+      console.log(err)
     })
   },
 
