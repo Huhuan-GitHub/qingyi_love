@@ -51,4 +51,9 @@
                            FROM `t_posts_comment` AS c
                            WHERE c.c_id = #{cParentId})
     </select>
+    <select id="selectPostsCommentCount" resultType="java.lang.Integer">
+        select count(*)
+        from `t_posts_comment` as c
+        where c.p_id = #{pId}
+    </select>
 </mapper>

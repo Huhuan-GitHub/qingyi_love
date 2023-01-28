@@ -11,5 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface MiniUserAttentionService extends IService<MiniUserAttention> {
     MiniUserAttention attentionMiniUser(MiniUserAttention miniUserAttention);
 
-    int cancelAttentionMiniUser(MiniUserAttention miniUserAttention);
+    MiniUserAttention cancelAttentionMiniUser(MiniUserAttention miniUserAttention);
 }

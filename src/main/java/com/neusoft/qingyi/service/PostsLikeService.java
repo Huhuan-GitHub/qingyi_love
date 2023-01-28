@@ -13,4 +13,6 @@ public interface PostsLikeService extends IService<PostsLike> {
     Integer likeOrUnLikePosts(PostsLike postsLike);
 
     void uploadLikeRedis();
+
+    void likePost(PostsLike postsLike);
 }

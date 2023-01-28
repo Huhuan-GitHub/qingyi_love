@@ -27,24 +27,14 @@ public class PostsController {
 
     @Resource
     private MiniUserService miniUserService;
+
     @ApiOperation(value = "获取分页帖子接口")
     @GetMapping("/getPostsPage")
-    public ResponseResult<?> postsPageTest(@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
+    public ResponseResult<?> postsPageTest(@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "openid",required = false) String openid) {
         if (currentPage <= 0 || pageSize <= 0) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize));
-    }
-
-    @ApiOperation(value = "获取分页帖子接口")
-    @GetMapping("/getPostsByPage")
-    public ResponseResult<?> getPostsByPage(@RequestParam(required = false, name = "openid") String openid, @RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
-        Map<String, Object> pageParamsMap = new HashMap<>();
-        pageParamsMap.put("currentPage", currentPage);
-        pageParamsMap.put("pageSize", pageSize);
-        pageParamsMap.put("openid", openid);
-        List<Posts> res = postsService.getPostsByPage(pageParamsMap);
-        return new ResponseResult<>(200, "查询成功！", res);
+        return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize,openid));
     }
 
     @ApiOperation(value = "获取帖子详情接口")

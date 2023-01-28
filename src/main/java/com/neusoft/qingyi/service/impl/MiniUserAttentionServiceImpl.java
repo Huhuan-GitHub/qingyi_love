@@ -45,17 +45,18 @@ public class MiniUserAttentionServiceImpl extends ServiceImpl<MiniUserAttentionM
     }
 
     @Override
-    public int cancelAttentionMiniUser(MiniUserAttention miniUserAttention) {
-        MiniUserAttention attention_record = miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("id", miniUserAttention.getId()));
+    public MiniUserAttention cancelAttentionMiniUser(MiniUserAttention miniUserAttention) {
+        MiniUserAttention attention_record = miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
         // 没有查询到关注记录，说明未关注，直接返回处理成功即可
         if (attention_record == null) {
-            return 1;
+            return miniUserAttention;
         } else {
             // 查询到了关注记录，将关注信息更新未关注
-            miniUserAttention.setIsCancelAttention(1);
-            miniUserAttention.setCancelAttentionTime(new Date());
-            return miniUserAttentionMapper.update(miniUserAttention, null);
+            attention_record.setIsCancelAttention(1);
+            attention_record.setCancelAttentionTime(new Date());
+            miniUserAttentionMapper.update(attention_record, null);
         }
+        return miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
     }
 }
 

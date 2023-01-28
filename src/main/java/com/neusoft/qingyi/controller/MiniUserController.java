@@ -1,7 +1,7 @@
 package com.neusoft.qingyi.controller;
 
 import com.neusoft.qingyi.common.ErrorCode;
-import com.neusoft.qingyi.myenum.ResponseCode;
+import com.neusoft.qingyi.common.ResultUtils;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
@@ -27,13 +27,13 @@ public class MiniUserController {
     @PostMapping("/attentionMiniUser")
     public ResponseResult<?> attentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
         if (miniUserAttention == null) {
-            return new ResponseResult<>(400, "请求参数错误");
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         MiniUserAttention attention_res = miniUserAttentionService.attentionMiniUser(miniUserAttention);
         if (attention_res == null) {
-            return new ResponseResult<>(500, "关注失败");
+            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
         } else {
-            return new ResponseResult<>(200, "关注成功", attention_res);
+            return ResultUtils.success(attention_res);
         }
     }
 
@@ -41,13 +41,14 @@ public class MiniUserController {
     @PostMapping("/cancelAttentionMiniUser")
     public ResponseResult<?> cancelAttentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
         if (miniUserAttention == null) {
-            return new ResponseResult<>(400, "请求参数错误");
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        int cancel_res = miniUserAttentionService.cancelAttentionMiniUser(miniUserAttention);
-        if (cancel_res >= 1) {
-            return new ResponseResult<>(200, "取消成功");
+        MiniUserAttention cancel_res = miniUserAttentionService.cancelAttentionMiniUser(miniUserAttention);
+        if (cancel_res==null) {
+            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
         } else {
-            return new ResponseResult<>(500, "取消失败");
+            cancel_res.setIsCancelAttention(1);
+            return ResultUtils.success(cancel_res);
         }
     }
 

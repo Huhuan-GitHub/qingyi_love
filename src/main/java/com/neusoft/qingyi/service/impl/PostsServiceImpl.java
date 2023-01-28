@@ -60,58 +60,6 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
     @Value("${server.port}")
     private String serverPort;
 
-    @Override
-    public List<Posts> getPostsByPage(Map<String, Object> pageMap) {
-        Integer currentPage = (Integer) pageMap.get("currentPage");
-        Integer pageSize = (Integer) pageMap.get("pageSize");
-        String openid = (String) pageMap.get("openid");
-        String key = "allPosts";
-        List<Posts> pageList = postsMapper.selectAll(openid);
-        SessionCallback<List<?>> sessionCallback = new SessionCallback() {
-            @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
-                // 开启事务
-                operations.multi();
-                // 查询的时候将点赞数量放入redis缓存中
-                for (Posts posts : pageList) {
-                    String key = postsLikeKeyPre + posts.getPId();
-                    Integer currentPostsLikeCount = posts.getCurrentPostsLikeCount();
-                    if (currentPostsLikeCount == null) {
-                        redisTemplate.opsForValue().set(key, 0);
-                    } else {
-                        redisTemplate.opsForValue().set(key, currentPostsLikeCount);
-                    }
-                }
-                List<?> exec = operations.exec();
-                return exec;
-            }
-        };
-        redisTemplate.multi();
-        // 提交事务
-        List<?> execute = (List<?>) redisTemplate.execute(sessionCallback);
-        if (execute == null || execute.size() == 0) {
-            log.error("点赞/取消点赞失败");
-            return null;
-        }
-        return pageList;
-//        Map<Integer, Integer> postsLikeMap = pageList.stream().collect(Collectors.toMap(Posts::getPId, Posts::getCurrentPostsLikeCount));
-//        redisTemplate.opsForValue().multiSet(postsLikeMap);
-        // 如果键不存在，那么先添加缓存
-//        if (!redisTemplate.hasKey(key)) {
-//            List<Posts> posts = postsMapper.selectAll(openid);
-//
-//            if (posts != null) {
-//                // 直接将所有数据存入缓存中，以后直接从缓存中分页查询即可
-//                redisTemplate.opsForList().rightPushAll(key, posts);
-//                // 设置一个过期时间
-//                redisTemplate.expire(key, 3 * 60, TimeUnit.SECONDS);
-//            }
-//        }
-        // 然后从缓存中分页读取数据
-//        List<Posts> pageList = redisTemplate.opsForList().range(key, (currentPage - 1) * pageSize, (currentPage - 1) * pageSize + pageSize - 1);
-//        return pageList;
-    }
-
     /**
      * 添加帖子的方法（延时双删）
      * 1.添加之前将redis中对应的缓存清除
@@ -195,8 +143,8 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
     }
 
     @Override
-    public List<Posts> getPostsPage(Integer currentPage, Integer pageSize) {
-        return postsMapper.selectPostsPage((currentPage - 1) * pageSize, pageSize);
+    public List<Posts> getPostsPage(Integer currentPage, Integer pageSize, String openid) {
+        return postsMapper.selectPostsPage((currentPage - 1) * pageSize, pageSize,openid);
     }
 }
 

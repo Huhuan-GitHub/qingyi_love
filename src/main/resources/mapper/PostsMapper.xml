@@ -20,19 +20,23 @@
         <result property="tId" column="t_id" jdbcType="INTEGER"/>
         <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
-                     select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
+                     select="com.neusoft.qingyi.mapper.PostsLikeMapper.selectPostsLikeCount"/>
         <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
-                     select="com.neusoft.qingyi.mapper.PostsCommentCountMapper.selectPostsCommentCount"/>
+                     select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectPostsCommentCount"/>
         <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
                      select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
         <association property="tag" column="t_id" javaType="com.neusoft.qingyi.pojo.Tag"
                      select="com.neusoft.qingyi.mapper.TagMapper.selectAllByTId"/>
         <association property="postsLike" javaType="com.neusoft.qingyi.pojo.PostsLike">
-            <!--            <result property="pId" column="p_id" jdbcType="INTEGER"/>-->
+            <result property="openid" column="openid" jdbcType="VARCHAR"/>
+            <result property="p_id" column="p_id" jdbcType="INTEGER"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
         </association>
         <association property="isAttentionPostsMiniUser" javaType="com.neusoft.qingyi.pojo.MiniUserAttention">
             <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="attentionOpenid" column="attention_openid" jdbcType="VARCHAR"/>
+            <result property="attentionedOpenid" column="attentioned_openid" jdbcType="VARCHAR"/>
+            <result property="isCancelAttention" column="is_cancel_attention" jdbcType="INTEGER"/>
         </association>
         <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
                     select="com.neusoft.qingyi.mapper.PostsImgMapper.selectByPId"/>
@@ -129,9 +133,20 @@
         </choose>
     </select>
     <select id="selectPostsPage" resultMap="AllResultMap">
-        select *
-        from t_posts as p
-        order by send_time desc limit #{currentPage}, #{pageSize}
+        <choose>
+            <when test="openid!=null">
+                select *
+                from `t_posts` as p left join `t_posts_like` as l on p.p_id = l.p_id
+                and l.openid = #{openid} LEFT JOIN `t_mini_user_attention` AS a ON a.attentioned_openid = p.openid AND
+                a.attention_openid = #{openid} and a.is_cancel_attention=0
+                limit #{currentPage}, #{pageSize}
+            </when>
+            <when test="openid==null">
+                select *
+                from t_posts as p
+                limit #{currentPage}, #{pageSize}
+            </when>
+        </choose>
     </select>
     <select id="selectByPId" resultMap="PostsDetailsMap">
         select p.p_id, p.send_time, p.content, p.openid

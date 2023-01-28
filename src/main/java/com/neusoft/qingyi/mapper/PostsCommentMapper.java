@@ -19,6 +19,8 @@ public interface PostsCommentMapper extends BaseMapper<PostsComment> {
     List<PostsComment> selectCommentReply(@Param("cId") Integer cId);
 
     MiniUser selectCommentReplyParentMiniUser(@Param("cParentId") Integer cParentId);
+
+    Integer selectPostsCommentCount(@Param("pId")Integer pId);
 }
 
 

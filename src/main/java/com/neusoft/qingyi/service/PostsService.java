@@ -13,7 +13,6 @@ import java.util.Map;
  * @createDate 2022-11-12 23:10:04
  */
 public interface PostsService extends IService<Posts> {
-    List<Posts> getPostsByPage(Map<String, Object> pageMap);
 
     Posts addPosts(Posts posts);
 
@@ -23,5 +22,5 @@ public interface PostsService extends IService<Posts> {
 
     boolean publicPosts(Posts posts, MultipartFile[] img);
 
-    List<Posts> getPostsPage(Integer currentPage,Integer pageSize);
+    List<Posts> getPostsPage(Integer currentPage,Integer pageSize,String openid);
 }

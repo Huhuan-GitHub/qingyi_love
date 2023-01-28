@@ -46,32 +46,12 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer likeOrUnLikePosts(PostsLike postsLike) {
-        // 返回的点赞数量
-        Integer res;
-        // 先判断当前点赞状态
-        PostsLikeEnum likeStatus = (PostsLikeEnum) likeStatus(postsLike.getOpenid(), postsLike.getP_id());
-        if (likeStatus.equals(PostsLikeEnum.LIKE)) {
-            // 如果是已经点赞，就取消点赞
-            unLikePosts(postsLike);
-        } else {
-            // 否则就是未点赞，就进行点赞
-            likePosts(postsLike);
-        }
-        // 获取处理后的状态
-        PostsLikeEnum afterStatus = (PostsLikeEnum) likeStatus(postsLike.getOpenid(), postsLike.getP_id());
+        Integer status = postsLike.getStatus();
+        // 未点赞
+        if (status == null || status == 0) {
 
-        // 这里给定一个阈值，缓存中value的数量大于该数量的话，就将缓存里的内容清除，上传到数据库
-        Integer MAX_LIKE_SIZE = RedisKeyUtils.MAX_LIKE_SIZE;
-        // 获取到Redis中已有key的数量
-        Long redis_like_size = redisTemplate.opsForHash().size(RedisKeyUtils.MAP_KEY_USER_LIKED);
-        if (redis_like_size >= MAX_LIKE_SIZE) {
-            // 缓存达到阈值了,先上传数据库，再清空缓存
-            uploadLikeRedis();
         }
-        // 将点赞/取消点赞结果（点赞数量）返回
-        res = (Integer) redisTemplate.opsForValue().get(postsLikeKeyPre + postsLike.getP_id());
-        return res;
-//        return !afterStatus.equals(likeStatus);
+        return 0;
     }
 
     /**
@@ -133,6 +113,15 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
             // 如果全部上传成功，就删除缓存
             redisTemplate.delete(RedisKeyUtils.MAP_KEY_USER_LIKED);
         }
+    }
+
+    /**
+     * 点赞/取消点赞
+     *
+     * @param postsLike 帖子点赞对象
+     */
+    @Override
+    public void likePost(PostsLike postsLike) {
     }
 
     /**
