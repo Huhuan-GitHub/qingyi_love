@@ -35,5 +35,6 @@ export function getPostsDetails(pid: number, openid?: string) {
     return res;
   }).catch((err: any) => {
     console.log(`获取帖子详情失败！`, err);
+    return {};
   })
 }

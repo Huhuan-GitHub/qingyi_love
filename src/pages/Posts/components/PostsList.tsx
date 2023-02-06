@@ -1,13 +1,29 @@
 import React, {useEffect, useState} from 'react'
 import ProCard from "@ant-design/pro-card";
 import {LikeOutlined, MessageOutlined} from '@ant-design/icons';
-import {Avatar, Divider, Drawer, Image, List, message, Space, Spin, Tag, Typography} from 'antd';
+import {
+  Avatar,
+  Button,
+  Divider,
+  Drawer,
+  Image,
+  Input,
+  List,
+  message,
+  Popover,
+  Space,
+  Spin,
+  Tag,
+  Typography
+} from 'antd';
 import {PostsSimpleType} from "@/models/posts";
 import {PostsImg} from "@/models/postsImg";
 import {PostTag} from "@/models/postTag";
 import {Link} from 'umi';
 import {PostsComment} from "@/models/postsComment";
 import {getPostsDetails} from "@/services/posts";
+import minimatch from "minimatch";
+import {replyPostsComment} from "@/services/postsComment";
 
 const {Text} = Typography;
 const PostTags = ({tag}: { tag: PostTag }) => {
@@ -23,21 +39,44 @@ const RightImg = ({imgUrl}: { imgUrl: string }) => {
   )
 }
 const CommentLink: React.FC<{ text: string, size?: number, openid: string }> = ({text, size = 12, openid}) => {
-  console.log(openid)
   return (
     <Link to={`/miniUser/center/${openid}`} style={{fontSize: size}}>
       {text}
     </Link>
-    // <Typography.Link style={{fontSize: size}}>
-    //   {text}
-    // </Typography.Link>
   )
 }
 const PostCommentReply: React.FC<{ reply: PostsComment[] }> = ({reply}) => {
+  const [replyContent, setReplyContent] = useState<string>('');
+  const [openReplyInput, setOpenReplyInput] = useState<boolean>(false);
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpenReplyInput(newOpen);
+  };
+  const hideReplyInput = () => {
+    setOpenReplyInput(false);
+  }
+  const sendReply = async () => {
+    const params: { pId: number; openid: string; cParentId: number; comment: string } = {
+      pId: reply[0].pId,
+      openid: 'olG-q5aFDk6wc4tR446WUp3Gct1U',//TODO:评论人的身份：假设该openid为官方openid
+      cParentId: reply[0].cParentId,
+      comment: replyContent,
+    }
+    const res = await replyPostsComment(params);
+    if (res.data) {
+      console.log(res.data.data)
+      setTimeout(() => {
+        hideReplyInput();
+        message.success("评论成功")
+      }, 500)
+    } else {
+      message.error('操作失败，请重试');
+    }
+    console.log(reply);
+  }
   return (
     <>
       <Space align={"start"} direction={"vertical"}>
-        {reply.map((item) => <>
+        {reply.map((item) => <div key={item.cId}>
           <Space align={"start"} direction={"vertical"}>
             <Space align={"center"} size={48}>
               <Space size={4} align={"center"}>
@@ -54,14 +93,62 @@ const PostCommentReply: React.FC<{ reply: PostsComment[] }> = ({reply}) => {
               </Typography.Text>
             </Space>
             <Typography.Text>{item.comment}</Typography.Text>
-            <Typography.Link>
-              回复
-            </Typography.Link>
+            <Popover open={openReplyInput} onOpenChange={handleOpenChange} placement="bottomLeft" title={
+              <Space>
+                <Input size={"small"} placeholder={"输入回复"} value={replyContent} onChange={e => {
+                  setReplyContent(e.target.value);
+                }}/>
+                <Button type={"primary"} size={"small"} onClick={() => sendReply()}>发送</Button>
+              </Space>
+            } trigger="click">
+              <Typography.Link>
+                回复
+              </Typography.Link>
+            </Popover>
           </Space>
           {item.postsCommentList.length === 0 ? <></> : <PostCommentReply reply={item.postsCommentList}/>}
-        </>)}
+        </div>)}
       </Space>
     </>
+  )
+}
+let refreshComment = false;
+const Reply: React.FC<{ pid: number }> = (props) => {
+  const [replyContent, setReplyContent] = useState<string>('');
+  const [openReplyInput, setOpenReplyInput] = useState<boolean>(false);
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpenReplyInput(newOpen);
+  };
+  const hideReplyInput = () => {
+    setOpenReplyInput(false);
+  }
+  const sendReply = async () => {
+    const params: { pId: number; openid: string; comment: string } = {
+      pId: props.pid,
+      openid: 'olG-q5aFDk6wc4tR446WUp3Gct1U',//TODO:评论人的身份：假设该openid为官方openid
+      comment: replyContent,
+    }
+    const res = await replyPostsComment(params);
+    if (res.data) {
+      console.log(res.data.data)
+      hideReplyInput();
+      message.success("评论成功");
+      refreshComment = !refreshComment;
+    } else {
+      message.error('操作失败，请重试');
+    }
+  }
+  return (
+    <Popover open={openReplyInput} onOpenChange={handleOpenChange} placement="bottomLeft" title={
+      <Space>
+        <Input size={"small"} placeholder={"输入回复"} value={replyContent} onChange={e => {
+          setReplyContent(e.target.value);
+        }}/>
+        <Button type={"primary"} size={"small"} onClick={() => sendReply()}>发送</Button>
+      </Space>
+    } trigger="click">
+      <Button type={"primary"} icon={<MessageOutlined/>}>评论</Button>
+    </Popover>
   )
 }
 const PostCommentItem: React.FC<{ comment: PostsComment }> = ({comment}) => {
@@ -87,11 +174,11 @@ const PostCommentItem: React.FC<{ comment: PostsComment }> = ({comment}) => {
     </>
   )
 }
-const PostComment: React.FC<{ refresh: boolean }> = (props) => {
+const PostComment: React.FC<{ refresh: boolean, pid: number }> = (props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [commentList, setCommentList] = useState<PostsComment[]>();
   const loadCommentList = async () => {
-    const res = await getPostsDetails(110);
+    const res = await getPostsDetails(props.pid);
     if (res.data) {
       setCommentList(res.data.data.postsCommentList);
       console.log(commentList);
@@ -114,6 +201,7 @@ const PostComment: React.FC<{ refresh: boolean }> = (props) => {
 }
 const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin}) => {
   const [showCommentDrawer, setShowCommentDrawer] = useState<boolean>(false);
+  const [currentPid, setCurrentPid] = useState<number>(0);
   return (
     <ProCard>
       <Spin spinning={spin}>
@@ -138,6 +226,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                       {item.currentPostsLikeCount.toString()}
                     </Space>
                     <Space style={{cursor: "pointer"}} key={"comment"} onClick={() => {
+                      setCurrentPid(item.pid)
                       setShowCommentDrawer(true)
                     }}>
                       {React.createElement(MessageOutlined)}
@@ -178,15 +267,19 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
               </Space>
             </List.Item>
           )}
-        />
-        <Drawer onClose={() => setShowCommentDrawer(false)}
-                open={showCommentDrawer}
-                closable={false}
-                title={"评论列表"}
-                width={520}
         >
-          <PostComment refresh={showCommentDrawer}/>
-        </Drawer>
+          <Drawer onClose={() => {
+            setShowCommentDrawer(false)
+          }}
+                  open={showCommentDrawer}
+                  closable={false}
+                  title={"评论列表"}
+                  extra={<Reply pid={currentPid}/>}
+                  width={520}
+          >
+            <PostComment refresh={showCommentDrawer} pid={currentPid}/>
+          </Drawer>
+        </List>
       </Spin>
     </ProCard>
   )
