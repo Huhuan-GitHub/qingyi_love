@@ -6,6 +6,10 @@ import {PageSearchParams} from "@/services/common";
 import {getPostsPage} from "@/services/posts";
 import {message} from "antd";
 
+export const RefreshPostsContext = React.createContext({
+  update: () => {
+  }
+})
 const Posts: React.FC = () => {
   const [postList, setPostList] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,7 +41,9 @@ const Posts: React.FC = () => {
         }}
         content={<SearchCard/>}
       >
-        <PostsList postList={postList} spin={spin}/>
+        <RefreshPostsContext.Provider value={{update: loadPostList}}>
+          <PostsList postList={postList} spin={spin}/>
+        </RefreshPostsContext.Provider>
       </PageContainer>
     </div>
   )

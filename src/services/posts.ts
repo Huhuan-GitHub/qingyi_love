@@ -38,3 +38,18 @@ export function getPostsDetails(pid: number, openid?: string) {
     return {};
   })
 }
+
+/**
+ * 删除帖子接口
+ * @param params
+ */
+export function deletePostByPid(params: { pId: number }) {
+  return axios.post("/server/posts/deletePost", {pId: params.pId})
+    .then((res: any) => {
+      console.log(`删除帖子成功！`)
+      return res;
+    }).catch((err: any) => {
+      console.log(`删除帖子失败！`, err)
+      return {};
+    })
+}

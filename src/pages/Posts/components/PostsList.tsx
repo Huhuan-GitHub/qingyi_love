@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import ProCard from "@ant-design/pro-card";
-import {DeleteOutlined, LikeOutlined, MessageOutlined, WarningOutlined} from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EyeInvisibleOutlined,
+  LikeOutlined,
+  MessageOutlined,
+  MoreOutlined,
+  WarningOutlined
+} from '@ant-design/icons';
 import {
   Avatar,
   Button,
@@ -21,8 +28,9 @@ import {PostsImg} from "@/models/postsImg";
 import {PostTag} from "@/models/postTag";
 import {Link} from 'umi';
 import {PostsComment} from "@/models/postsComment";
-import {getPostsDetails} from "@/services/posts";
+import {deletePostByPid, getPostsDetails} from "@/services/posts";
 import {deletePostsComment, replyPostsComment} from "@/services/postsComment";
+import {RefreshPostsContext} from "@/pages/Posts";
 
 const UpdateCommentContext = React.createContext({
   update: () => {
@@ -32,7 +40,7 @@ const {Text} = Typography;
 const PostTags = ({tag}: { tag: PostTag }) => {
   return (
     <div>
-      <Tag key={tag.tid} color={tag.bgColor}>{tag.text}</Tag>
+      {tag === null ? <Tag>推荐</Tag> : <Tag key={tag.tid} color={tag.bgColor}>{tag.text}</Tag>}
     </div>
   )
 }
@@ -230,6 +238,16 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
   const updateComment = React.useCallback(() => {
     setRefreshComment(!refreshComment)
   }, [refreshComment])
+  const deletePost = async (pid: number) => {
+    const res = await deletePostByPid({pId: pid});
+    if (res.data) {
+      message.success("帖子删除成功");
+      return true;
+    } else {
+      message.error("帖子删除失败！")
+      return false;
+    }
+  }
   return (
     <>
       <ProCard>
@@ -262,6 +280,36 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                         {React.createElement(MessageOutlined)}
                         {item.currentPostsCommentCount.toString()}
                       </Space>
+                      <Popover content={
+                        <RefreshPostsContext.Consumer>
+                          {context => {
+                            return (
+                              <Space>
+                                <Popconfirm
+                                  title="删除帖子"
+                                  description="确认删除该帖子？"
+                                  okText="确认"
+                                  cancelText="取消"
+                                  onConfirm={async () => {
+                                    await deletePost(item.pid)
+                                    await context.update();
+                                  }}
+                                  trigger={"hover"}
+                                >
+                                  <DeleteOutlined onClick={() => {
+                                  }} style={{cursor: "pointer"}}/>
+                                </Popconfirm>
+                                <EyeInvisibleOutlined style={{cursor: "pointer"}}/>
+                              </Space>
+                            )
+                          }}
+                        </RefreshPostsContext.Consumer>
+                      }>
+                        <Space onClick={() => {
+                        }} style={{cursor: "pointer"}} key={"more"}>
+                          {React.createElement(MoreOutlined)}
+                        </Space>
+                      </Popover>
                     </Space>
                   </>
                 ]}
