@@ -6,13 +6,14 @@ import {
   LikeOutlined,
   MessageOutlined,
   MoreOutlined,
-  WarningOutlined
+  WarningOutlined,
+  CaretRightOutlined
 } from '@ant-design/icons';
 import {
   Avatar,
   Button,
   Divider,
-  Drawer,
+  Drawer, Empty,
   Image,
   Input,
   List,
@@ -30,7 +31,7 @@ import {Link} from 'umi';
 import {PostsComment} from "@/models/postsComment";
 import {deletePostByPid, getPostsDetails} from "@/services/posts";
 import {deletePostsComment, replyPostsComment} from "@/services/postsComment";
-import {RefreshPostsContext} from "@/pages/Posts";
+import {PostsContext} from "@/pages/Posts";
 
 const UpdateCommentContext = React.createContext({
   update: () => {
@@ -78,6 +79,7 @@ const Reply: React.FC<{ pid: number, triggerComponentName: string, cParentId?: n
       console.log(res.data.data)
       hideReplyInput();
       message.success("评论成功");
+      setReplyContent('')
       return true;
     } else {
       message.error('操作失败，请重试');
@@ -134,7 +136,7 @@ const PostCommentReply: React.FC<{ reply: PostsComment[] }> = ({reply}) => {
                   src={item.replyMiniUser.avatar}/>}/>
                 <CommentLink text={item.commentMiniUser.username} openid={item.commentMiniUser.openid}/>
                 <Text>
-                  {'>'}
+                  <CaretRightOutlined style={{color: "gray"}}/>
                 </Text>
                 <CommentLink text={item.replyMiniUser.username} openid={item.replyMiniUser.openid}/>
               </Space>
@@ -224,9 +226,10 @@ const PostComment: React.FC<{ refresh: boolean, pid: number }> = (props) => {
   return (
     <>
       {/*帖子评论抽屉*/}
-      <Space align={"start"} wrap size={[0, 24]}>
+
+      {commentList?.length === 0 ? <Empty/> : <Space align={"start"} wrap size={[0, 24]}>
         {commentList?.map((item, index) => <PostCommentItem key={index} comment={item}/>)}
-      </Space>
+      </Space>}
     </>
   )
 }
@@ -248,6 +251,26 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
       return false;
     }
   }
+  const loadMore = (
+    <div
+      style={{
+        textAlign: 'center',
+        marginTop: 12,
+        height: 32,
+        lineHeight: '32px',
+      }}
+    >
+      <PostsContext.Consumer>
+        {context => {
+          return (
+            <Button type={"primary"} onClick={() => {
+              context.getMore()
+            }}>加载更多</Button>
+          )
+        }}
+      </PostsContext.Consumer>
+    </div>
+  )
   return (
     <>
       <ProCard>
@@ -255,12 +278,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
           <List
             itemLayout="vertical"
             size="default"
-            pagination={{
-              onChange: (page) => {
-                console.log(page);
-              },
-              pageSize: 10,
-            }}
+            loadMore={loadMore}
             dataSource={postList}
             renderItem={(item: PostsSimpleType) => (
               <List.Item
@@ -281,7 +299,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                         {item.currentPostsCommentCount.toString()}
                       </Space>
                       <Popover content={
-                        <RefreshPostsContext.Consumer>
+                        <PostsContext.Consumer>
                           {context => {
                             return (
                               <Space>
@@ -303,7 +321,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                               </Space>
                             )
                           }}
-                        </RefreshPostsContext.Consumer>
+                        </PostsContext.Consumer>
                       }>
                         <Space onClick={() => {
                         }} style={{cursor: "pointer"}} key={"more"}>

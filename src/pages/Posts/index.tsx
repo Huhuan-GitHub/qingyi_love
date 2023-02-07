@@ -6,28 +6,40 @@ import {PageSearchParams} from "@/services/common";
 import {getPostsPage} from "@/services/posts";
 import {message} from "antd";
 
-export const RefreshPostsContext = React.createContext({
+export const PostsContext = React.createContext({
   update: () => {
+  },
+  getMore: () => {
   }
 })
 const Posts: React.FC = () => {
-  const [postList, setPostList] = useState<[]>([]);
+  const [postList, setPostList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [spin, setSpin] = useState<boolean>(true);
-  const loadPostList = async () => {
-    const params: PageSearchParams = {pageSize: 10, pageNo: 1};
+  const [pageNo, setPageNo] = useState<number>(1);
+  const loadPostList = async (pageNoValue: number) => {
+    const pageSizeValue = 2;
+    const params: PageSearchParams = {pageSize: pageSizeValue, pageNo: pageNoValue};
     const res = await getPostsPage(params);
     if (res.data) {
-      setPostList(res.data.data);
+      // 去重
+      let arr = [...postList, ...res.data.data];
+      const res_arr = new Map();
+      setPostList(arr.filter((item) => !res_arr.has(item["pid"]) && res_arr.set(item["pid"], 1)));
+      if (res.data.data.length !== 0 && res.data.data.length % pageSizeValue === 0) {
+        setPageNo(pageNo + 1);
+      }
+      if (res.data.data.length === 0) {
+        message.warning("没有更多帖子了！");
+      }
       setSpin(false);
-      console.log(postList);
     } else {
       message.error("加载失败，请刷新重试")
     }
     setLoading(false);
   }
   useEffect(() => {
-    loadPostList()
+    loadPostList(pageNo)
   }, [loading])
   return (
     <div
@@ -41,9 +53,15 @@ const Posts: React.FC = () => {
         }}
         content={<SearchCard/>}
       >
-        <RefreshPostsContext.Provider value={{update: loadPostList}}>
+        <PostsContext.Provider value={{
+          update: () => {
+            loadPostList(pageNo)
+          }, getMore: () => {
+            loadPostList(pageNo)
+          }
+        }}>
           <PostsList postList={postList} spin={spin}/>
-        </RefreshPostsContext.Provider>
+        </PostsContext.Provider>
       </PageContainer>
     </div>
   )
