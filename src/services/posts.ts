@@ -49,7 +49,25 @@ export function deletePostByPid(params: { pId: number }) {
       console.log(`删除帖子成功！`)
       return res;
     }).catch((err: any) => {
-      console.log(`删除帖子失败！`, err)
+      console.error(`删除帖子失败！`, err)
       return {};
     })
+}
+
+/**
+ * 发布帖子接口
+ * @param params
+ */
+export function publicPosts(params: FormData) {
+  return axios.post("/server/posts/publicPosts", params, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }).then((res: any) => {
+    console.log(`帖子发布成功！`)
+    return res;
+  }).catch((err: any) => {
+    console.error(`帖子发布失败！`, err)
+    return {};
+  })
 }

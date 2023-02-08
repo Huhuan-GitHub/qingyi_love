@@ -34,7 +34,7 @@ import {deletePostsComment, replyPostsComment} from "@/services/postsComment";
 import {PostsContext} from "@/pages/Posts";
 
 const UpdateCommentContext = React.createContext({
-  update: () => {
+  deletePost: () => {
   }
 });
 const {Text} = Typography;
@@ -109,7 +109,7 @@ const Reply: React.FC<{ pid: number, triggerComponentName: string, cParentId?: n
                 <Button type={"primary"} size={"small"}
                         onClick={() => {
                           sendReply().then(() => {
-                            context.update()
+                            context.deletePost()
                           }).catch((err: any) => {
                             console.log(err)
                           })
@@ -189,7 +189,7 @@ const PostCommentItem: React.FC<{ comment: PostsComment }> = ({comment}) => {
                                 onConfirm={() => {
                                   confirmDeleteComment()
                                     .then(() => {
-                                      context.update()
+                                      context.deletePost()
                                     }).catch(() => {
                                     message.error("删除评论失败！")
                                   })
@@ -286,9 +286,11 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                 actions={[
                   <>
                     <Space split={<Divider type="vertical"/>}>
-                      <Space style={{cursor: "pointer"}} key={"like"}>
+                      <Space style={{cursor: "pointer"}} key={"like"} onClick={() => {
+                        message.warning("该功能程序员拼命开发中……")
+                      }}>
                         {React.createElement(LikeOutlined)}
-                        {item.currentPostsLikeCount.toString()}
+                        {item.currentPostsLikeCount === null ? 0 : item.currentPostsLikeCount.toString()}
                       </Space>
                       <Space style={{cursor: "pointer"}} key={"comment"} onClick={() => {
                         setCurrentPid(item.pid)
@@ -296,7 +298,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                         setRefreshComment(!refreshComment)
                       }}>
                         {React.createElement(MessageOutlined)}
-                        {item.currentPostsCommentCount.toString()}
+                        {item.currentPostsCommentCount === null ? 0 :item.currentPostsCommentCount.toString()}
                       </Space>
                       <Popover content={
                         <PostsContext.Consumer>
@@ -308,9 +310,12 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
                                   description="确认删除该帖子？"
                                   okText="确认"
                                   cancelText="取消"
-                                  onConfirm={async () => {
-                                    await deletePost(item.pid)
-                                    await context.update();
+                                  onConfirm={() => {
+                                    deletePost(item.pid).then(() => {
+                                      context.deletePost(item.pid);
+                                    }).catch((err: any) => {
+                                      console.error(err);
+                                    })
                                   }}
                                   trigger={"hover"}
                                 >
@@ -365,7 +370,7 @@ const PostsList: React.FC<{ postList: any, spin: boolean }> = ({postList, spin})
             )}
           >
           </List>
-          <UpdateCommentContext.Provider value={{update: updateComment}}>
+          <UpdateCommentContext.Provider value={{deletePost: updateComment}}>
             <Drawer onClose={() => {
               setShowCommentDrawer(false)
             }}
