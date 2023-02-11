@@ -35,13 +35,13 @@
         select *
         from `t_posts_comment` as c
         where c.p_id = #{pId}
-          and c.c_parent_id = -1
+          and c.c_parent_id = -1 and c.is_deleted != 1
         order by c.comment_date desc
     </select>
     <select id="selectCommentReply" resultMap="PostsCommentAndReply">
         select *
         from `t_posts_comment` as c1
-        where c1.c_parent_id = #{pId}
+        where c1.c_parent_id = #{pId} and c1.is_deleted != 1
         order by c1.comment_date desc
     </select>
     <select id="selectCommentReplyParentMiniUser" resultType="com.neusoft.qingyi.pojo.MiniUser">
@@ -49,11 +49,11 @@
         FROM `t_mini_user` AS u
         WHERE u.openid IN (SELECT c.openid
                            FROM `t_posts_comment` AS c
-                           WHERE c.c_id = #{cParentId})
+                           WHERE c.c_id = #{cParentId} and c.is_deleted != 1)
     </select>
     <select id="selectPostsCommentCount" resultType="java.lang.Integer">
         select count(*)
         from `t_posts_comment` as c
-        where c.p_id = #{pId}
+        where c.p_id = #{pId} and c.is_deleted != 1
     </select>
 </mapper>

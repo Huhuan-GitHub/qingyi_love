@@ -62,9 +62,9 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
         <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
-                     select="com.neusoft.qingyi.mapper.PostsLikeCountMapper.selectPostsLikeCount"/>
+                     select="com.neusoft.qingyi.mapper.PostsLikeMapper.selectPostsLikeCount"/>
         <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
-                     select="com.neusoft.qingyi.mapper.PostsCommentCountMapper.selectPostsCommentCount"/>
+                     select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectPostsCommentCount"/>
         <association property="miniUser" column="openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
                      select="com.neusoft.qingyi.mapper.MiniUserMapper.selectByOpenid"/>
         <association property="postsLike" javaType="com.neusoft.qingyi.pojo.PostsLike">
@@ -81,6 +81,10 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="tId" column="t_id" jdbcType="INTEGER"/>
         <result property="notReveal" column="not_reveal" jdbcType="INTEGER"/>
+        <association property="currentPostsLikeCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsLikeMapper.selectPostsLikeCount"/>
+        <association property="currentPostsCommentCount" column="p_id" javaType="java.lang.Integer"
+                     select="com.neusoft.qingyi.mapper.PostsCommentMapper.selectPostsCommentCount"/>
         <association property="tag" column="t_id" javaType="com.neusoft.qingyi.pojo.Tag"
                      select="com.neusoft.qingyi.mapper.TagMapper.selectAllByTId"/>
         <collection property="postsImgList" ofType="com.neusoft.qingyi.pojo.PostsImg" column="p_id"
@@ -117,7 +121,7 @@
                 from t_posts as p
                 left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
                 LEFT JOIN `t_mini_user_attention` AS a ON a.attentioned_openid = p.openid AND a.attention_openid =
-                #{openid} and a.is_cancel_attention=0
+                #{openid} and a.is_cancel_attention=0 where p.is_deleted = 0
                 order by send_time desc
             </when>
             <when test="openid==null">
@@ -127,7 +131,7 @@
                 p.content,
                 p.openid,
                 p.t_id
-                from t_posts as p
+                from t_posts as p where p.is_deleted = 0
                 order by send_time desc
             </when>
         </choose>
@@ -138,12 +142,12 @@
                 select *
                 from `t_posts` as p left join `t_posts_like` as l on p.p_id = l.p_id
                 and l.openid = #{openid} LEFT JOIN `t_mini_user_attention` AS a ON a.attentioned_openid = p.openid AND
-                a.attention_openid = #{openid} and a.is_cancel_attention=0
+                a.attention_openid = #{openid} and a.is_cancel_attention=0 where p.is_deleted = 0
                 limit #{currentPage}, #{pageSize}
             </when>
             <when test="openid==null">
                 select *
-                from t_posts as p
+                from t_posts as p where p.is_deleted = 0
                 limit #{currentPage}, #{pageSize}
             </when>
         </choose>
@@ -151,7 +155,8 @@
     <select id="selectByPId" resultMap="PostsDetailsMap">
         select p.p_id, p.send_time, p.content, p.openid
         from `t_posts` as p
-        where p.p_id = #{pId};
+        where p.p_id = #{pId}
+          and p.is_deleted = 0
     </select>
     <select id="selectLikeCountByPid" resultType="java.lang.Integer">
         select count(*)
@@ -163,16 +168,27 @@
         select count(*)
         from `t_posts_comment` as c
         where c.p_id = #{pId}
+          and c.is_deleted != 1
     </select>
     <select id="selectPostsDetailsByPid" resultMap="PostsDetails">
-        select p.p_id, p.send_time, p.content, p.openid, l.status
-        from `t_posts` as p
-                 left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
-        where p.p_id = #{pId}
+        <choose>
+            <when test="openid!=null">
+                select *
+                from `t_posts` as p
+                left join `t_posts_like` as l on p.p_id = l.p_id and l.openid = #{openid}
+                where p.p_id = #{pId} and p.is_deleted = 0
+            </when>
+            <when test="openid==null">
+                select *
+                from `t_posts` as p
+                where p.p_id = #{pId} and p.is_deleted = 0
+            </when>
+        </choose>
+
     </select>
     <select id="selectPostsByOpenid" resultMap="MiniUserPostsSimpleList">
         select p.p_id, p.send_time, p.content, p.t_id
         from `t_posts` as p
-        where p.openid = #{openid}
+        where p.openid = #{openid} and p.is_deleted = 0
     </select>
 </mapper>

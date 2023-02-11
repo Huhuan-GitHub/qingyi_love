@@ -1,9 +1,6 @@
 package com.neusoft.qingyi.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -58,6 +55,10 @@ public class PostsComment implements Serializable {
     @JsonProperty("cParentId")
     private Integer cParentId;
 
+    @ApiModelProperty("评论是否删除")
+    @TableLogic
+    private Integer isDeleted;
+
     @ApiModelProperty("帖子评论回复列表")
     @TableField(exist = false)
     private List<PostsComment> postsCommentList;
@@ -69,6 +70,7 @@ public class PostsComment implements Serializable {
     @ApiModelProperty("发出评论的小程序用户")
     @TableField(exist = false)
     private MiniUser commentMiniUser;
+
 
 
     @TableField(exist = false)

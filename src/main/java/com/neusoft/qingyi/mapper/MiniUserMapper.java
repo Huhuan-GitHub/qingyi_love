@@ -19,6 +19,12 @@ public interface MiniUserMapper extends BaseMapper<MiniUser> {
     MiniUser selectMiniUserByOpenid(@Param("openid") String openid);
 
     MiniUser selectMiniUserHomePage(@Param("miniId") Integer miniId);
+
+    MiniUser selectMiniUserThreeData(@Param("openid") String openid);
+
+    MiniUser selectMiniUserAttentionList(@Param("openid") String openid);
+
+    Integer updateMiniUserUsernameByOpenid(@Param("openid") String openid, @Param("username") String username);
 }
 
 

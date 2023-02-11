@@ -1,9 +1,6 @@
 package com.neusoft.qingyi.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,7 +29,7 @@ public class Posts implements Serializable {
     /**
      * 发帖时间
      */
-    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8") //从数据库读出日期格式时，进行转换的规则
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8") //从数据库读出日期格式时，进行转换的规则
     private Date sendTime;
 
     /**
@@ -54,6 +51,12 @@ public class Posts implements Serializable {
      * 是否匿名发布
      */
     private Integer notReveal;
+    /**
+     * 帖子是否删除
+     */
+    @TableField
+    @TableLogic
+    private Integer isDeleted;
 
     public Posts(Integer pId, Date sendTime, String content, String openid, Integer tId, Integer notReveal) {
         this.pId = pId;
@@ -81,6 +84,7 @@ public class Posts implements Serializable {
      */
     @TableField(exist = false)
     private MiniUser miniUser;
+
 
     @ApiModelProperty(value = "指定用户是否关注改帖子的发布者")
     @TableField(exist = false)

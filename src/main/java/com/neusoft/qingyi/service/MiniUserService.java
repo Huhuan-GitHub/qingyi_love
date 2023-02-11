@@ -2,7 +2,10 @@ package com.neusoft.qingyi.service;
 
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.neusoft.qingyi.util.ResponseResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,4 +15,16 @@ import java.util.Map;
  */
 public interface MiniUserService extends IService<MiniUser> {
     MiniUser getMiniUserHomePage(Integer miniId);
+
+    MiniUser getMiniUserByOpenid(String openid);
+
+    MiniUser getMiniUserAttentionList(String openid);
+
+    String getOpenid(String jsCode);
+
+    MiniUser login(MiniUser miniUser);
+
+    MiniUser updateMiniUserUsername(String openid, String username);
+
+    MiniUser updateMiniUserUsernameAndAvatar(String openid, String username, MultipartFile avatar);
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
@@ -58,6 +59,18 @@ public class MiniUser implements Serializable {
     @ApiModelProperty("小程序用户发的帖子")
     @TableField(exist = false)
     private List<Posts> postsList;
+
+    @ApiModelProperty("小程序用户帖子被点赞的次数")
+    @TableField(exist = false)
+    private Integer likedPostsCount;
+
+    @ApiModelProperty("小程序用户帖子被评论的次数")
+    @TableField(exist = false)
+    private Integer countedCount;
+
+    @ApiModelProperty("小程序用户关注列表")
+    @TableField(exist = false)
+    private List<MiniUser> attentionMiniUserList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -2,6 +2,7 @@ package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.service.MiniUserAttentionService;
 import com.neusoft.qingyi.mapper.MiniUserAttentionMapper;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 29600
@@ -58,6 +60,7 @@ public class MiniUserAttentionServiceImpl extends ServiceImpl<MiniUserAttentionM
         }
         return miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
     }
+
 }
 
 

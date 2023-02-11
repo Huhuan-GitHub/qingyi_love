@@ -25,11 +25,43 @@
         <collection property="postsList" ofType="com.neusoft.qingyi.pojo.Posts" column="openid"
                     select="com.neusoft.qingyi.mapper.PostsMapper.selectPostsByOpenid"/>
     </resultMap>
+    <resultMap id="MiniUserPostsThreeData" type="com.neusoft.qingyi.pojo.MiniUser">
+        <id property="miniId" column="mini_id" jdbcType="INTEGER"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="backgroundImage" column="background_image" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="MiniUserAttentionList" type="com.neusoft.qingyi.pojo.MiniUser">
+        <id property="miniId" column="mini_id" jdbcType="INTEGER"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="backgroundImage" column="background_image" jdbcType="VARCHAR"/>
+        <collection property="attentionMiniUserList" ofType="com.neusoft.qingyi.pojo.MiniUser">
+            <id property="miniId" column="mini_id" jdbcType="INTEGER"/>
+            <result property="openid" column="openid" jdbcType="VARCHAR"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="backgroundImage" column="background_image" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
     <sql id="Base_Column_List">
         mini_id
         ,openid,is_deleted,
         username,avatar,create_time
     </sql>
+    <update id="updateMiniUserUsernameByOpenid">
+        update `t_mini_user`
+        set username = #{username}
+        where openid = #{openid}
+    </update>
     <select id="selectByOpenid" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -47,4 +79,18 @@
         from `t_mini_user` as u
         where u.mini_id = #{miniId}
     </select>
+    <select id="selectMiniUserThreeData" resultMap="MiniUserPostsThreeData">
+        select *
+        from `t_mini_user` as u
+        where u.mini_id = #{miniId}
+    </select>
+    <select id="selectMiniUserAttentionList" resultMap="MiniUserAttentionList">
+        SELECT u.*,
+               u2.*
+        FROM `t_mini_user` AS u
+                 LEFT JOIN `t_mini_user_attention` AS a ON u.openid = a.attention_openid
+                 LEFT JOIN `t_mini_user` AS u2 ON u2.openid = a.attentioned_openid
+        where u.openid = #{openid}
+    </select>
+
 </mapper>

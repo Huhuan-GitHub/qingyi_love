@@ -135,8 +135,11 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
                 e.printStackTrace();
                 return false;
             }
+        } else if (img == null) {
+            // 如果图片为空，不执行写入，直接返回数据库处理结果
+            return true;
         } else {
-            // 文件夹创建失败，抛出异常
+            // 其他情况处理失败，抛出异常
             throw new QingYiException(ErrorCode.OPERATION_ERROR);
         }
         return true;
@@ -144,7 +147,7 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
 
     @Override
     public List<Posts> getPostsPage(Integer currentPage, Integer pageSize, String openid) {
-        return postsMapper.selectPostsPage((currentPage - 1) * pageSize, pageSize,openid);
+        return postsMapper.selectPostsPage((currentPage - 1) * pageSize, pageSize, openid);
     }
 }
 

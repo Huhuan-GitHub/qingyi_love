@@ -1,6 +1,8 @@
 package com.neusoft.qingyi.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.neusoft.qingyi.common.ErrorCode;
+import com.neusoft.qingyi.common.ResultUtils;
 import com.neusoft.qingyi.mapper.PostsCommentMapper;
 import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.PostsComment;
@@ -43,5 +45,14 @@ public class PostsCommentController {
         }
         PostsComment newPostsComment = postsCommentService.miniUserCommentPosts(postsComment);
         return new ResponseResult<>(200, "评论成功", newPostsComment);
+    }
+
+    @ApiOperation("删除帖子评论接口")
+    @PostMapping("/deletePostsComment")
+    public ResponseResult<?> deletePostsComment(@RequestParam("cId") Integer cId) {
+        if (cId == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(postsCommentService.remove(new QueryWrapper<PostsComment>().eq("c_id", cId)));
     }
 }

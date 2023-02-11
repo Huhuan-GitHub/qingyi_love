@@ -13,7 +13,7 @@
         ,img_url
     </sql>
     <select id="selectByPId" resultType="com.neusoft.qingyi.pojo.PostsImg">
-        select img_url
+        select *
         from `t_posts_img`
         where p_id = #{pid}
     </select>

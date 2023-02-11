@@ -30,44 +30,22 @@ public class PostsController {
 
     @ApiOperation(value = "获取分页帖子接口")
     @GetMapping("/getPostsPage")
-    public ResponseResult<?> postsPageTest(@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "openid",required = false) String openid) {
+    public ResponseResult<?> postsPageTest(@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "openid", required = false) String openid) {
         if (currentPage <= 0 || pageSize <= 0) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize,openid));
+        return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize, openid));
     }
 
     @ApiOperation(value = "获取帖子详情接口")
     @GetMapping("/getPostsDetails")
-    public ResponseResult<?> getPostsDetails(@RequestParam("pId") Integer pId, @RequestParam("openid") String openid) {
-        if (pId == null || openid == null) {
+    public ResponseResult<?> getPostsDetails(@RequestParam("pId") Integer pId, @RequestParam(value = "openid", required = false) String openid) {
+        if (pId == null) {
             return new ResponseResult<>(400, "参数不正确");
         }
         Posts postsDetails = postsService.getPostsDetails(pId, openid);
         return new ResponseResult<>(200, "获取帖子详情成功！", postsDetails);
     }
-
-//    @ApiOperation("上传帖子接口")
-//    @RequestMapping(value = "/addPosts", method = RequestMethod.POST)
-//    public ResponseResult<?> addPosts(@RequestBody Posts posts) {
-//        // 是否匿名，暂时不用
-//        // Boolean notReveal = Boolean.valueOf(request.getParameter("notReveal"));
-//        if (posts.getOpenid() == null || posts.getOpenid().equals("")) {
-//            return new ResponseResult<>(403, "没有登录或权限！");
-//        }
-//        if (posts.getContent() == null || posts.getContent().equals("")) {
-//            return new ResponseResult<>(400, "发布帖子的内容为空！");
-//        }
-//        // 设置发帖时间参数->发送帖子
-//        posts.setSendTime(new Date());
-//        Posts resPosts = postsService.addPosts(posts);
-//
-//        if (resPosts.getPId() <= 0 || resPosts.getPId() == null || resPosts.getOpenid() == null || resPosts.getOpenid().equals("")) {
-//            return new ResponseResult<>(400, "帖子发布失败！");
-//        } else {
-//            return new ResponseResult<>(200, "帖子发布成功！", resPosts.getPId());
-//        }
-//    }
 
     @ApiOperation("根据帖子主键获取帖子")
     @GetMapping("/toPostsDetails")
@@ -98,9 +76,18 @@ public class PostsController {
         // 上传帖子
         boolean saveRes = postsService.publicPosts(posts, img);
         if (saveRes) {
-            return ResultUtils.success(posts);
+            return ResultUtils.success(postsService.getPostsDetails(posts.getPId(),null));
         } else {
             return ResultUtils.success(ErrorCode.SYSTEM_ERROR);
         }
+    }
+
+    @ApiOperation("删除帖子接口")
+    @PostMapping("/deletePost")
+    public synchronized ResponseResult<?> deletePost(@RequestBody Map<String, Integer> map) {
+        if (map.get("pId") == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(postsService.remove(new QueryWrapper<Posts>().eq("p_id", map.get("pId"))));
     }
 }
