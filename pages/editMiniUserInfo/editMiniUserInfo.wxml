@@ -1,0 +1,25 @@
+<view class="box">
+  <view class="content">
+    <view class="form-box">
+      <view class="form-item avatar-input">
+        <view class="label">头像</view>
+        <view class="chooseAvatar">
+          <view style="width: 53px;height: 53px;">
+            <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+              <image class="avatar" src="{{miniUser.avatar}}"></image>
+            </button>
+          </view>
+        </view>
+      </view>
+      <view class="form-item nick-name-input">
+        <view class="label">昵称</view>
+        <view class="form-value">
+          <input type="nickname" placeholder="请输入昵称" bind:change="nickNameChange" value="{{miniUser.username}}" />
+        </view>
+      </view>
+      <view class="sumbit-button">
+        <van-button type="info" bind:click="updateInfo" block>保存</van-button>
+      </view>
+    </view>
+  </view>
+</view>

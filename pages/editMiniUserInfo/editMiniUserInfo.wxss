@@ -1,0 +1,35 @@
+page{
+  background-color: white;
+}
+.form-box{
+  margin: 24rpx;
+}
+.form-item{
+  display: flex;
+  align-items: center;
+  line-height: 100rpx;
+}
+.label{
+  margin-right: 36rpx;
+  font-weight: bold;
+}
+.chooseAvatar {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+.avatar-wrapper {
+  width: 53px !important;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.avatar {
+  display: block;
+  width: 53px;
+  height: 53px;
+}
+.text {
+  font-size: 15px;
+  margin-left: 10px;
+}

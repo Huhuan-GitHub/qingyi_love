@@ -3,6 +3,10 @@ const app = getApp();
 const {
   baseUrl
 } = require("../../utils/request");
+const {
+  attentionMiniUser,
+  cancelAttentionMiniUser
+} = require("../../utils/miniUser")
 Component({
   /**
    * 组件的属性列表
@@ -25,6 +29,22 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    /**
+     * 跳转到个人主页的事件
+     * @param {*} e 
+     */
+    toPersonal(e) {
+      const mini_id = e.currentTarget.dataset.mini_id;
+      wx.navigateTo({
+        url: '/pages/personal/personal?mini_id=' + mini_id,
+        success: res => {
+          console.log("跳转到个人主页成功")
+        },
+        fail: err => {
+          console.log("跳转到个人主页失败", err);
+        }
+      })
+    },
     /**
      * 设置关注状态
      * @param {*} isAttentionPostsMiniUser 
@@ -50,34 +70,32 @@ Component({
         })
         return;
       }
-      const attentioned_id = e.currentTarget.dataset.id;
+      const {
+        attentioned_openid
+      } = e.currentTarget.dataset;
+      const openid = wx.getStorageSync('openid');
       // 请求取消关注接口
-      wx.request({
-        url: baseUrl + '/miniUser/cancelAttentionMiniUser',
-        method: "POST",
-        data: {
-          id: attentioned_id
-        },
-        success: res => {
-          if (res.data.code == 200) {
-            // 修改关注状态
-            this.setAttentionState(null);
-            wx.showToast({
-              title: '取消成功',
-              icon: "none"
-            })
-          }
-          console.log(res)
-        },
-        fail: err => {
+      cancelAttentionMiniUser({
+        attentionOpenid: openid,
+        attentionedOpenid: attentioned_openid
+      }).then(res => {
+        console.log(res)
+        if (res.statusCode === 200) {
+          // 修改关注状态
+          this.setAttentionState(res.data.data);
           wx.showToast({
-            title: '服务器异常',
+            title: '取消成功',
             icon: "none"
           })
-          console.log(err);
         }
+      }).catch(err => {
+        wx.showToast({
+          title: '服务器异常',
+          icon: "none"
+        })
+        console.log(err)
       })
-      console.log(e);
+      console.log(e)
     },
     /**
      * 关注点击事件
@@ -91,34 +109,29 @@ Component({
         })
         return;
       }
-      const attentioned_openid = e.currentTarget.dataset.attentioned_openid;
+      const {
+        attentioned_openid
+      } = e.currentTarget.dataset;
       const openid = wx.getStorageSync('openid');
       // 请求关注接口
-      wx.request({
-        url: baseUrl + '/miniUser/attentionMiniUser',
-        method: "POST",
-        data: {
-          attentionOpenid: openid,
-          attentionedOpenid: attentioned_openid
-        },
-        success: res => {
-          if (res.data.code == 200) {
-            // 修改关注状态
-            this.setAttentionState(res.data.data);
-            wx.showToast({
-              title: '关注成功',
-              icon: "none"
-            })
-          }
-          console.log(res)
-        },
-        fail: err => {
+      attentionMiniUser({
+        attentionOpenid: openid,
+        attentionedOpenid: attentioned_openid
+      }).then(res => {
+        if (res.statusCode === 200) {
+          // 修改关注状态
+          this.setAttentionState(res.data.data);
           wx.showToast({
-            title: '服务器异常',
+            title: '关注成功',
             icon: "none"
           })
-          console.log(err);
         }
+      }).catch(err => {
+        wx.showToast({
+          title: '服务器异常',
+          icon: "none"
+        })
+        console.log(err)
       })
       console.log(e)
     },

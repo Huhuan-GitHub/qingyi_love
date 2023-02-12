@@ -1,0 +1,7 @@
+<!-- 帖子点赞组件 -->
+<view class="text-gray text-sm text-right">
+  <text class="cuIcon-appreciatefill margin-lr-xs {{post.postsLike.status==1?'text-red':''}}" catchtap="likePosts" data-post="{{post}}"></text>
+  <text>{{post.currentPostsLikeCount}}</text>
+  <text class="cuIcon-messagefill margin-lr-xs" bindtap="commentUser" data-pid="{{pid}}"></text>
+  <text>{{post.currentPostsCommentCount}}</text>
+</view>

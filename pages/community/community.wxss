@@ -1,1 +1,54 @@
 /* pages/community/community.wxss */
+page {
+  background-color: white;
+}
+.message-list{
+  margin-top: 24rpx;
+}
+.message-list-item {
+  padding: 0 24rpx;
+  /* padding: 24rpx; */
+  /* padding-bottom: 0; */
+  display: flex;
+  align-items: center;
+  /* border: 1rpx solid red; */
+}
+
+.message-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* border: 1rpx solid green; */
+  margin-left: 24rpx;
+  line-height: 40rpx;
+}
+
+.message-info>.username {
+  font-weight: bold;
+}
+
+.message-info>.the-latest-msg {
+  font-size: 24rpx;
+  color: gray;
+}
+
+.the-latest-date {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24rpx;
+  color: #a8a8a8;
+}
+.the-latest-date>.msg-badge{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff2930;
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
+  width: 36rpx;
+  height: 36rpx;
+  font-size: 22rpx;
+  margin-top: 14rpx;
+}

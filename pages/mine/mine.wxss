@@ -1,5 +1,5 @@
 .UCenter-bg {
-  background-image: url(https://infomini6-1302213380.cos.ap-chengdu.myqcloud.com/%E5%A4%B4%E5%83%8F.jpg);
+  /* background-image: var(--miniUserBackgroundImage--); */
   background-size: cover;
   height: 450rpx;
   display: flex;
@@ -44,4 +44,12 @@ map,.mapBox{
 map,.mapBox{
   width: 750rpx;
   height: 300rpx;
+}
+.edit-info,.login-btn{
+  font-weight: bold;
+  font-size: 26rpx;
+  margin-top: 12rpx;
+}
+.empty-bg{
+  background-image: url('https://img2.baidu.com/it/u=3937107996,814182323&fm=253&fmt=auto&app=138&f=JPG?w=755&h=500');
 }

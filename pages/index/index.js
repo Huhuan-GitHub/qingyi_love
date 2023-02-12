@@ -20,6 +20,13 @@ Page({
     postsList: []
   },
   /**
+   * 点击加载更多触发的事件
+   * @param {*} e 
+   */
+  morePosts(e) {
+    this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+  },
+  /**
    * 回到顶部事件
    * @param {*} e 
    */
@@ -38,7 +45,8 @@ Page({
     console.log(this.data.currentPage)
     getPostsPage({
       currentPage: page,
-      pageSize: size
+      pageSize: size,
+      openid: wx.getStorageSync('openid')
     }).then(res => {
       if (res.statusCode === 200) {
         // 因为显示的帖子数量不会很多，最多不可能超过1000条，所以直接使用过滤器算了

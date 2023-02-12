@@ -9,7 +9,8 @@
     "van-col": "@vant/weapp/col/index",
     "van-icon": "@vant/weapp/icon/index",
     "van-tag": "@vant/weapp/tag/index",
-    "card-list":"../card-list/card-list"
+    "card-list":"../card-list/card-list",
+    "van-divider": "@vant/weapp/divider/index"
   },
   "navigationBarTitleText": "青衣 "
 }

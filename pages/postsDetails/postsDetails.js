@@ -114,7 +114,8 @@ Page({
   updatePostsCommentList(postsComment) {
     return new Promise((resolve, reject) => {
       // 如果是帖子的根评论，则直接添加到帖子的评论列表头部即可
-      if (postsComment.cparentId === -1) {
+      console.log(postsComment)
+      if (postsComment.cParentId === -1) {
         let newPostsDetails = this.data.postsDetails;
         newPostsDetails.postsCommentList = [postsComment, ...newPostsDetails.postsCommentList];
         console.log(newPostsDetails)

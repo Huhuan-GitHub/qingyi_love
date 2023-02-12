@@ -25,6 +25,22 @@ Page({
     miniHomePageData: {}
   },
   /**
+   * 跳转到帖子详情页面
+   * @param {*} event 
+   */
+  toPostsDetails(event) {
+    const pid = event.currentTarget.dataset.pid;
+    wx.navigateTo({
+      url: '/pages/postsDetails/postsDetails?pid=' + pid,
+      success: res => {
+        console.log("跳转帖子详情页面成功")
+      },
+      fail: err => {
+        console.log("跳转帖子详情页面失败", err)
+      }
+    })
+  },
+  /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
@@ -33,7 +49,7 @@ Page({
     getMiniUserHomePageDetails({
       miniId: mini_id
     }).then(res => {
-      if (res.data.code === 200) {
+      if (res.statusCode === 200) {
         this.setData({
           miniHomePageData: res.data.data
         })

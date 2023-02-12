@@ -32,23 +32,23 @@
   <my-overlay isShow="{{isShowOverlay}}"></my-overlay>
   <view class="posts-list-container">
     <view class="posts-list">
-      <view class="posts-item" wx:for="{{miniHomePageData.postsList}}" wx:key="item">
+      <view class="posts-item" catchtap="toPostsDetails" data-pId="{{item.pid}}" wx:for="{{miniHomePageData.postsList}}" wx:key="item">
         <view class="posts-header">
           <view class="posts-date">{{item.sendTime}}</view>
         </view>
         <view class="posts-content">
-          <view class="posts-text" bindtap="toPostsDetails" data-pId="pid">
+          <view class="posts-text">
             <text>{{item.content}}</text>
           </view>
           <view class="posts-img">
-          <posts-img imgList="{{item.postsImgList}}"></posts-img>
+            <posts-img imgList="{{item.postsImgList}}"></posts-img>
           </view>
         </view>
         <view class="posts-action">
           <view class="text-gray text-sm text-right">
-            <text class="cuIcon-attentionfill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> 10
-            <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-            <text class="cuIcon-messagefill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> 30
+            <!-- <text class="cuIcon-attentionfill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> 10 -->
+            <text class="cuIcon-appreciatefill margin-lr-xs"></text>{{item.currentPostsLikeCount}}
+            <text class="cuIcon-messagefill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> {{item.currentPostsCommentCount}}
           </view>
         </view>
       </view>

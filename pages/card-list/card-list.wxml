@@ -1,19 +1,19 @@
-<view class="card-item" bindtap="toPostsDetails" data-pId="{{post.pid}}">
+<view class="card-item" catchtap="toPostsDetails" data-pId="{{post.pid}}">
   <view class="header">
-    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+    <view class="cu-avatar round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);" catchtap="toPersonal" data-mini_id="{{post.miniUser.miniId}}"></view>
     <view class="info">
-      <view class="username">
-        <text>{{post.miniUser.username}}</text>
+      <view class="username" >
+        <text catchtap="toPersonal" data-mini_id="{{post.miniUser.miniId}}">{{post.miniUser.username}}</text>
       </view>
-      <view class="date">
-        <text>{{post.sendTime}}</text>
+      <view class="date" >
+        <text catchtap="toPersonal" data-mini_id="{{post.miniUser.miniId}}">{{post.sendTime}}</text>
       </view>
     </view>
-    <view class="like" wx:if="{{post.isAttentionPostsMiniUser==null}}">
+    <view class="like" wx:if="{{post.isAttentionPostsMiniUser === null || post.isAttentionPostsMiniUser.isCancelAttention}}">
       <van-button type="primary" size="mini" icon="plus" data-attentioned_openid="{{post.miniUser.openid}}" catchtap="attention">关注</van-button>
     </view>
     <view class="liked" wx:else>
-      <van-button type="info" color="#c5c7cc" size="mini" data-id="{{post.isAttentionPostsMiniUser.id}}" catchtap="cancelAttention">已关注</van-button>
+      <van-button type="info" color="#c5c7cc" size="mini" data-attentioned_openid="{{post.miniUser.openid}}" catchtap="cancelAttention">已关注</van-button>
     </view>
   </view>
   <view class="content">
@@ -26,8 +26,8 @@
     </view>
   </view>
   <view class="interaction">
-    <van-tag type="primary" size="mini" color="#{{post.tag.bgColor}}" round>{{post.tag.text}}</van-tag>
-    <view class="interaction-three">
+    <van-tag type="primary" size="mini" color="{{post.tag.bgColor}}" round>{{post.tag.text}}</van-tag>
+    <!-- <view class="interaction-three">
       <view class="interaction-item like" data-pId="{{post.pid}}" catchtap="doLike">
         <van-icon class="interaction-icon" name="like{{post.postsLike.status==1?'':'-o'}}" color="{{post.postsLike.status==1?'red':''}}" />
         <text>{{post.currentPostsLikeCount >=1? post.currentPostsLikeCount:0}}</text>
@@ -40,6 +40,7 @@
         <van-icon class="interaction-icon" name="share-o" />
         <text>88</text>
       </view>
-    </view>
+    </view> -->
+    <posts-like post="{{post}}" />
   </view>
 </view>

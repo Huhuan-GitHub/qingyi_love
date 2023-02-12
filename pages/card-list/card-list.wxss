@@ -39,12 +39,6 @@
   line-height: 60rpx;
   font-weight: bold;
 }
-
-/* .content>.content-img {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-} */
 .content>.content-img{
   display: grid;
   grid-template-columns: auto auto auto;

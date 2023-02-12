@@ -7,7 +7,15 @@ Page({
   data: {
 
   },
-
+  /**
+   * 跳转到聊天界面
+   * @param {*} e 
+   */
+  toChat(e){
+    wx.navigateTo({
+      url: '/pages/chat/chat'
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */

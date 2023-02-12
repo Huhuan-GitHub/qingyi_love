@@ -10,7 +10,8 @@
     "van-button": "@vant/weapp/button/index",
     "post-comment-item": "../post-comment-item/post-comment-item",
     "posts-img":"../posts-img/posts-img",
-    "comment-list":"../../components/comment-list/comment-list"
+    "comment-list":"../../components/comment-list/comment-list",
+    "posts-like":"../../components/posts-like/posts-like"
   },
   "navigationBarTitleText": "帖子详情"
 }

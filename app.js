@@ -2,14 +2,13 @@
 App({
   onLaunch() {
     wx.cloud.init({
-      env:"dr-love-8gqthpv4aee00926",
+      env: "dr-love-8gqthpv4aee00926",
       traceUser: true
     })
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-
     // 登录
     wx.login({
       success: res => {
@@ -41,6 +40,7 @@ App({
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
       }
     })
+    
   },
   getOpenid() {
     return new Promise((resolve, reject) => {
@@ -80,7 +80,7 @@ App({
   /**
    * 小程序用户是否登录
    */
-  miniUserIsLogin(){
+  miniUserIsLogin() {
     return wx.getStorageSync('openid');
   },
   globalData: {

@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view>
-  <van-search value="{{ searchValue }}" shape="round" placeholder="请输入搜索关键词" />
+  <!-- <van-search value="{{ searchValue }}" shape="round" placeholder="请输入搜索关键词" /> -->
   <view>
     <van-tabs active="{{ active }}" sticky animated swipeable bind:change="onChange">
       <van-tab title="全部">
@@ -13,8 +13,16 @@
           </view>
         </view>
       </van-tab>
-      <van-tab title="最热">最热</van-tab>
-      <van-tab title="最新">最新</van-tab>
+      <van-tab title="最热">
+        <view class="card-list">
+          <card-list wx:for="{{postsList}}" wx:key="item" post="{{item}}"></card-list>
+        </view>
+      </van-tab>
+      <van-tab title="最新">
+        <view class="card-list">
+          <card-list wx:for="{{postsList}}" wx:key="item" post="{{item}}"></card-list>
+        </view>
+      </van-tab>
     </van-tabs>
   </view>
 </view>
