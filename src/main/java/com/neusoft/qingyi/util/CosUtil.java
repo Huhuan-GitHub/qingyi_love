@@ -1,6 +1,5 @@
 package com.neusoft.qingyi.util;
 
-import com.neusoft.qingyi.config.CosConfig;
 import com.neusoft.qingyi.pojo.Cos;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;

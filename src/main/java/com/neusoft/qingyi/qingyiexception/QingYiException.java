@@ -1,7 +1,6 @@
 package com.neusoft.qingyi.qingyiexception;
 
 import com.neusoft.qingyi.common.ErrorCode;
-import com.neusoft.qingyi.myenum.ResponseCode;
 
 public class QingYiException extends RuntimeException {
     private final int code;

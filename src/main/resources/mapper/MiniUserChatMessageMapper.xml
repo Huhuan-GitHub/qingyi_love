@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.MiniUserChatMessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.MiniUserChatMessage">
+        <id property="mId" column="m_id" jdbcType="INTEGER"/>
+        <result property="sendOpenid" column="send_openid" jdbcType="VARCHAR"/>
+        <result property="receiveOpenid" column="receive_openid" jdbcType="VARCHAR"/>
+        <result property="messageType" column="message_type" jdbcType="INTEGER"/>
+        <result property="messageContent" column="message_content" jdbcType="VARCHAR"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="MiniUserMessageList" type="com.neusoft.qingyi.pojo.MiniUserChatMessage">
+        <id property="mId" column="m_id" jdbcType="INTEGER"/>
+        <result property="sendOpenid" column="send_openid" jdbcType="VARCHAR"/>
+        <result property="receiveOpenid" column="receive_openid" jdbcType="VARCHAR"/>
+        <result property="messageType" column="message_type" jdbcType="INTEGER"/>
+        <result property="messageContent" column="message_content" jdbcType="VARCHAR"/>
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <association property="receiveMiniUser" column="receive_openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        m_id
+        ,send_openid,receive_openid,
+        message_type,message_content,send_time,
+        is_deleted
+    </sql>
+    <select id="selectMiniUserChatMessageList" resultMap="MiniUserMessageList">
+        SELECT m1.*
+        FROM `t_mini_user_chat_message` AS m1
+                 JOIN (SELECT send_openid, receive_openid, MAX(send_time) latest_send_time
+                       FROM `t_mini_user_chat_message`
+                       GROUP BY send_openid, receive_openid) AS m2 ON m1.send_openid = m2.send_openid
+            AND m1.receive_openid = m2.receive_openid
+            AND m1.send_time = m2.latest_send_time;
+    </select>
+</mapper>

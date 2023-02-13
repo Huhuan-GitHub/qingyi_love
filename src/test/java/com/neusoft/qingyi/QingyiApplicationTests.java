@@ -1,24 +1,18 @@
 package com.neusoft.qingyi;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.alibaba.fastjson2.JSONObject;
 import com.neusoft.qingyi.mapper.*;
-import com.neusoft.qingyi.pojo.*;
+import com.neusoft.qingyi.pojo.PostsComment;
 import com.neusoft.qingyi.service.PostsCommentService;
 import com.neusoft.qingyi.service.PostsLikeService;
 import com.neusoft.qingyi.service.PostsService;
-import com.neusoft.qingyi.util.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.ClassPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.List;
 
 @SpringBootTest
 @Slf4j
@@ -98,5 +92,9 @@ class QingyiApplicationTests {
     public void postsCommentTest() {
         List<PostsComment> postsCommentList = postsCommentMapper.selectCommentByPid(1);
         System.out.println("postsCommentList = " + postsCommentList);
+    }
+
+    @Test
+    public void webSocketTest() {
     }
 }

@@ -7,7 +7,6 @@ import com.neusoft.qingyi.pojo.Posts;
 import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.service.PostsService;
 import com.neusoft.qingyi.util.ResponseResult;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

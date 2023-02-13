@@ -1,11 +1,7 @@
 package com.neusoft.qingyi.mapper;
 
-import com.neusoft.qingyi.pojo.MiniUser;
-import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
+import com.neusoft.qingyi.pojo.MiniUserAttention;
 
 /**
  * @author 29600

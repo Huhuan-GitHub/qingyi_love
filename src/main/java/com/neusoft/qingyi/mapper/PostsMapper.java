@@ -1,8 +1,7 @@
 package com.neusoft.qingyi.mapper;
 
-import com.neusoft.qingyi.pojo.Posts;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.swagger.models.auth.In;
+import com.neusoft.qingyi.pojo.Posts;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public interface PostsMapper extends BaseMapper<Posts> {
 
     List<Posts> selectPostsByOpenid(@Param("openid") String openid);
 
-    List<Posts> selectPostsPage(Integer currentPage, Integer pageSize, String openid);
+    List<Posts> selectPostsPage(Integer currentPage, Integer pageSize,@Param("openid") String openid);
 }
 
 

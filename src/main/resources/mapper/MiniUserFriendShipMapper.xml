@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.qingyi.mapper.MiniUserFriendShipMapper">
+
+    <resultMap id="BaseResultMap" type="com.neusoft.qingyi.pojo.MiniUserFriendShip">
+            <result property="userOpenid" column="user_openid" jdbcType="VARCHAR"/>
+            <result property="friendOpenid" column="friend_openid" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="passTime" column="pass_time" jdbcType="TIMESTAMP"/>
+            <result property="refuseTime" column="refuse_time" jdbcType="TIMESTAMP"/>
+            <result property="deleteTime" column="delete_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_openid,friend_openid,status,
+        create_time,pass_time,refuse_time,
+        delete_time
+    </sql>
+</mapper>

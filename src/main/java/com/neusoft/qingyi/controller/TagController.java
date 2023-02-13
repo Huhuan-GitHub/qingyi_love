@@ -2,7 +2,6 @@ package com.neusoft.qingyi.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.neusoft.qingyi.common.ErrorCode;
-import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.Tag;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.TagService;

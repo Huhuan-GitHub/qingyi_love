@@ -1,8 +1,5 @@
 package com.neusoft.qingyi.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RedisKeyUtils {
     public static final String MAP_KEY_USER_LIKED = "MAP_KEY_USER_LIKED";
     // 每2min更新一次数据库

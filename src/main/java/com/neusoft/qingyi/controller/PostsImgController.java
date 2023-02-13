@@ -3,13 +3,15 @@ package com.neusoft.qingyi.controller;
 import com.neusoft.qingyi.service.PostsImgService;
 import com.neusoft.qingyi.util.ResponseResult;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/postsImg")

@@ -1,7 +1,6 @@
 package com.neusoft.qingyi.listener;
 
 import com.neusoft.qingyi.service.PostsLikeService;
-import com.neusoft.qingyi.util.RedisKeyUtils;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;

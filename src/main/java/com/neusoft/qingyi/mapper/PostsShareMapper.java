@@ -1,7 +1,7 @@
 package com.neusoft.qingyi.mapper;
 
-import com.neusoft.qingyi.pojo.PostsShare;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.neusoft.qingyi.pojo.PostsShare;
 
 /**
 * @author 29600

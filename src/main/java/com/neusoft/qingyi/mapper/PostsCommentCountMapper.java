@@ -1,8 +1,7 @@
 package com.neusoft.qingyi.mapper;
 
-import com.neusoft.qingyi.pojo.PostsCommentCount;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.swagger.models.auth.In;
+import com.neusoft.qingyi.pojo.PostsCommentCount;
 import org.apache.ibatis.annotations.Param;
 
 /**
