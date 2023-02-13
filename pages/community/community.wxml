@@ -4,23 +4,22 @@
     <van-search shape="round" value="{{ value }}" placeholder="搜索昵称" />
   </view>
   <view class="message-list">
-    <view wx:for="{{5}}" bindtap="toChat">
+    <view wx:for="{{messageList}}" wx:key="item" bindtap="toChat">
       <view class="message-list-item">
-        <view class="cu-avatar lg round" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg);"></view>
+        <view class="cu-avatar lg round" style="background-image:url({{item.receiveMiniUser.avatar}});">
+          <view class="cu-tag badge ">12</view>
+        </view>
         <view class="message-info">
           <view class="username">
-            根号三的立方
+            {{item.receiveMiniUser.username}}
           </view>
           <view class="the-latest-msg">
-            加你了
+            {{item.messageContent}}
           </view>
         </view>
         <view class="the-latest-date">
           <view>
-            2月12日
-          </view>
-          <view class="msg-badge">
-            46
+            {{item.sendTime}}
           </view>
         </view>
       </view>
