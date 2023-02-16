@@ -41,7 +41,7 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
     @Resource
     private PostsImgService postsImgService;
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, ?> redisTemplate;
 
     @Resource
     private PostsMapper postsMapper;

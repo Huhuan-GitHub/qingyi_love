@@ -9,10 +9,13 @@ import com.neusoft.qingyi.service.PostsService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @Slf4j
@@ -96,5 +99,8 @@ class QingyiApplicationTests {
 
     @Test
     public void webSocketTest() {
+        Map<String,String> map = new HashMap<>();
+        RecordId add = redisTemplate.opsForStream().add("123", map);
+        System.out.println("add = " + add);
     }
 }

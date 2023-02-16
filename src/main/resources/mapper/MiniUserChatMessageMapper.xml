@@ -21,6 +21,8 @@
         <result property="messageContent" column="message_content" jdbcType="VARCHAR"/>
         <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
         <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <association property="sendMiniUser" column="send_openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
+                     select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
         <association property="receiveMiniUser" column="receive_openid" javaType="com.neusoft.qingyi.pojo.MiniUser"
                      select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
     </resultMap>
@@ -37,6 +39,9 @@
                        FROM `t_mini_user_chat_message`
                        GROUP BY send_openid, receive_openid) AS m2 ON m1.send_openid = m2.send_openid
             AND m1.receive_openid = m2.receive_openid
-            AND m1.send_time = m2.latest_send_time;
+            AND m1.send_time = m2.latest_send_time
+        where (m1.send_openid = #{send_openid}
+           or m1.receive_openid = #{send_openid}) and m1.is_deleted = 0
+        ORDER BY m1.send_time DESC LIMIT 0, 1
     </select>
 </mapper>

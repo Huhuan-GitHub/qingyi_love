@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface MiniUserChatMessageMapper extends BaseMapper<MiniUserChatMessage> {
 
-    List<MiniUserChatMessage> selectMiniUserChatMessageList(@Param("openid") String send_openid);
+    List<MiniUserChatMessage> selectMiniUserChatMessageList(@Param("send_openid") String send_openid);
 }
 
 

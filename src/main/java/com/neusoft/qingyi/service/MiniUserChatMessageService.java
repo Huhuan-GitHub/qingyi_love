@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface MiniUserChatMessageService extends IService<MiniUserChatMessage> {
     List<MiniUserChatMessage> getMiniUserChatMessageList(String openid);
+
+    long sendMessageToMiniUser(String sendOpenid, String receiveOpenid, String message);
+
+    List<MiniUserChatMessage> getMiniUserMessage(String sendOpenid,String receiveOpenid);
 }

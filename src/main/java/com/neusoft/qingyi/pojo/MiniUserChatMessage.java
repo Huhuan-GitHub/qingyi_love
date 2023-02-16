@@ -4,15 +4,20 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @TableName t_mini_user_chat_message
  */
 @TableName(value = "t_mini_user_chat_message")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MiniUserChatMessage implements Serializable {
     /**
      * 消息表主键
@@ -53,8 +58,27 @@ public class MiniUserChatMessage implements Serializable {
     private Integer isDeleted;
 
     @TableField(exist = false)
+    private MiniUser sendMiniUser;
+
+    @TableField(exist = false)
     private MiniUser receiveMiniUser;
 
     @TableField(exist = false)
+    private Long unRead;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MiniUserChatMessage that = (MiniUserChatMessage) o;
+        return (Objects.equals(sendOpenid, that.sendOpenid) || Objects.equals(sendOpenid, that.receiveOpenid)) && (Objects.equals(receiveOpenid, that.receiveOpenid) || Objects.equals(receiveOpenid, that.sendOpenid));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId, sendOpenid, receiveOpenid, messageType, messageContent, sendTime, isDeleted, sendMiniUser, receiveMiniUser, unRead);
+    }
 }

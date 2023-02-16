@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/message")
@@ -24,5 +25,16 @@ public class MiniUserMessageController {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         return ResultUtils.success(miniUserChatMessageService.getMiniUserChatMessageList(openid));
+    }
+
+    @ApiOperation("小程序用户查看消息详情接口")
+    @PostMapping("/viewMessage")
+    public ResponseResult<?> viewMessage(@RequestBody Map<String, String> messageMap) {
+        String sendOpenid = messageMap.get("sendOpenid");
+        String receiveOpenid = messageMap.get("receiveOpenid");
+        if (sendOpenid == null || receiveOpenid == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(miniUserChatMessageService.getMiniUserMessage(sendOpenid, receiveOpenid));
     }
 }
