@@ -22,3 +22,23 @@ export function getMessageList(params) {
     })
   })
 }
+
+/**
+ * 小程序用户查看消息详情接口
+ * @param {*} params 
+ */
+export function viewMessage(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + '/message/viewMessage',
+      method: "POST",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
+}

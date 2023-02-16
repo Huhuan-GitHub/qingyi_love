@@ -42,7 +42,6 @@ Page({
    * @param {*} size 
    */
   getPostsByPage(page, size) {
-    console.log(this.data.currentPage)
     getPostsPage({
       currentPage: page,
       pageSize: size,
@@ -56,17 +55,13 @@ Page({
         this.setData({
           postsList: new_data
         })
-        console.log(res.data.data)
         // 这里判断当前页返回的数据是否为空
         if (res.data.data.length && this.data.postsList.length % this.data.pageSize === 0) {
           // 如果当前页返回的数据不为空，并且页码内的数据显示完了，那么就页码+1
-          console.log(123)
           this.setData({
             currentPage: this.data.currentPage + 1
           })
-        } else {
-          console.log(456)
-        }
+        } else {}
         // 否则页码就不变
       }
     }).catch(err => {
@@ -90,7 +85,8 @@ Page({
    */
   onReachBottom() {
     // 这里应该先请求数据，如果返回的数据不为空，那么页码才加一，否则页码不变
-    this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+    // this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+    
     // 滑动到底部了，页码+1
     // this.setData({
     //   currentPage: this.data.currentPage + 1

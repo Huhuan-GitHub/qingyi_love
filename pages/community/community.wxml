@@ -4,14 +4,14 @@
     <van-search shape="round" value="{{ value }}" placeholder="搜索昵称" />
   </view>
   <view class="message-list">
-    <view wx:for="{{messageList}}" wx:key="item" bindtap="toChat">
+    <view wx:for="{{messageList}}" wx:key="item" data-sendMiniUser="{{currentUserOpenid===item.sendOpenid?item.sendMiniUser:item.receiveMiniUser}}" data-receiveMiniUser="{{currentUserOpenid!==item.sendOpenid?item.sendMiniUser:item.receiveMiniUser}}" bindtap="toChat">
       <view class="message-list-item">
-        <view class="cu-avatar lg round" style="background-image:url({{item.receiveMiniUser.avatar}});">
-          <view class="cu-tag badge ">12</view>
+        <view class="cu-avatar lg round" style="background-image:url({{currentUserOpenid===item.sendOpenid?item.receiveMiniUser.avatar:item.sendMiniUser.avatar}});">
+          <view class="cu-tag badge" wx:if="{{item.unRead!==null}}">{{item.unRead}}</view>
         </view>
         <view class="message-info">
           <view class="username">
-            {{item.receiveMiniUser.username}}
+            {{currentUserOpenid===item.sendOpenid?item.receiveMiniUser.username:item.sendMiniUser.username}}
           </view>
           <view class="the-latest-msg">
             {{item.messageContent}}

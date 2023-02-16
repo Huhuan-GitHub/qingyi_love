@@ -6,6 +6,19 @@ export function dateIsToday(date) {
   return todayDate === paramsDate
 }
 /**
+ * 聊天消息日期格式化
+ * @param {*} date 
+ */
+export function messageDateFormat(date) {
+  if (dateIsToday(date)) {
+    return date.getHours() + ":" + (date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes())
+  } else if (isCurrentYear(date)) {
+    return Number(date.getMonth() + 1) + "月" + date.getDate() + "日"
+  } else {
+    return date.getFullYear() + "年" + Number(date.getMonth() + 1) + "月" + date.getDate() + "日"
+  }
+}
+/**
  * 判断日期是否是当年
  * @param {*} date 
  */

@@ -1,7 +1,12 @@
 // pages/chat/chat.js
 const app = getApp();
-let socket = false;
 let send_openid = wx.getStorageSync('openid');
+const {
+  viewMessage
+} = require("../../utils/chatMessage")
+const {
+  messageDateFormat
+} = require("../../utils/date")
 Page({
 
   /**
@@ -10,94 +15,109 @@ Page({
   data: {
     message: "",
     currentOpenid: send_openid,
-    messageList: [{
-        send_openid: "olG-q5aFDk6wc4tR446WUp3Gct1U",
-        receive_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-        message: "下午三点开会"
-      },
-      {
-        send_openid: "olG-q5aFDk6wc4tR446WUp3Gct1U",
-        receive_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-        message: "记得带上电脑"
-      }, {
-        send_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-        receive_openid: "olG-q5aFDk6wc4tR446WUp3Gct1U",
-        message: "收到"
-      }, {
-        send_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-        receive_openid: "olG-q5aFDk6wc4tR446WUp3Gct1U",
-        message: "需要叫上廖远方吗"
-      },
-      {
-        send_openid: "olG-q5aFDk6wc4tR446WUp3Gct1U",
-        receive_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-        message: "叫上一起吧"
-      },
-    ]
+    messageList: [],
+    sendMiniUser: {},
+    receiveMiniUser: {}
   },
   /**
    * 输入框绑定
    * @param {*} e 
    */
-  bindMessageInput(e){
+  bindMessageInput(e) {
     this.setData({
       message: e.detail.value
     })
   },
   sendMessage(e) {
     const params = {
-      send_openid: send_openid,
-      receive_openid: "olG-q5Tm54CJoZ8AQPAdGaLSjcwk",
-      message: this.data.message
+      sendMiniUser: JSON.stringify(this.data.sendMiniUser),
+      receiveMiniUser: JSON.stringify(this.data.receiveMiniUser),
+      messageContent: this.data.message
     }
-    socket.send({
+    app.globalData.socket.send({
       data: JSON.stringify(params),
       success: res => {
         console.log(res);
-        this.setData({
-          messageList:[...this.data.messageList,params]
-        })
+        this.scrollBottom();
       },
       fail: err => {
         console.error(err);
       }
     });
+    wx.pageScrollTo({
+      scrollTop: 999999
+    })
+  },
+  /**
+   * 滚动到底部
+   */
+  scrollBottom() {
+    wx.getSystemInfo().then(res => {
+      wx.pageScrollTo({
+        scrollTop: res.screenHeight
+      })
+    })
+  },
+  onPageScroll() {
+    console.log("页面滚动了");
   },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {},
+  onLoad(options) {
+    const {
+      sendMiniUser,
+      receiveMiniUser
+    } = options;
+    this.setData({
+      sendMiniUser: JSON.parse(decodeURIComponent(sendMiniUser)),
+      receiveMiniUser: JSON.parse(decodeURIComponent(receiveMiniUser))
+    })
+    // 该页面一显示，就代表消息已读，所以将缓存中的数据写入数据库
+    viewMessage({
+      sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
+      receiveOpenid: this.data.currentOpenid
+    }).then(res => {
+      let data = res.data.data;
+      for (let i = 0; i < data.length; i++) {
+        data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
+      }
+      console.log(data);
+      this.setData({
+        messageList: data
+      })
+      console.log(res);
+    }).catch(err => {
+      console.error(err);
+    })
+    console.log("onLoad");
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    socket = wx.connectSocket({
-      url: 'ws://localhost:3033/websocket/' + app.globalData.openid,
-      success: res => {
-        console.log("websocket连接成功");
-      },
-      fail: err => {
-        console.error("websocket连接失败", err);
-      }
-    })
-    socket.onMessage((res) => {
-        const data = JSON.parse(res.data);
-        console.log(data)
-        this.setData({
-          messageList: [...this.data.messageList, data]
-        })
-      }),
-      socket.onClose((res) => {
-        console.log("webscoket连接断开")
+    app.globalData.socket.onMessage((res) => {
+      let body = JSON.parse(res.data).messageBody;
+      let date = new Date(body.sendTime);
+      body.sendTime = messageDateFormat(date)
+      this.setData({
+        messageList: [...this.data.messageList, body]
       })
+      console.log(JSON.parse(res.data).messageBody);
+    })
+    wx.pageScrollTo({
+      scrollTop: 999999
+    })
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    wx.pageScrollTo({
+      scrollTop: 999999
+    })
   },
 
   /**
@@ -110,9 +130,7 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload() {
-    socket.close()
-  },
+  onUnload() {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
