@@ -48,7 +48,6 @@ Page({
    * 
    */
   updateMessage(res){
-    console.log(JSON.parse(res.data).messageBody);
     let msgList = this.data.messageList;
     let newMessage = JSON.parse(res.data).messageBody;
     for (let i = 0; i < msgList.length; i++) {
@@ -59,11 +58,9 @@ Page({
         break;
       }
     }
-    console.log(msgList);
     this.setData({
       messageList: msgList
     })
-    console.log(newMessage);
   },
   /**
    * 生命周期函数--监听页面显示
@@ -81,7 +78,6 @@ Page({
       openid: openid
     }).then(res => {
       const result = res.data.data;
-      console.log(result);
       for (let i = 0; i < result.length; i++) {
         let date = new Date(result[i].sendTime);
         if (dateIsToday(date)) {
@@ -95,7 +91,6 @@ Page({
       this.setData({
         messageList: result
       })
-      console.log(this.data.messageList);
     }).catch(err => {
       console.error(`获取小程序聊天列表失败${err}`);
     })

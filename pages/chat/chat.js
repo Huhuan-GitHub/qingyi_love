@@ -58,9 +58,6 @@ Page({
       })
     })
   },
-  onPageScroll() {
-    console.log("页面滚动了");
-  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -90,33 +87,31 @@ Page({
     }).catch(err => {
       console.error(err);
     })
-    console.log("onLoad");
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-    app.globalData.socket.onMessage((res) => {
-      let body = JSON.parse(res.data).messageBody;
-      let date = new Date(body.sendTime);
-      body.sendTime = messageDateFormat(date)
-      this.setData({
-        messageList: [...this.data.messageList, body]
-      })
-      console.log(JSON.parse(res.data).messageBody);
-    })
     wx.pageScrollTo({
       scrollTop: 999999
     })
   },
-
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
     wx.pageScrollTo({
       scrollTop: 999999
+    })
+    app.globalData.socket.onMessage((res) => {
+      let body = JSON.parse(res.data).messageBody;
+      let date = new Date(body.sendTime);
+      body.sendTime = messageDateFormat(date);
+      this.setData({
+        messageList: [...this.data.messageList, body]
+      })
+      console.log(JSON.parse(res.data).messageBody);
     })
   },
 
@@ -130,7 +125,25 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload() {},
+  onUnload() {
+    // 该页面一显示，就代表消息已读，所以将缓存中的数据写入数据库
+    viewMessage({
+      sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
+      receiveOpenid: this.data.currentOpenid
+    }).then(res => {
+      let data = res.data.data;
+      for (let i = 0; i < data.length; i++) {
+        data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
+      }
+      console.log(data);
+      this.setData({
+        messageList: data
+      })
+      console.log(res);
+    }).catch(err => {
+      console.error(err);
+    })
+  },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
