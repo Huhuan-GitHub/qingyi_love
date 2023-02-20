@@ -57,6 +57,8 @@ public class MiniUserChatMessage implements Serializable {
     @TableLogic
     private Integer isDeleted;
 
+    private Integer groupId;
+
     @TableField(exist = false)
     private MiniUser sendMiniUser;
 
@@ -68,6 +70,19 @@ public class MiniUserChatMessage implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public MiniUserChatMessage(Integer mId, String sendOpenid, String receiveOpenid, Integer messageType, String messageContent, Date sendTime, Integer isDeleted, MiniUser sendMiniUser, MiniUser receiveMiniUser, Long unRead) {
+        this.mId = mId;
+        this.sendOpenid = sendOpenid;
+        this.receiveOpenid = receiveOpenid;
+        this.messageType = messageType;
+        this.messageContent = messageContent;
+        this.sendTime = sendTime;
+        this.isDeleted = isDeleted;
+        this.sendMiniUser = sendMiniUser;
+        this.receiveMiniUser = receiveMiniUser;
+        this.unRead = unRead;
+    }
 
     @Override
     public boolean equals(Object o) {

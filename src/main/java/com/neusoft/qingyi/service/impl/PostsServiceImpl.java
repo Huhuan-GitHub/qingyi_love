@@ -2,7 +2,6 @@ package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.neusoft.qingyi.common.ErrorCode;
-import com.neusoft.qingyi.myenum.ResponseCode;
 import com.neusoft.qingyi.pojo.Posts;
 import com.neusoft.qingyi.pojo.PostsImg;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
@@ -10,23 +9,15 @@ import com.neusoft.qingyi.service.PostsImgService;
 import com.neusoft.qingyi.service.PostsService;
 import com.neusoft.qingyi.mapper.PostsMapper;
 import com.neusoft.qingyi.util.FileUtils;
-import com.neusoft.qingyi.util.RedisKeyUtils;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author 29600

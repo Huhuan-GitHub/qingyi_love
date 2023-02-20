@@ -8,9 +8,8 @@ import com.neusoft.qingyi.pojo.PostsLikeCount;
 import com.neusoft.qingyi.service.PostsLikeService;
 import com.neusoft.qingyi.mapper.PostsLikeMapper;
 import com.neusoft.qingyi.util.PostsLikeEnum;
-import com.neusoft.qingyi.util.RedisKeyUtils;
+import com.neusoft.qingyi.util.RedisUtils;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,15 +60,15 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
     @Transactional
     @Override
     public void uploadLikeRedis() {
-        Set<String> keys = redisTemplate.opsForHash().keys(RedisKeyUtils.MAP_KEY_USER_LIKED);
+        Set<String> keys = redisTemplate.opsForHash().keys(RedisUtils.MAP_KEY_USER_LIKED);
         // 用来记录是否所有都上传成功
         boolean uploadResult = true;
         for (String key : keys) {
             // 构造参数
-            String[] openid_pId = RedisKeyUtils.parseLikedKey(key);
+            String[] openid_pId = RedisUtils.parseLikedKey(key);
             String openid = openid_pId[0];
             Integer pId = Integer.valueOf(openid_pId[1]);
-            Integer status = (Integer) redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
+            Integer status = (Integer) redisTemplate.opsForHash().get(RedisUtils.MAP_KEY_USER_LIKED, key);
             PostsLike uploadPostsLike = new PostsLike();
             uploadPostsLike.setOpenid(openid);
             uploadPostsLike.setP_id(pId);
@@ -93,7 +92,7 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
         Set<String> postsLikeCountKeySet = redisTemplate.keys(postsLikeKeyPre + "*");
         for (String key : postsLikeCountKeySet) {
             Integer count = (Integer) redisTemplate.opsForValue().get(key);
-            String[] postsKeys = RedisKeyUtils.parseLikedKey(key);
+            String[] postsKeys = RedisUtils.parseLikedKey(key);
             Integer posts_id = Integer.valueOf(postsKeys[1]);
             PostsLikeCount postsLikeCount = postsLikeCountMapper.selectOne(new QueryWrapper<PostsLikeCount>().eq("p_id", posts_id));
             // 如果为空，表示点赞数量统计表中没有点赞数据，就执行插入操作
@@ -111,7 +110,7 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
         }
         if (uploadResult) {
             // 如果全部上传成功，就删除缓存
-            redisTemplate.delete(RedisKeyUtils.MAP_KEY_USER_LIKED);
+            redisTemplate.delete(RedisUtils.MAP_KEY_USER_LIKED);
         }
     }
 
@@ -137,7 +136,7 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
         redisTemplate.setEnableTransactionSupport(true);
         // 开启事务
         redisTemplate.multi();
-        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, userLikeKey, 1);
+        redisTemplate.opsForHash().put(RedisUtils.MAP_KEY_USER_LIKED, userLikeKey, 1);
         // 点赞数+1
         redisTemplate.opsForValue().increment(postsKey, 1);
         // 执行事务
@@ -158,7 +157,7 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
         redisTemplate.setEnableTransactionSupport(true);
         // 开启事务
         redisTemplate.multi();
-        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, userLikeKey, 0);
+        redisTemplate.opsForHash().put(RedisUtils.MAP_KEY_USER_LIKED, userLikeKey, 0);
         // 点赞数量-1
         redisTemplate.opsForValue().increment(postsKey, -1);
         // 执行事务
@@ -175,8 +174,8 @@ public class PostsLikeServiceImpl extends ServiceImpl<PostsLikeMapper, PostsLike
     private Object likeStatus(String openid, Integer pid) {
         String likedKey = openid + "::" + pid;
         // 如果redis存在该点赞信息，则直接从缓存中读取
-        if (redisTemplate.opsForHash().hasKey(RedisKeyUtils.MAP_KEY_USER_LIKED, likedKey)) {
-            String status = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_LIKED, likedKey).toString();
+        if (redisTemplate.opsForHash().hasKey(RedisUtils.MAP_KEY_USER_LIKED, likedKey)) {
+            String status = redisTemplate.opsForHash().get(RedisUtils.MAP_KEY_USER_LIKED, likedKey).toString();
             if (status.equals("1")) {
                 return PostsLikeEnum.LIKE;
             }

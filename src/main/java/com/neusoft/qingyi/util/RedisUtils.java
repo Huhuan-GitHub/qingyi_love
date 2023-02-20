@@ -1,6 +1,18 @@
 package com.neusoft.qingyi.util;
 
-public class RedisKeyUtils {
+import com.neusoft.qingyi.controller.WebSocket;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Component
+public class RedisUtils {
     public static final String MAP_KEY_USER_LIKED = "MAP_KEY_USER_LIKED";
     // 每2min更新一次数据库
     public static final long UPDATE_TIME = 2 * 60 * 1000;
@@ -10,6 +22,13 @@ public class RedisKeyUtils {
     public static final String POSTS_COMMENT_KEY = "posts::comment::root";
 
     public static final String PUBLIC_POSTS_IMG_AUTH = "public::posts::img::auth";
+
+    private static RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+        RedisUtils.redisTemplate = redisTemplate;
+    }
 
     /**
      * 拼接点赞人的openid和他点赞贴子主键作为redis的键key，例如：olG-q5aFDk6wc4tR446WUp3Gct1U::1
@@ -34,5 +53,16 @@ public class RedisKeyUtils {
      */
     public static String[] parseLikedKey(String likedKey) {
         return likedKey.split("::");
+    }
+
+    public static Set<String> scan(String matchKey) {
+        return redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
+            Set<String> keysTmp = new HashSet<>();
+            Cursor<byte[]> cursor = connection.scan(new ScanOptions.ScanOptionsBuilder().match(matchKey).count(1000).build());
+            while (cursor.hasNext()) {
+                keysTmp.add(new String(cursor.next()));
+            }
+            return keysTmp;
+        });
     }
 }

@@ -39,6 +39,7 @@ public class WebSocket {
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "openid") String openid) {
+        // 小程序用户连接到WebSocket时，将数据库中的消息读取出来，放入Redis中
         try {
             this.session = session;
             this.openid = openid;
@@ -58,16 +59,6 @@ public class WebSocket {
         try {
             webSockets.remove(this);
             sessionPool.remove(this.openid);
-//            // 连接断开时，将Redis消息队列中的消息缓存写入数据库
-//            Set<String> keys = redisTemplate.keys("*" + this.openid + "*");
-//            assert keys != null;
-//            // 遍历集合
-//            keys.forEach((key) -> {
-//                for (int i = 0; i < redisTemplate.opsForList().size(key); i++) {
-//                    System.out.println((MiniUserChatMessage) redisTemplate.opsForList().rightPop(key));
-//                }
-//                redisTemplate.delete(key);
-//            });
             log.info("【websocket消息】连接断开，总数为:" + webSockets.size());
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,13 +73,51 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message, Session session) {
         JSONObject jsonObject = JSONObject.parseObject(message);
-//        String send_openid = (String) jsonObject.get("send_openid");
-//        String receive_openid = (String) jsonObject.get("receive_openid");
         String msg = (String) jsonObject.get("messageContent");
-        MiniUser sendMiniUser = JSON.parseObject((String) jsonObject.get("sendMiniUser"), MiniUser.class);
-        MiniUser receiveMiniUser = JSON.parseObject((String) jsonObject.get("receiveMiniUser"), MiniUser.class);
-        this.sendMessageToMiniUser(sendMiniUser, receiveMiniUser, msg);
+        MiniUser sendMiniUser = new MiniUser();
+        sendMiniUser.setOpenid("olG-q5aFDk6wc4tR446WUp3Gct1U");
+        MiniUser receiveMiniUser = new MiniUser();
+        receiveMiniUser.setOpenid("olG-q5d1OZZjNbuhy6epiYgh0BaY");
+//        MiniUser sendMiniUser = JSON.parseObject((String) jsonObject.get("sendMiniUser"), MiniUser.class);
+//        MiniUser receiveMiniUser = JSON.parseObject((String) jsonObject.get("receiveMiniUser"), MiniUser.class);
+        this.sendMessageTest(sendMiniUser, receiveMiniUser, msg);
         log.info("【websocket消息】收到客户端消息:" + message);
+    }
+
+    public void sendMessageTest(MiniUser sendMiniUser, MiniUser receiveMiniUser, String message) {
+        String sendOpenid = sendMiniUser.getOpenid();
+        String receiveOpenid = receiveMiniUser.getOpenid();
+        String keyPrefix = sendOpenid + "::" + receiveOpenid;
+        String keyPrefix2 = receiveOpenid + "::" + sendOpenid;
+        MiniUserChatMessage miniUserChatMessage = new MiniUserChatMessage();
+        miniUserChatMessage.setSendOpenid(sendOpenid);
+        miniUserChatMessage.setReceiveOpenid(receiveOpenid);
+        miniUserChatMessage.setMessageType(0);
+        miniUserChatMessage.setMessageContent(message);
+        miniUserChatMessage.setSendTime(new Date());
+        miniUserChatMessage.setIsDeleted(0);
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(keyPrefix + "::newMessage"))) {
+            redisTemplate.opsForList().leftPush(keyPrefix + "::newMessage", miniUserChatMessage);
+        } else if (Boolean.TRUE.equals(redisTemplate.hasKey(keyPrefix2 + "::newMessage"))) {
+            redisTemplate.opsForList().leftPush(keyPrefix2 + "::newMessage", miniUserChatMessage);
+        } else {
+            redisTemplate.opsForList().leftPush(keyPrefix + "::newMessage", miniUserChatMessage);
+            redisTemplate.opsForList().leftPush(keyPrefix + "::oldMessage", 0);
+        }
+        if (session != null && session.isOpen()) {
+            try {
+                log.info("消息接收方在线，发送给：" + receiveMiniUser + "," + message);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("messageBody", miniUserChatMessage);
+                // 返回消息给双方
+                sessionPool.get(sendOpenid).getAsyncRemote().sendText(jsonObject.toJSONString());
+                sessionPool.get(receiveOpenid).getAsyncRemote().sendText(jsonObject.toJSONString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            log.warn("消息的接收方不在线！");
+        }
     }
 
     /**
@@ -128,30 +157,6 @@ public class WebSocket {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void sendMessageToMiniUser(MiniUser sendMiniUser, MiniUser receiveMiniUser, String message) {
-        Session session = sessionPool.get(receiveMiniUser.getOpenid());
-        // TODO:这里的消息类型字段暂时设置为0（文本类型）
-        MiniUserChatMessage miniUserChatMessage = new MiniUserChatMessage(null, sendMiniUser.getOpenid(), receiveMiniUser.getOpenid(), 0, message, new Date(), 0, sendMiniUser, receiveMiniUser, null);
-        String key = sendMiniUser.getOpenid() + "::" + receiveMiniUser.getOpenid();
-        log.info("对方不在线，直接将消息写入Redis队列");
-        // 直接将消息放入消息队列，断开连接时才将消息队列数据写入数据库
-        redisTemplate.opsForList().leftPush(key, miniUserChatMessage);
-        // 如果接收消息的用户在线的话，那么直接发送消息
-        if (session != null && session.isOpen()) {
-            try {
-                log.info("消息接收方在线，发送给：" + receiveMiniUser + "," + message);
-                JSONObject jsonObject = new JSONObject();
-                miniUserChatMessage.setUnRead(redisTemplate.opsForList().size(key));
-                jsonObject.put("messageBody", miniUserChatMessage);
-                sessionPool.get(sendMiniUser.getOpenid()).getAsyncRemote().sendText(jsonObject.toJSONString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            log.warn("消息的接收方不在线！");
         }
     }
 
