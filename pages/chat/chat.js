@@ -8,7 +8,6 @@ const {
   messageDateFormat
 } = require("../../utils/date")
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -29,15 +28,23 @@ Page({
     })
   },
   sendMessage(e) {
+    // const params = {
+    //   sendMiniUser: JSON.stringify(this.data.sendMiniUser),
+    //   receiveMiniUser: JSON.stringify(this.data.receiveMiniUser),
+    //   messageContent: this.data.message
+    // }
     const params = {
-      sendMiniUser: JSON.stringify(this.data.sendMiniUser),
-      receiveMiniUser: JSON.stringify(this.data.receiveMiniUser),
+      sendMiniUser: this.data.sendMiniUser,
+      receiveMiniUser: this.data.receiveMiniUser,
       messageContent: this.data.message
     }
     app.globalData.socket.send({
       data: JSON.stringify(params),
       success: res => {
         console.log(res);
+        this.setData({
+          message: ""
+        })
         this.scrollBottom();
       },
       fail: err => {
@@ -119,27 +126,26 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide() {
-
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-    // 该页面一显示，就代表消息已读，所以将缓存中的数据写入数据库
+    // 页面卸载的时候，那么消息就已读，清除小红点
     viewMessage({
       sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
       receiveOpenid: this.data.currentOpenid
     }).then(res => {
-      let data = res.data.data;
-      for (let i = 0; i < data.length; i++) {
-        data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
-      }
-      console.log(data);
-      this.setData({
-        messageList: data
-      })
-      console.log(res);
+      // let data = res.data.data;
+      // for (let i = 0; i < data.length; i++) {
+      //   data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
+      // }
+      // console.log(data);
+      // this.setData({
+      //   messageList: data
+      // })
+      // console.log(res);
     }).catch(err => {
       console.error(err);
     })

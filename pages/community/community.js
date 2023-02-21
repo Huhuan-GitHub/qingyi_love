@@ -41,6 +41,7 @@ Page({
    */
   onReady() {
     app.globalData.socket.onMessage((res) => {
+      console.log(JSON.parse(res.data));
       this.updateMessage(res);
     })
   },
@@ -61,6 +62,7 @@ Page({
     this.setData({
       messageList: msgList
     })
+    console.log(this.data.messageList)
   },
   /**
    * 生命周期函数--监听页面显示
