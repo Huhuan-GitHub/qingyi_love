@@ -22,8 +22,7 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    private List<MiniUserChatMessage> chatMessages(Set<String> keys, String openid) {
-        Map<String, Integer> map = new HashMap<>();
+    private List<MiniUserChatMessage> chatMessages(Set<String> keys, String openid, Map<String, Integer> map) {
         List<MiniUserChatMessage> miniUserChatMessageList = new ArrayList<>();
         keys.forEach(key -> {
             String[] prefix = key.split("::");
@@ -31,9 +30,10 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
             String receiveOpenid = prefix[1];
             String suffix = prefix[2];
             String tempKey = sendOpenid + "::" + receiveOpenid;
+            String reverseTempKey = receiveOpenid + "::" + sendOpenid;
             String newMessage = tempKey + "::newMessage";
             String oldMessage = tempKey + "::oldMessage";
-            if (!map.containsKey(tempKey)) {
+            if (!map.containsKey(tempKey) && !map.containsKey(reverseTempKey)) {
                 MiniUserChatMessage miniUserChatMessage = null;
                 if (suffix.equals("oldMessage")) {
                     miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(newMessage, 0);
@@ -63,9 +63,10 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
         Set<String> sendKeys = RedisUtils.scan(openid + "*");
         // 匹配接收者
         Set<String> receiveKeys = RedisUtils.scan("*::" + openid + "::*");
+        Map<String, Integer> map = new HashMap<>();
         List<MiniUserChatMessage> result = new ArrayList<>();
-        result.addAll(chatMessages(sendKeys, openid));
-        result.addAll(chatMessages(receiveKeys, openid));
+        result.addAll(chatMessages(sendKeys, openid, map));
+        result.addAll(chatMessages(receiveKeys, openid, map));
         return result;
     }
 
@@ -100,7 +101,7 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
         Long size = redisTemplate.opsForList().size(oldMessageKey);
         if (size != null) {
             for (int i = 0; i < size; i++) {
-                oldMessageList.add((MiniUserChatMessage) redisTemplate.opsForList().index(oldMessageKey,i));
+                oldMessageList.add((MiniUserChatMessage) redisTemplate.opsForList().index(oldMessageKey, i));
             }
         }
 //        while ((oldMessage = (MiniUserChatMessage) redisTemplate.opsForList().rightPop(oldMessageKey)) != null) {

@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 12/02/2023 15:12:58
+ Date: 21/02/2023 15:28:45
 */
 
 SET NAMES utf8mb4;
@@ -31,13 +31,14 @@ CREATE TABLE `t_mini_user`  (
   `background_image` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '主页背景图',
   PRIMARY KEY (`mini_id`) USING BTREE,
   UNIQUE INDEX `openid`(`openid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_mini_user
 -- ----------------------------
-INSERT INTO `t_mini_user` VALUES (11, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 0, '游标卡尺ᯤ⁶ᴳ', 'http://localhost:3033/qingyi_mini_user_avatar/olG-q5aFDk6wc4tR446WUp3Gct1U.png', '2023-02-02 17:55:56', 'https://img2.baidu.com/it/u=3937107996,814182323&fm=253&fmt=auto&app=138&f=JPG?w=755&h=500');
-INSERT INTO `t_mini_user` VALUES (12, 'olG-q5aFDk6wc4tR446WUp3Gct1U2', 0, '根号三的立方ᯤ⁶ᴳ', 'https://img0.baidu.com/it/u=4214115302,3196714167&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=500', '2023-02-02 17:55:56', 'https://img2.baidu.com/it/u=3937107996,814182323&fm=253&fmt=auto&app=138&f=JPG?w=755&h=500');
+INSERT INTO `t_mini_user` VALUES (1, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 0, '游标卡尺ᯤ⁶ᴳ', 'http://localhost:3033/qingyi_mini_user_avatar/olG-q5aFDk6wc4tR446WUp3Gct1U.png', '2023-02-02 17:55:56', 'https://img2.baidu.com/it/u=3937107996,814182323&fm=253&fmt=auto&app=138&f=JPG?w=755&h=500');
+INSERT INTO `t_mini_user` VALUES (2, 'olG-q5dFevLWx4EEJ2OJ6P6EVnMo', 0, '默默', 'https://img2.baidu.com/it/u=915728877,1428815538&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1676394000&t=6b05080dfec25732134ad62c5aeaa3be', '2023-02-13 20:38:32', 'https://img0.baidu.com/it/u=713990679,2543188425&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1676394000&t=d8d4ef8446e3711759717326e9c439d9');
+INSERT INTO `t_mini_user` VALUES (3, 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 0, '狗狗', 'https://img1.baidu.com/it/u=1515279825,3080647009&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1676912400&t=cb3ed086825bcacf43569d7d594ddcf8', '2023-02-19 16:10:28', 'https://img1.baidu.com/it/u=1515279825,3080647009&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1676912400&t=cb3ed086825bcacf43569d7d594ddcf8');
 
 -- ----------------------------
 -- Table structure for t_mini_user_attention
@@ -55,6 +56,74 @@ CREATE TABLE `t_mini_user_attention`  (
 
 -- ----------------------------
 -- Records of t_mini_user_attention
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_mini_user_chat_message
+-- ----------------------------
+DROP TABLE IF EXISTS `t_mini_user_chat_message`;
+CREATE TABLE `t_mini_user_chat_message`  (
+  `m_id` int(0) NOT NULL AUTO_INCREMENT COMMENT '消息表主键',
+  `send_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '该条消息的发送者',
+  `receive_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '该条消息的接收者',
+  `message_type` int(0) NULL DEFAULT NULL COMMENT '该条消息的类型 0:文本类型 1:图片类型',
+  `message_content` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL COMMENT '该条消息的内容，如果是图片，则是图片消息外键',
+  `send_time` datetime(0) NULL DEFAULT NULL COMMENT '消息的发送时间',
+  `is_deleted` int(0) NULL DEFAULT NULL COMMENT '消息是否删除 0：未删除 1：已删除',
+  `group_id` int(0) NULL DEFAULT NULL COMMENT '消息发送者分组',
+  PRIMARY KEY (`m_id`) USING BTREE,
+  INDEX `group_id`(`group_id`) USING BTREE,
+  CONSTRAINT `group_id` FOREIGN KEY (`group_id`) REFERENCES `t_mini_user_chat_message_group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 67 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_mini_user_chat_message
+-- ----------------------------
+INSERT INTO `t_mini_user_chat_message` VALUES (1, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 0, '在干嘛呢', '2023-02-19 12:00:54', 0, 1);
+INSERT INTO `t_mini_user_chat_message` VALUES (64, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 0, '我要生气了', '2023-02-19 19:56:00', 0, NULL);
+INSERT INTO `t_mini_user_chat_message` VALUES (65, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 0, '你到底在干嘛', '2023-02-19 19:56:00', 0, NULL);
+INSERT INTO `t_mini_user_chat_message` VALUES (66, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 0, '还不回我', '2023-02-19 19:56:00', 0, NULL);
+
+-- ----------------------------
+-- Table structure for t_mini_user_chat_message_group
+-- ----------------------------
+DROP TABLE IF EXISTS `t_mini_user_chat_message_group`;
+CREATE TABLE `t_mini_user_chat_message_group`  (
+  `g_id` int(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `send_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '消息发送者openid',
+  `receive_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '消息接收者openid',
+  `group_id` int(0) NULL DEFAULT NULL COMMENT '组号',
+  PRIMARY KEY (`g_id`) USING BTREE,
+  INDEX `group_id`(`group_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_mini_user_chat_message_group
+-- ----------------------------
+INSERT INTO `t_mini_user_chat_message_group` VALUES (1, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5dFevLWx4EEJ2OJ6P6EVnMo', 1);
+INSERT INTO `t_mini_user_chat_message_group` VALUES (2, 'olG-q5dFevLWx4EEJ2OJ6P6EVnMo', 'olG-q5aFDk6wc4tR446WUp3Gct1U', 1);
+INSERT INTO `t_mini_user_chat_message_group` VALUES (3, 'olG-q5aFDk6wc4tR446WUp3Gct1U', 'olG-q5d1OZZjNbuhy6epiYgh0BaY', 2);
+
+-- ----------------------------
+-- Table structure for t_mini_user_friend_ship
+-- ----------------------------
+DROP TABLE IF EXISTS `t_mini_user_friend_ship`;
+CREATE TABLE `t_mini_user_friend_ship`  (
+  `user_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '发起好友申请的小程序用户',
+  `friend_openid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '接受好友申请的小程序用户',
+  `status` int(0) NULL DEFAULT 0 COMMENT '好友申请的结果：0：待通过，1：已通过，2：已拒绝，3：已删除',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '好友申请发起的时间',
+  `pass_time` datetime(0) NULL DEFAULT NULL COMMENT '通过好友申请的时间',
+  `refuse_time` datetime(0) NULL DEFAULT NULL COMMENT '拒绝好友申请的时间',
+  `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除好友的时间',
+  INDEX `user_openid`(`user_openid`) USING BTREE,
+  INDEX `friend_openid`(`friend_openid`) USING BTREE,
+  CONSTRAINT `friend_openid` FOREIGN KEY (`friend_openid`) REFERENCES `t_mini_user` (`openid`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `user_openid` FOREIGN KEY (`user_openid`) REFERENCES `t_mini_user` (`openid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_mini_user_friend_ship
 -- ----------------------------
 
 -- ----------------------------
