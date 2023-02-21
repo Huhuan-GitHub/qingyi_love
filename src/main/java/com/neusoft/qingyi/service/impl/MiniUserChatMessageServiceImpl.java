@@ -24,7 +24,7 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
     @Resource
     private MiniUserChatMessageMapper miniUserChatMessageMapper;
 
-    private List<MiniUserChatMessage> chatMessages(Set<String> keys) {
+    private List<MiniUserChatMessage> chatMessages(Set<String> keys, String openid) {
         Map<String, Integer> map = new HashMap<>();
         List<MiniUserChatMessage> miniUserChatMessageList = new ArrayList<>();
         keys.forEach(key -> {
@@ -38,14 +38,19 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
             if (!map.containsKey(tempKey)) {
                 MiniUserChatMessage miniUserChatMessage = null;
                 if (suffix.equals("oldMessage")) {
-                    miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(newMessage, -1L);
+                    miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(newMessage, 0);
                     // 如果读取到了新消息，那么就不用读取旧消息了，用个Map来记录是否已经读取新消息
                     if (miniUserChatMessage == null) {
-                        miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(oldMessage, -1L);
+                        miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(oldMessage, 0);
                     }
                 }
                 if (suffix.equals("newMessage")) {
-                    miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(newMessage, -1);
+                    miniUserChatMessage = (MiniUserChatMessage) redisTemplate.opsForList().index(newMessage, 0);
+                }
+                // 用于表示未读消息的数量，只有该通道不是发送者创建的时候，才未读数量
+                if (!sendOpenid.equals(openid)) {
+                    assert miniUserChatMessage != null;
+                    miniUserChatMessage.setUnRead(redisTemplate.opsForList().size(newMessage));
                 }
                 map.put(tempKey, 1);
                 miniUserChatMessageList.add(miniUserChatMessage);
@@ -61,8 +66,8 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
         // 匹配接收者
         Set<String> receiveKeys = RedisUtils.scan("*::" + openid + "::*");
         List<MiniUserChatMessage> result = new ArrayList<>();
-        result.addAll(chatMessages(sendKeys));
-        result.addAll(chatMessages(receiveKeys));
+        result.addAll(chatMessages(sendKeys, openid));
+        result.addAll(chatMessages(receiveKeys, openid));
         return result;
     }
 

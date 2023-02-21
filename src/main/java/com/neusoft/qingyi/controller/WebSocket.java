@@ -1,7 +1,6 @@
 package com.neusoft.qingyi.controller;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserChatMessage;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -74,17 +72,13 @@ public class WebSocket {
     public void onMessage(String message, Session session) {
         JSONObject jsonObject = JSONObject.parseObject(message);
         String msg = (String) jsonObject.get("messageContent");
-        MiniUser sendMiniUser = new MiniUser();
-        sendMiniUser.setOpenid("olG-q5aFDk6wc4tR446WUp3Gct1U");
-        MiniUser receiveMiniUser = new MiniUser();
-        receiveMiniUser.setOpenid("olG-q5d1OZZjNbuhy6epiYgh0BaY");
-//        MiniUser sendMiniUser = JSON.parseObject((String) jsonObject.get("sendMiniUser"), MiniUser.class);
-//        MiniUser receiveMiniUser = JSON.parseObject((String) jsonObject.get("receiveMiniUser"), MiniUser.class);
-        this.sendMessageTest(sendMiniUser, receiveMiniUser, msg);
+        MiniUser sendMiniUser = JSONObject.parseObject(JSONObject.toJSONString(jsonObject.get("sendMiniUser")), MiniUser.class);
+        MiniUser receiveMiniUser = JSONObject.parseObject(JSONObject.toJSONString(jsonObject.get("receiveMiniUser")), MiniUser.class);
+        this.sendMessageToMiniUser(sendMiniUser, receiveMiniUser, msg);
         log.info("【websocket消息】收到客户端消息:" + message);
     }
 
-    public void sendMessageTest(MiniUser sendMiniUser, MiniUser receiveMiniUser, String message) {
+    public void sendMessageToMiniUser(MiniUser sendMiniUser, MiniUser receiveMiniUser, String message) {
         String sendOpenid = sendMiniUser.getOpenid();
         String receiveOpenid = receiveMiniUser.getOpenid();
         String keyPrefix = sendOpenid + "::" + receiveOpenid;
@@ -96,22 +90,35 @@ public class WebSocket {
         miniUserChatMessage.setMessageContent(message);
         miniUserChatMessage.setSendTime(new Date());
         miniUserChatMessage.setIsDeleted(0);
+        miniUserChatMessage.setSendMiniUser(sendMiniUser);
+        miniUserChatMessage.setReceiveMiniUser(receiveMiniUser);
+        String trueKey = "";
         if (Boolean.TRUE.equals(redisTemplate.hasKey(keyPrefix + "::newMessage"))) {
             redisTemplate.opsForList().leftPush(keyPrefix + "::newMessage", miniUserChatMessage);
+            trueKey = keyPrefix + "::newMessage";
         } else if (Boolean.TRUE.equals(redisTemplate.hasKey(keyPrefix2 + "::newMessage"))) {
             redisTemplate.opsForList().leftPush(keyPrefix2 + "::newMessage", miniUserChatMessage);
+            trueKey = keyPrefix2 + "::newMessage";
         } else {
+            trueKey = keyPrefix + "::newMessage";
             redisTemplate.opsForList().leftPush(keyPrefix + "::newMessage", miniUserChatMessage);
             redisTemplate.opsForList().leftPush(keyPrefix + "::oldMessage", 0);
         }
-        if (session != null && session.isOpen()) {
+        JSONObject jsonObject = new JSONObject();
+        miniUserChatMessage.setUnRead(0L);
+        jsonObject.put("messageBody", miniUserChatMessage);
+        Session receiveSession = sessionPool.get(receiveOpenid);
+        Session sendSession = sessionPool.get(sendOpenid);
+        // 返回消息给发送者
+        sendSession.getAsyncRemote().sendText(jsonObject.toJSONString());
+        // 如果消息接收方在线，才发送给消息接收方
+        if (receiveSession != null && receiveSession.isOpen()) {
             try {
                 log.info("消息接收方在线，发送给：" + receiveMiniUser + "," + message);
-                JSONObject jsonObject = new JSONObject();
+                miniUserChatMessage.setUnRead(redisTemplate.opsForList().size(trueKey));
                 jsonObject.put("messageBody", miniUserChatMessage);
-                // 返回消息给双方
-                sessionPool.get(sendOpenid).getAsyncRemote().sendText(jsonObject.toJSONString());
-                sessionPool.get(receiveOpenid).getAsyncRemote().sendText(jsonObject.toJSONString());
+                // 返回消息个接收者
+                receiveSession.getAsyncRemote().sendText(jsonObject.toJSONString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
