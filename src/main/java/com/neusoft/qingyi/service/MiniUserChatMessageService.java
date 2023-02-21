@@ -10,5 +10,5 @@ public interface MiniUserChatMessageService extends IService<MiniUserChatMessage
 
     long sendMessageToMiniUser(String sendOpenid, String receiveOpenid, String message);
 
-    List<MiniUserChatMessage> getMiniUserMessage(String sendOpenid,String receiveOpenid);
+    List<MiniUserChatMessage> viewMessage(String sendOpenid, String receiveOpenid);
 }

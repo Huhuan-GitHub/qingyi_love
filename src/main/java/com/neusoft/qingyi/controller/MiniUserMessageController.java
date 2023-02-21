@@ -35,6 +35,6 @@ public class MiniUserMessageController {
         if (sendOpenid == null || receiveOpenid == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        return ResultUtils.success(miniUserChatMessageService.getMiniUserMessage(sendOpenid, receiveOpenid));
+        return ResultUtils.success(miniUserChatMessageService.viewMessage(sendOpenid, receiveOpenid));
     }
 }

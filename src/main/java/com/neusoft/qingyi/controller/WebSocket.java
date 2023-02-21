@@ -43,7 +43,7 @@ public class WebSocket {
             this.openid = openid;
             webSockets.add(this);
             sessionPool.put(openid, session);
-            log.info("【websocket消息】有新的连接，总数为:" + webSockets.size());
+            log.info("【websocket消息】有新的连接(" + openid + ")，总数为:" + webSockets.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,7 +102,7 @@ public class WebSocket {
         } else {
             trueKey = keyPrefix + "::newMessage";
             redisTemplate.opsForList().leftPush(keyPrefix + "::newMessage", miniUserChatMessage);
-            redisTemplate.opsForList().leftPush(keyPrefix + "::oldMessage", 0);
+//            redisTemplate.opsForList().leftPush(keyPrefix + "::oldMessage", 0);
         }
         JSONObject jsonObject = new JSONObject();
         miniUserChatMessage.setUnRead(0L);
