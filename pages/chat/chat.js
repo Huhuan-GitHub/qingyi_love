@@ -77,11 +77,13 @@ Page({
       sendMiniUser: JSON.parse(decodeURIComponent(sendMiniUser)),
       receiveMiniUser: JSON.parse(decodeURIComponent(receiveMiniUser))
     })
-    // 该页面一显示，就代表消息已读，所以将缓存中的数据写入数据库
+    // 该页面一显示，就代表消息已读
     viewMessage({
       sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
-      receiveOpenid: this.data.currentOpenid
+      receiveOpenid: this.data.currentOpenid,
+      hostOpenid:this.data.currentOpenid
     }).then(res => {
+      console.log(res);
       let data = res.data.data;
       for (let i = 0; i < data.length; i++) {
         data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
@@ -92,6 +94,13 @@ Page({
       })
       console.log(res);
     }).catch(err => {
+      wx.showToast({
+        title: '系统错误',
+        icon:"error"
+      })
+      setTimeout(()=>{
+        wx.navigateBack({});
+      },1000)
       console.error(err);
     })
   },
@@ -133,22 +142,13 @@ Page({
    */
   onUnload() {
     // 页面卸载的时候，那么消息就已读，清除小红点
-    viewMessage({
-      sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
-      receiveOpenid: this.data.currentOpenid
-    }).then(res => {
-      // let data = res.data.data;
-      // for (let i = 0; i < data.length; i++) {
-      //   data[i].sendTime = messageDateFormat(new Date(data[i].sendTime));
-      // }
-      // console.log(data);
-      // this.setData({
-      //   messageList: data
-      // })
-      // console.log(res);
-    }).catch(err => {
-      console.error(err);
-    })
+    // viewMessage({
+    //   sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
+    //   receiveOpenid: this.data.currentOpenid
+    // }).then(res => {
+    // }).catch(err => {
+    //   console.error(err);
+    // })
   },
 
   /**
