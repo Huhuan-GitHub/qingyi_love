@@ -85,7 +85,7 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<MiniUserChatMessage> viewMessage(String sendOpenid, String receiveOpenid) {
+    public List<MiniUserChatMessage> viewMessage(String sendOpenid, String receiveOpenid, String hostOpenid) {
         String prefixKey = sendOpenid + "::" + receiveOpenid;
         Set<String> keys = null;
         keys = RedisUtils.scan(prefixKey + "*");
@@ -98,22 +98,28 @@ public class MiniUserChatMessageServiceImpl extends ServiceImpl<MiniUserChatMess
         // 1.先查询旧消息（oldMessage）
         MiniUserChatMessage oldMessage = null;
         List<MiniUserChatMessage> oldMessageList = new ArrayList<>();
-        Long size = redisTemplate.opsForList().size(oldMessageKey);
-        if (size != null) {
-            for (int i = 0; i < size; i++) {
+        Long oldSize = redisTemplate.opsForList().size(oldMessageKey);
+        if (oldSize != null) {
+            for (long i = oldSize - 1; i >= 0; i--) {
                 oldMessageList.add((MiniUserChatMessage) redisTemplate.opsForList().index(oldMessageKey, i));
             }
         }
-//        while ((oldMessage = (MiniUserChatMessage) redisTemplate.opsForList().rightPop(oldMessageKey)) != null) {
-//            oldMessageList.add(oldMessage);
-//        }
         // 2.再查询新消息（newMessage）
         MiniUserChatMessage newMessage = null;
         List<MiniUserChatMessage> newMessageList = new ArrayList<>();
-        while ((newMessage = (MiniUserChatMessage) redisTemplate.opsForList().rightPop(newMessageKey)) != null) {
-            newMessageList.add(newMessage);
-            // 2.1查询出新消息后，消息已读，将新消息放入旧消息队列中
-            redisTemplate.opsForList().leftPush(oldMessageKey, newMessage);
+        Long newSize = redisTemplate.opsForList().size(newMessageKey);
+        if (hostOpenid.equals(prefixKey.split("::")[1])) {
+            while ((newMessage = (MiniUserChatMessage) redisTemplate.opsForList().rightPop(newMessageKey)) != null) {
+                newMessageList.add(newMessage);
+                // 2.1查询出新消息后，消息已读，将新消息放入旧消息队列中
+                redisTemplate.opsForList().leftPush(oldMessageKey, newMessage);
+            }
+        } else {
+            if (newSize != null) {
+                for (long i = newSize - 1; i >= 0; i--) {
+                    newMessageList.add((MiniUserChatMessage) redisTemplate.opsForList().index(newMessageKey, i));
+                }
+            }
         }
         res.addAll(oldMessageList);
         res.addAll(newMessageList);

@@ -32,9 +32,10 @@ public class MiniUserMessageController {
     public ResponseResult<?> viewMessage(@RequestBody Map<String, String> messageMap) {
         String sendOpenid = messageMap.get("sendOpenid");
         String receiveOpenid = messageMap.get("receiveOpenid");
-        if (sendOpenid == null || receiveOpenid == null) {
+        String hostOpenid = messageMap.get("hostOpenid");
+        if (sendOpenid == null || receiveOpenid == null || hostOpenid == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        return ResultUtils.success(miniUserChatMessageService.viewMessage(sendOpenid, receiveOpenid));
+        return ResultUtils.success(miniUserChatMessageService.viewMessage(sendOpenid, receiveOpenid,hostOpenid));
     }
 }

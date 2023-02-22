@@ -38,8 +38,8 @@ mini-user:
   avatar-root-folder: qingyi_mini_user_avatar # 小程序用户头像保存路径
 
 wx:
-  APPID: xxxx # 这里换成你自己的APPID
-  SECRET: xxxx #这里换成你自己的Secret
+  APPID: wx6b0b51f1ee350a3f # 这里换成你自己的APPID
+  SECRET: f6b08fd6e91330e47e7f642142eee9b6 #这里换成你自己的Secret
   CODE_2_URL: https://api.weixin.qq.com/sns/jscode2session
   user:
     temp-avatar-url: https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132
