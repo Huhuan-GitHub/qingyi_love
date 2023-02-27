@@ -20,12 +20,17 @@ public class ResponseResult<T> {
      */
     private T data;
 
+    public ResponseResult(String msg, T data) {
+        this.msg = msg;
+        this.data = data;
+    }
+
     public ResponseResult(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
     public ResponseResult(ErrorCode errorCode) {
-        this(errorCode.getCode(), errorCode.getMessage(),null);
+        this(errorCode.getCode(), errorCode.getMessage(), null);
     }
 }

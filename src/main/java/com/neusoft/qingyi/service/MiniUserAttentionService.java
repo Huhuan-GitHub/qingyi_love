@@ -3,6 +3,7 @@ package com.neusoft.qingyi.service;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.neusoft.qingyi.util.ResponseResult;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @createDate 2022-12-29 20:47:15
  */
 public interface MiniUserAttentionService extends IService<MiniUserAttention> {
-    MiniUserAttention attentionMiniUser(MiniUserAttention miniUserAttention);
+    ResponseResult<?> attentionMiniUser(MiniUserAttention miniUserAttention);
 
     MiniUserAttention cancelAttentionMiniUser(MiniUserAttention miniUserAttention);
 

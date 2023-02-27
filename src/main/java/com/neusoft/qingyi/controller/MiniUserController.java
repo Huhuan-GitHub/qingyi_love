@@ -70,34 +70,43 @@ public class MiniUserController {
         return ResultUtils.success(miniUserService.getMiniUserAttentionList(openid));
     }
 
-    @ApiOperation("关注小程序用户接口")
+    @ApiOperation("小程序用户关注/取消关注接口")
     @PostMapping("/attentionMiniUser")
     public ResponseResult<?> attentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
         if (miniUserAttention == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        MiniUserAttention attention_res = miniUserAttentionService.attentionMiniUser(miniUserAttention);
-        if (attention_res == null) {
-            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
-        } else {
-            return ResultUtils.success(attention_res);
-        }
+        miniUserAttentionService.attentionMiniUser(miniUserAttention);
+        return ResultUtils.success();
     }
-
-    @ApiOperation("取消关注小程序用户接口")
-    @PostMapping("/cancelAttentionMiniUser")
-    public ResponseResult<?> cancelAttentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
-        if (miniUserAttention == null) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        MiniUserAttention cancel_res = miniUserAttentionService.cancelAttentionMiniUser(miniUserAttention);
-        if (cancel_res == null) {
-            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
-        } else {
-            cancel_res.setIsCancelAttention(1);
-            return ResultUtils.success(cancel_res);
-        }
-    }
+//    @ApiOperation("关注小程序用户接口")
+//    @PostMapping("/attentionMiniUser")
+//    public ResponseResult<?> attentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
+//        if (miniUserAttention == null) {
+//            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+//        }
+//        MiniUserAttention attention_res = miniUserAttentionService.attentionMiniUser(miniUserAttention);
+//        if (attention_res == null) {
+//            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
+//        } else {
+//            return ResultUtils.success(attention_res);
+//        }
+//    }
+//
+//    @ApiOperation("取消关注小程序用户接口")
+//    @PostMapping("/cancelAttentionMiniUser")
+//    public ResponseResult<?> cancelAttentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
+//        if (miniUserAttention == null) {
+//            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+//        }
+//        MiniUserAttention cancel_res = miniUserAttentionService.cancelAttentionMiniUser(miniUserAttention);
+//        if (cancel_res == null) {
+//            return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
+//        } else {
+//            cancel_res.setIsCancelAttention(1);
+//            return ResultUtils.success(cancel_res);
+//        }
+//    }
 
     @ApiOperation("获取其他用户的主页信息接口")
     @GetMapping("/getMiniUserHomePageDetails")

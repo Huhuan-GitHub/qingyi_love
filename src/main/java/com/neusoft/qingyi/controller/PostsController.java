@@ -34,6 +34,12 @@ public class PostsController {
         return ResultUtils.success(postsService.getPostsPage(currentPage, pageSize, openid));
     }
 
+    @ApiOperation(value = "滚动分页获取帖子")
+    @GetMapping("")
+    public ResponseResult<?> queryPosts(@RequestParam("lastId") Long max, @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+        return postsService.queryPosts(max,offset);
+    }
+
     @ApiOperation(value = "获取帖子详情接口")
     @GetMapping("/getPostsDetails")
     public ResponseResult<?> getPostsDetails(@RequestParam("pId") Integer pId, @RequestParam(value = "openid", required = false) String openid) {
@@ -73,7 +79,7 @@ public class PostsController {
         // 上传帖子
         boolean saveRes = postsService.publicPosts(posts, img);
         if (saveRes) {
-            return ResultUtils.success(postsService.getPostsDetails(posts.getPId(),null));
+            return ResultUtils.success(postsService.getPostsDetails(posts.getPId(), null));
         } else {
             return ResultUtils.success(ErrorCode.SYSTEM_ERROR);
         }

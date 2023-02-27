@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.neusoft.qingyi.pojo.MiniUserFriendShip
 */
 public interface MiniUserFriendShipMapper extends BaseMapper<MiniUserFriendShip> {
-
 }
 
 

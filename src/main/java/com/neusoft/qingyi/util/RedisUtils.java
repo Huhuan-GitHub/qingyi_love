@@ -23,6 +23,8 @@ public class RedisUtils {
 
     public static final String PUBLIC_POSTS_IMG_AUTH = "public::posts::img::auth";
 
+    public static final String POSTS_KEY_CACHE = "posts:";
+
     private static RedisTemplate<String, Object> redisTemplate;
 
     @Autowired

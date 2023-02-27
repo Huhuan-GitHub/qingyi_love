@@ -17,6 +17,8 @@ public interface PostsMapper extends BaseMapper<Posts> {
 
     int insertPosts(@Param("posts") Posts posts);
 
+    Posts selectPosts(@Param("pId") Long pId);
+
     /**
      * 根据帖子主键获取帖子详情
      *
@@ -33,7 +35,7 @@ public interface PostsMapper extends BaseMapper<Posts> {
 
     List<Posts> selectPostsByOpenid(@Param("openid") String openid);
 
-    List<Posts> selectPostsPage(Integer currentPage, Integer pageSize,@Param("openid") String openid);
+    List<Posts> selectPostsPage(Integer currentPage, Integer pageSize, @Param("openid") String openid);
 }
 
 

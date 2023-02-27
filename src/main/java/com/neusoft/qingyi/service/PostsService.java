@@ -2,6 +2,7 @@ package com.neusoft.qingyi.service;
 
 import com.neusoft.qingyi.pojo.Posts;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.neusoft.qingyi.util.ResponseResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface PostsService extends IService<Posts> {
     boolean publicPosts(Posts posts, MultipartFile[] img);
 
     List<Posts> getPostsPage(Integer currentPage,Integer pageSize,String openid);
+
+    ResponseResult<?> queryPosts(Long max, Integer offset);
 }

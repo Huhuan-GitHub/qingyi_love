@@ -14,6 +14,14 @@ public class ResultUtils {
         return new ResponseResult<>(0, "ok", data);
     }
 
+    public static <T> ResponseResult<T> success() {
+        return new ResponseResult<>(0, "ok");
+    }
+
+    public static <T> ResponseResult<T> fail(T data) {
+        return new ResponseResult<>("fail", data);
+    }
+
     /**
      * 失败
      *

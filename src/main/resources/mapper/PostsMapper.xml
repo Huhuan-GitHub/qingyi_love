@@ -191,4 +191,8 @@
         from `t_posts` as p
         where p.openid = #{openid} and p.is_deleted = 0
     </select>
+    <select id="selectPosts" resultMap="AllResultMap">
+        select *
+        from t_posts as p where p.is_deleted = 0 and p.p_id = #{pId}
+    </select>
 </mapper>

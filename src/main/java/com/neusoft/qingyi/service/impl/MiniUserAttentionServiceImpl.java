@@ -1,11 +1,14 @@
 package com.neusoft.qingyi.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.neusoft.qingyi.common.ResultUtils;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.service.MiniUserAttentionService;
 import com.neusoft.qingyi.mapper.MiniUserAttentionMapper;
+import com.neusoft.qingyi.util.ResponseResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,17 +36,32 @@ public class MiniUserAttentionServiceImpl extends ServiceImpl<MiniUserAttentionM
      * @return
      */
     @Override
-    public MiniUserAttention attentionMiniUser(MiniUserAttention miniUserAttention) {
-        MiniUserAttention attention_record = miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
-        miniUserAttention.setAttentionTime(new Date());
-        miniUserAttention.setIsCancelAttention(0);
-        // 没有查询到关注记录，执行插入操作
-        if (attention_record == null) {
-            miniUserAttentionMapper.insert(miniUserAttention);
+    public ResponseResult<?> attentionMiniUser(MiniUserAttention miniUserAttention) {
+        String attentionOpenid = miniUserAttention.getAttentionOpenid();
+        String attentionedOpenid = miniUserAttention.getAttentionedOpenid();
+        boolean res = false;
+        // 查询关注记录
+        MiniUserAttention attentionRecord = query().eq("attention_openid", attentionOpenid).eq("attentioned_openid", attentionedOpenid).one();
+        // 查询到了关注记录，但是记录是取消关注的，那么就进行更新操作即可
+        if (attentionRecord != null && attentionRecord.getIsCancelAttention() == 1) {
+            attentionRecord.setIsCancelAttention(0);
+            res = update(attentionRecord, null);
         } else {
-            miniUserAttentionMapper.update(miniUserAttention, null);
+            // 没有记录，进行新增操作
+            MiniUserAttention newMiniUserAttention = new MiniUserAttention();
+            newMiniUserAttention.setAttentionOpenid(attentionOpenid);
+            newMiniUserAttention.setAttentionedOpenid(attentionedOpenid);
+            newMiniUserAttention.setAttentionTime(new Date());
+            newMiniUserAttention.setCancelAttentionTime(null);
+            newMiniUserAttention.setIsCancelAttention(0);
+            res = save(newMiniUserAttention);
         }
-        return miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
+        // TODO:删除缓存中的关注数据
+        if (res) {
+            return ResultUtils.success("关注成功");
+        } else {
+            return ResultUtils.fail("关注失败");
+        }
     }
 
     @Override
