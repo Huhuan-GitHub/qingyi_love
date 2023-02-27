@@ -13,7 +13,7 @@
       <van-button type="primary" size="mini" icon="plus" data-attentioned_openid="{{post.miniUser.openid}}" catchtap="attention">关注</van-button>
     </view>
     <view class="liked" wx:else>
-      <van-button type="info" color="#c5c7cc" size="mini" data-attentioned_openid="{{post.miniUser.openid}}" catchtap="cancelAttention">已关注</van-button>
+      <van-button type="info" color="#c5c7cc" size="mini" data-attentioned_openid="{{post.miniUser.openid}}" catchtap="attention">已关注</van-button>
     </view>
   </view>
   <view class="content">

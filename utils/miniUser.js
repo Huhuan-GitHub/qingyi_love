@@ -40,9 +40,8 @@ export function getMiniUserHomePageDetails(params) {
     })
   })
 }
-
 /**
- * 关注小程序用户接口
+ * 关注/取消关注小程序用户接口
  * @param {*} params 
  */
 export function attentionMiniUser(params) {
@@ -52,34 +51,50 @@ export function attentionMiniUser(params) {
       method: "POST",
       data: params,
       success: res => {
-        resolve(res)
+        resolve(res);
       },
-      fail: err => {
-        reject(err)
+      fail: res => {
+        reject(res);
       }
     })
   })
 }
 
-/**
- * 取消关注小程序用户接口
- * @param {*} params 
- */
-export function cancelAttentionMiniUser(params) {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: baseUrl + '/miniUser/cancelAttentionMiniUser',
-      method: "POST",
-      data: params,
-      success: res => {
-        resolve(res)
-      },
-      fail: err => {
-        reject(err)
-      }
-    })
-  })
-}
+// export function attentionMiniUser(params) {
+//   return new Promise((resolve, reject) => {
+//     wx.request({
+//       url: baseUrl + '/miniUser/attentionMiniUser',
+//       method: "POST",
+//       data: params,
+//       success: res => {
+//         resolve(res)
+//       },
+//       fail: err => {
+//         reject(err)
+//       }
+//     })
+//   })
+// }
+
+// /**
+//  * 取消关注小程序用户接口
+//  * @param {*} params 
+//  */
+// export function cancelAttentionMiniUser(params) {
+//   return new Promise((resolve, reject) => {
+//     wx.request({
+//       url: baseUrl + '/miniUser/cancelAttentionMiniUser',
+//       method: "POST",
+//       data: params,
+//       success: res => {
+//         resolve(res)
+//       },
+//       fail: err => {
+//         reject(err)
+//       }
+//     })
+//   })
+// }
 /**
  * 获取小程序用户openid接口
  */

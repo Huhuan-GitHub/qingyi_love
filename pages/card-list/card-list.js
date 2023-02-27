@@ -51,8 +51,8 @@ Component({
      */
     setAttentionState(isAttentionPostsMiniUser) {
       let new_posts = this.properties.post;
-      console.log(isAttentionPostsMiniUser)
-      new_posts.isAttentionPostsMiniUser = isAttentionPostsMiniUser;
+      // new_posts.isAttentionPostsMiniUser = isAttentionPostsMiniUser;
+      new_posts.isAttentionPostsMiniUser = !new_posts.isAttentionPostsMiniUser;
       this.setData({
         post: new_posts
       })
@@ -113,16 +113,33 @@ Component({
         attentioned_openid
       } = e.currentTarget.dataset;
       const openid = wx.getStorageSync('openid');
+      if (attentioned_openid === openid) {
+        wx.showToast({
+          title: '不能关注自己哦',
+          icon: "none"
+        })
+        return;
+      }
       // 请求关注接口
       attentionMiniUser({
         attentionOpenid: openid,
         attentionedOpenid: attentioned_openid
       }).then(res => {
-        if (res.statusCode === 200) {
-          // 修改关注状态
+        let state = res.data.data;
+        if (state === 1) {
           this.setAttentionState(res.data.data);
           wx.showToast({
-            title: '关注成功',
+            title: "关注成功！",
+            icon: "none"
+          })
+        } else if (state === 2) {
+          wx.showToast({
+            title: "您已关注啦！",
+            icon: "none"
+          })
+        } else {
+          wx.showToast({
+            title: "操作失败",
             icon: "none"
           })
         }
