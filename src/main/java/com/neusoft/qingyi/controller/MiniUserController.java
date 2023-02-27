@@ -76,8 +76,7 @@ public class MiniUserController {
         if (miniUserAttention == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        miniUserAttentionService.attentionMiniUser(miniUserAttention);
-        return ResultUtils.success();
+        return miniUserAttentionService.attentionMiniUser(miniUserAttention);
     }
 //    @ApiOperation("关注小程序用户接口")
 //    @PostMapping("/attentionMiniUser")

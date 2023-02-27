@@ -25,6 +25,8 @@ public class RedisUtils {
 
     public static final String POSTS_KEY_CACHE = "posts:";
 
+    public static final String USER_ATTENTION_PREFIX = "ATTENTION::";
+
     private static RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
