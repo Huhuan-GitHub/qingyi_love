@@ -27,4 +27,8 @@ public interface MiniUserService extends IService<MiniUser> {
     MiniUser updateMiniUserUsername(String openid, String username);
 
     MiniUser updateMiniUserUsernameAndAvatar(String openid, String username, MultipartFile avatar);
+
+    ResponseResult<?> queryMiniUserAttentionSize(String openid);
+
+    ResponseResult<?> queryMiniUserAttentionedSize(String openid);
 }

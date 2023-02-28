@@ -3,22 +3,23 @@ package com.neusoft.qingyi.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.neusoft.qingyi.common.ErrorCode;
+import com.neusoft.qingyi.common.ResultUtils;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.mapper.MiniUserMapper;
 import com.neusoft.qingyi.util.FileUtils;
 import com.neusoft.qingyi.util.MiniUserUtils;
+import com.neusoft.qingyi.util.RedisUtils;
+import com.neusoft.qingyi.util.ResponseResult;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 29600
@@ -61,6 +62,9 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
 
     @Resource
     private MiniUserMapper miniUserMapper;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public MiniUser getMiniUserHomePage(Integer miniId) {
@@ -134,8 +138,25 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
         }
         return miniUserMapper.selectOne(new QueryWrapper<MiniUser>().eq("openid", openid));
     }
+
+    @Override
+    public ResponseResult<?> queryMiniUserAttentionSize(String openid) {
+        String key = RedisUtils.USER_ATTENTION_PREFIX + openid;
+        return ResultUtils.success(stringRedisTemplate.opsForSet().size(key));
+    }
+
+    @Override
+    public ResponseResult<?> queryMiniUserAttentionedSize(String openid) {
+        long res = 0L;
+        Set<String> keys = stringRedisTemplate.keys(RedisUtils.USER_ATTENTION_PREFIX + "*");
+        if (keys == null) {
+            return ResultUtils.success(0);
+        }
+        for (Object key : keys.toArray()) {
+            if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember((String) key, openid))) {
+                res++;
+            }
+        }
+        return ResultUtils.success(res);
+    }
 }
-
-
-
-
