@@ -2,6 +2,7 @@ package com.neusoft.qingyi.service;
 
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.util.ResponseResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,4 +32,10 @@ public interface MiniUserService extends IService<MiniUser> {
     ResponseResult<?> queryMiniUserAttentionSize(String openid);
 
     ResponseResult<?> queryMiniUserAttentionedSize(String openid);
+
+    ResponseResult<?> queryFriendSize(String openid);
+
+    ResponseResult<?> queryAttentionList(String openid, long pageNo, long pageSize);
+
+    ResponseResult<?> cancelAttention(MiniUserAttention miniUserAttention);
 }

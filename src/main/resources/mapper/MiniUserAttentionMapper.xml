@@ -17,4 +17,11 @@
         ,attention_openid,attentioned_openid,
         attention_time,cancel_attention_time,is_cancel_attention
     </sql>
+    <update id="deleteAttention">
+        update `t_mini_user_attention`
+        set cancel_attention_time = #{date},
+            is_cancel_attention   = 1
+        where attention_openid = #{attentionOpenid}
+          and attentioned_openid = #{attenionedOpenid}
+    </update>
 </mapper>

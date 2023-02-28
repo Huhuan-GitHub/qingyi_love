@@ -70,13 +70,19 @@ public class MiniUserController {
         return ResultUtils.success(miniUserService.getMiniUserAttentionList(openid));
     }
 
-    @ApiOperation("小程序用户关注/取消关注接口")
+    @ApiOperation("关注小程序用户接口")
     @PostMapping("/attentionMiniUser")
     public ResponseResult<?> attentionMiniUser(@RequestBody MiniUserAttention miniUserAttention) {
         if (miniUserAttention == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         return miniUserAttentionService.attentionMiniUser(miniUserAttention);
+    }
+
+    @ApiOperation("小程序用户取消关注接口")
+    @PostMapping("/cancelAttention")
+    public ResponseResult<?> cancelAttention(@RequestBody MiniUserAttention miniUserAttention) {
+        return miniUserService.cancelAttention(miniUserAttention);
     }
 
     @ApiOperation("获取小程序用户的关注数量")
@@ -90,6 +96,20 @@ public class MiniUserController {
     public ResponseResult<?> getAttentionedSize(@RequestParam("openid") String openid) {
         return miniUserService.queryMiniUserAttentionedSize(openid);
     }
+
+    @ApiOperation("获取小程序用户好友的数量")
+    @GetMapping("/friendIntersectionSize")
+    public ResponseResult<?> friendIntersectionSize(@RequestParam("openid") String openid) {
+        return miniUserService.queryFriendSize(openid);
+    }
+
+    @ApiOperation("获取小程序用户关注列表")
+    @GetMapping("/getMyAttentionList")
+    public ResponseResult<?> getMyAttentionList(@RequestParam("openid") String openid, long pageNo, long pageSize) {
+        return miniUserService.queryAttentionList(openid, pageNo, pageSize);
+    }
+
+
 
     @ApiOperation("获取其他用户的主页信息接口")
     @GetMapping("/getMiniUserHomePageDetails")

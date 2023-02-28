@@ -2,6 +2,7 @@ package com.neusoft.qingyi.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.neusoft.qingyi.pojo.MiniUser;
+import com.neusoft.qingyi.pojo.MiniUserAttention;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public interface MiniUserMapper extends BaseMapper<MiniUser> {
     MiniUser selectMiniUserAttentionList(@Param("openid") String openid);
 
     Integer updateMiniUserUsernameByOpenid(@Param("openid") String openid, @Param("username") String username);
+
+    List<MiniUserAttention> queryMiniUserAttentionList(@Param("openid") String openid, @Param("pageNo") long pageNo, @Param("pageSize") long pageSize);
 }
 
 

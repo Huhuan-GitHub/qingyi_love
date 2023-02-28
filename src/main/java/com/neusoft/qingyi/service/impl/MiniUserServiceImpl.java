@@ -1,10 +1,14 @@
 package com.neusoft.qingyi.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.common.ResultUtils;
+import com.neusoft.qingyi.mapper.MiniUserAttentionMapper;
 import com.neusoft.qingyi.pojo.MiniUser;
+import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.mapper.MiniUserMapper;
@@ -62,6 +66,9 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
 
     @Resource
     private MiniUserMapper miniUserMapper;
+
+    @Resource
+    private MiniUserAttentionMapper miniUserAttentionMapper;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
@@ -152,11 +159,61 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
         if (keys == null) {
             return ResultUtils.success(0);
         }
-        for (Object key : keys.toArray()) {
-            if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember((String) key, openid))) {
+        for (String key : keys) {
+            if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(key, openid))) {
                 res++;
             }
         }
         return ResultUtils.success(res);
+    }
+
+    @Override
+    public ResponseResult<?> queryFriendSize(String openid) {
+        String selfKey = RedisUtils.USER_ATTENTION_PREFIX + openid;
+        Set<String> selfAttentionSet = stringRedisTemplate.opsForSet().members(selfKey);
+        if (selfAttentionSet == null) {
+            return ResultUtils.success(0);
+        }
+        long res = 0;
+        for (String member : selfAttentionSet) {
+            Set<String> attentionSet = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + member);
+            if (attentionSet != null && attentionSet.contains(openid)) {
+                res++;
+            }
+        }
+        return ResultUtils.success(res);
+    }
+
+    @Override
+    public ResponseResult<?> queryAttentionList(String openid, long pageNo, long pageSize) {
+//        Set<String> members = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + openid);
+//        Page<MiniUser> page = Page.of(pageNo, pageSize);
+//        LambdaQueryWrapper<MiniUser> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.in(MiniUser::getOpenid, members);
+//        miniUserMapper.selectPage(page, queryWrapper);
+//        List<MiniUser> attentionedMiniUserList = page.getRecords();
+//        return ResultUtils.success(attentionedMiniUserList);
+        return ResultUtils.success(miniUserMapper.queryMiniUserAttentionList(openid, (pageNo - 1) * pageSize, pageSize));
+    }
+
+    @Transactional
+    @Override
+    public ResponseResult<?> cancelAttention(MiniUserAttention miniUserAttention) {
+        if (miniUserAttention == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        String attentionOpenid = miniUserAttention.getAttentionOpenid();
+        String attenionedOpenid = miniUserAttention.getAttentionedOpenid();
+        String key = RedisUtils.USER_ATTENTION_PREFIX + attentionOpenid;
+        // 先删除数据库里的数据
+        int base_res = miniUserAttentionMapper.deleteAttention(attentionOpenid, attenionedOpenid, new Date());
+//        int base_res = miniUserAttentionMapper.delete(new QueryWrapper<MiniUserAttention>().eq("attention_openid", attentionOpenid).eq("attentioned_openid", attenionedOpenid));
+        if (base_res >= 1) {
+            // 数据库删除成功后才删除缓存
+            stringRedisTemplate.opsForSet().remove(key, attenionedOpenid);
+            return ResultUtils.success("取消关注成功！");
+        } else {
+            throw new QingYiException(ErrorCode.OPERATION_ERROR);
+        }
     }
 }

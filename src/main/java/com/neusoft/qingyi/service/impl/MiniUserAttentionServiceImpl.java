@@ -91,7 +91,6 @@ public class MiniUserAttentionServiceImpl extends ServiceImpl<MiniUserAttentionM
         }
         return miniUserAttentionMapper.selectOne(new QueryWrapper<MiniUserAttention>().eq("attentioned_openid", miniUserAttention.getAttentionedOpenid()).eq("attention_openid", miniUserAttention.getAttentionOpenid()));
     }
-
 }
 
 
