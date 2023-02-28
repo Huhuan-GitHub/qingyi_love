@@ -1,0 +1,21 @@
+<view>
+  <view class="list-box">
+    <view class="list-item" wx:for="{{attentionList}}" wx:key="item">
+      <view class="item-box">
+        <view class="cu-avatar xl round" style="background-image:url({{item.attentionedMiniUser.avatar}});"></view>
+        <view class="base-info">
+          <view class="nick-name">
+            {{item.attentionedMiniUser.username}}
+          </view>
+          <view class="update-time">
+            {{item.attentionTime}}
+          </view>
+        </view>
+        <view class="action">
+          <!-- <van-button color="#B3B3B3" size="small">已关注</van-button> -->
+          <simple-attention-button state="1" attentionOpenid="{{item.attentionedMiniUser.openid}}"></simple-attention-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

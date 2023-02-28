@@ -1,0 +1,4 @@
+<view>
+  <van-button wx:if="{{state}}" color="#B3B3B3" data-attenionOpenid="{{attentionOpenid}}" size="small" bindtap="cancelAttention">已关注</van-button>
+  <van-button wx:else type="primary" size="small" bindtap="attention" data-attenionOpenid="{{attentionOpenid}}">关注</van-button>
+</view>

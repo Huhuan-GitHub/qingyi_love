@@ -1,0 +1,36 @@
+page {
+  background-color: white;
+}
+
+.list-box {
+  margin: 24rpx;
+  padding-bottom: 6rpx;
+}
+
+.list-item {
+  margin: 36rpx 0;
+}
+
+.item-box {
+  display: flex;
+  align-items: center;
+}
+
+.base-info {
+  margin-left: 24rpx;
+  line-height: 42rpx;
+}
+
+.nick-name {
+  font-weight: bold;
+  font-size: 28rpx;
+}
+
+.update-time {
+  font-size: 26rpx;
+}
+
+.action {
+  /* 弹性盒子项目右对齐 */
+  margin-left: auto;
+}

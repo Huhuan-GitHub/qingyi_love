@@ -12,22 +12,22 @@
     </view>
   </view>
   <view class="padding flex text-center text-grey bg-white shadow-warp">
-    <view class="flex flex-sub flex-direction solid-right">
-      <view class="text-xxl text-orange">666.6W</view>
+    <view class="flex flex-sub flex-direction solid-right" catchtap="toMyAttentionPage">
+      <view class="text-xxl text-orange">{{myAttentionSize}}</view>
       <view class="margin-top-sm">
-        <text class="cuIcon-appreciatefill"></text> View
+        <text class="cuIcon-wefill"></text> 关注
       </view>
     </view>
     <view class="flex flex-sub flex-direction solid-right">
-      <view class="text-xxl text-blue">9.999K</view>
+      <view class="text-xxl text-blue">{{friendSize}}</view>
       <view class="margin-top-sm">
-        <text class="cuIcon-favorfill"></text> Star
+        <text class="cuIcon-friend"></text> 好友
       </view>
     </view>
     <view class="flex flex-sub flex-direction">
-      <view class="text-xxl text-green">8888</view>
+      <view class="text-xxl text-green">{{myAttentionedSize}}</view>
       <view class="margin-top-sm">
-        <text class="cuIcon-footprint"></text> Fork
+        <text class="cuIcon-like"></text> 粉丝
       </view>
     </view>
   </view>

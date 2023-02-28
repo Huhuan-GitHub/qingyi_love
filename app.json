@@ -9,7 +9,8 @@
     "pages/postsDetails/postsDetails",
     "pages/personal/personal",
     "pages/editMiniUserInfo/editMiniUserInfo",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/myAttention/myAttention"
   ],
   "window":{
     "backgroundTextStyle":"light",

@@ -43,7 +43,7 @@ App({
   },
   onShow() {
     // 如果用户已经登录了，才连接websocket
-    if(wx.getStorageSync('openid')){
+    if (wx.getStorageSync('openid')) {
       let websocket = wx.connectSocket({
         url: 'ws://localhost:3033/websocket/' + wx.getStorageSync('openid'),
         success: res => {
@@ -60,8 +60,19 @@ App({
         console.log(`websocket连接关闭`);
       })
       this.globalData.socket = websocket;
-    }else{
+    } else {
       console.log("用户未登录，不连接到websocket");
+    }
+  },
+  /**
+   * 判断小程序用户是否登录
+   */
+  async isLogin() {
+    const openid = wx.getStorageSync('openid');
+    if (openid) {
+      return true;
+    } else {
+      throw new Error;
     }
   },
   onHide() {
