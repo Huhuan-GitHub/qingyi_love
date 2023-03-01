@@ -1,7 +1,8 @@
 {
   "usingComponents": {
     "van-button": "@vant/weapp/button/index",
-    "simple-attention-button":"../../components/simple-attention-button/simple-attenion-button"
+    "simple-attention-button":"../../components/simple-attention-button/simple-attenion-button",
+    "attenion-list": "../../components/attention-list/attention-list"
   },
   "navigationBarTitleText": "我的关注"
 }

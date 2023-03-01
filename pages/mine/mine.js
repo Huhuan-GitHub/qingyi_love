@@ -5,6 +5,7 @@ const {
   getAttentionedSize,
   getMyFriendSize
 } = require("../../utils/mine")
+const {formatNumber} = require("../../utils/numberFormat")
 const {
   getOpenid,
   anonymousLogin
@@ -126,7 +127,7 @@ Page({
       openid: openid
     }).then(res => {
       this.setData({
-        myAttentionSize: res.data.data
+        myAttentionSize: formatNumber(res.data.data)
       })
     }).catch(err => {
       console.error(err);
@@ -136,7 +137,7 @@ Page({
       openid: openid
     }).then(res => {
       this.setData({
-        myAttentionedSize: res.data.data
+        myAttentionedSize: formatNumber(res.data.data)
       })
     }).catch(err => {
       console.error(err);
@@ -146,7 +147,7 @@ Page({
       openid: openid
     }).then(res => {
       this.setData({
-        friendSize: res.data.data
+        friendSize: formatNumber(res.data.data)
       })
     }).catch(err => {
       console.error(err);

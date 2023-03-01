@@ -12,7 +12,12 @@
           </view>
         </view>
         <view class="action">
-          <simple-attention-button state="1" attentionOpenid="{{item.attentionedMiniUser.openid}}"></simple-attention-button>
+          <view wx:if="{{attentionType===1}}">
+            <simple-attention-button state="{{item.oppositeisAttention?1:0}}" a_id="{{item.id}}" attentionOpenid="{{item.attentionMiniUser.openid}}"></simple-attention-button>
+          </view>
+          <view wx:else>
+            <simple-attention-button a_id="{{item.id}}" state="1" attentionOpenid="{{item.attentionedMiniUser.openid}}"></simple-attention-button>
+          </view>
         </view>
       </view>
     </view>

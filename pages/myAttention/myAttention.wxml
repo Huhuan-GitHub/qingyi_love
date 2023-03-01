@@ -1,4 +1,5 @@
-<view>
+<attenion-list attentionList="{{attentionList}}" attentionType="0"></attenion-list>
+<!-- <view>
   <view class="list-box">
     <view class="list-item" wx:for="{{attentionList}}" wx:key="item">
       <view class="item-box">
@@ -17,4 +18,4 @@
       </view>
     </view>
   </view>
-</view>
+</view> -->
