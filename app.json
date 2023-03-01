@@ -11,7 +11,8 @@
     "pages/editMiniUserInfo/editMiniUserInfo",
     "pages/chat/chat",
     "pages/myAttention/myAttention",
-    "pages/fansList/fansList"
+    "pages/fansList/fansList",
+    "pages/friendList/friendList"
   ],
   "window": {
     "backgroundTextStyle": "light",

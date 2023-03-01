@@ -139,3 +139,22 @@ export function cancelAttenion(params) {
     })
   })
 }
+/**
+ * 获取小程序用户好友列表
+ * @param {*} params 
+ */
+export function getFriendList(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + '/miniUser/getMiniUserFriendList',
+      method: "GET",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
+}

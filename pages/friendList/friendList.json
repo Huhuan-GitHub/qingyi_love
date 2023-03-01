@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "attenion-list": "../../components/attention-list/attention-list"
+  },
+  "navigationBarTitleText": "我的好友"
+}

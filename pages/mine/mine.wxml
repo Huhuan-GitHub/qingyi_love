@@ -18,7 +18,7 @@
         <text class="cuIcon-wefill"></text> 关注
       </view>
     </view>
-    <view class="flex flex-sub flex-direction solid-right">
+    <view class="flex flex-sub flex-direction solid-right" catchtap="toFriendList">
       <view class="text-xxl text-blue">{{friendSize}}</view>
       <view class="margin-top-sm">
         <text class="cuIcon-friend"></text> 好友

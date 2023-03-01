@@ -58,6 +58,15 @@ Page({
     })
   },
   /**
+   * 跳转到好友界面
+   * @param {*} e 
+   */
+  toFriendList(e){
+    wx.navigateTo({
+      url: '/pages/friendList/friendList',
+    })
+  },
+  /**
    * 跳转到我的关注页面
    * @param {*} e 
    */
