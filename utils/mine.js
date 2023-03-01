@@ -100,15 +100,36 @@ export function getMyAttentionList(params) {
 }
 
 /**
+ * 获取小程序用户粉丝列表
+ * @param {*} params 
+ */
+export function getMiniUserFansList(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + '/miniUser/getMiniUserFansList',
+      method: "GET",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
+}
+/**
  * 小程序用户取消关注接口
  * @param {*} params 
  */
 export function cancelAttenion(params) {
+  const {
+    id
+  } = params;
   return new Promise((resolve, reject) => {
     wx.request({
-      url: baseUrl + '/miniUser/cancelAttention',
+      url: baseUrl + '/miniUser/cancelAttention/' + id,
       method: "POST",
-      data: params,
       success: res => {
         resolve(res);
       },

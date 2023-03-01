@@ -1,0 +1,21 @@
+<!-- <attenion-list attentionList="{{attentionList}}" attentionType="1"></attenion-list> -->
+<view>
+  <view class="list-box">
+    <view class="list-item" wx:for="{{attentionList}}" wx:key="item">
+      <view class="item-box">
+        <view class="cu-avatar xl round" style="background-image:url({{item.attentionedMiniUser===null?item.attentionedMiniUser.avatar:item.attentionMiniUser.avatar}});"></view>
+        <view class="base-info">
+          <view class="nick-name">
+            {{item.attentionedMiniUser===null?item.attentionedMiniUser.username:item.attentionMiniUser.username}}
+          </view>
+          <view class="update-time">
+            {{item.attentionTime}}
+          </view>
+        </view>
+        <view class="action">
+          <simple-attention-button state="{{item.oppositeisAttention?1:0}}" attentionOpenid="{{item.attentionMiniUser.openid}}"></simple-attention-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

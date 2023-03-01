@@ -41,7 +41,7 @@ export function getMiniUserHomePageDetails(params) {
   })
 }
 /**
- * 关注/取消关注小程序用户接口
+ * 关注小程序用户接口
  * @param {*} params 
  */
 export function attentionMiniUser(params) {

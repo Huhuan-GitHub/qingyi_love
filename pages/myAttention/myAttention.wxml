@@ -12,8 +12,7 @@
           </view>
         </view>
         <view class="action">
-          <!-- <van-button color="#B3B3B3" size="small">已关注</van-button> -->
-          <simple-attention-button state="1" attentionOpenid="{{item.attentionedMiniUser.openid}}"></simple-attention-button>
+          <simple-attention-button a_id="{{item.id}}" state="1" attentionOpenid="{{item.attentionedMiniUser.openid}}"></simple-attention-button>
         </view>
       </view>
     </view>

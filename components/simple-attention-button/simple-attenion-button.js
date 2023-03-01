@@ -19,6 +19,11 @@ Component({
     attentionOpenid: {
       type: String,
       value: ""
+    },
+    // 关注表的id
+    a_id: {
+      type: Number,
+      value: 0
     }
   },
 
@@ -55,10 +60,14 @@ Component({
           }
           if (res.confirm) {
             // 点击确认，发送取消关注请求
+            // const params = {
+            //   attentionOpenid: wx.getStorageSync('openid'),
+            //   attentionedOpenid: e.currentTarget.dataset.attenionopenid
+            // };
             const params = {
-              attentionOpenid: wx.getStorageSync('openid'),
-              attentionedOpenid: e.currentTarget.dataset.attenionopenid
+              id: this.data.a_id
             };
+            console.log(params);
             cancelAttenion(params).then(res => {
               this.changeAttentionState();
               wx.showToast({

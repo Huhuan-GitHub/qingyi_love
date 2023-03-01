@@ -1,15 +1,17 @@
-// pages/myAttention/myAttention.js
+// pages/fansList/fansList.js
 const {
-  getMyAttentionList
+  getMiniUserFansList
 } = require("../../utils/mine")
 Page({
+
   /**
    * 页面的初始数据
    */
   data: {
+    // 关注列表数据
     attentionList: [],
     pageNo: 1,
-    pageSize: 10,
+    pageSize: 10
   },
 
   /**
@@ -21,14 +23,15 @@ Page({
       pageNo: this.data.pageNo,
       pageSize: this.data.pageSize
     };
-    getMyAttentionList(params).then(res => {
+    getMiniUserFansList(params).then(res => {
       if (res.data.data) {
         this.setData({
           attentionList: res.data.data
         })
       }
+      console.log(res);
     }).catch(err => {
-      console.log(err);
+      console.error(err);
     })
   },
 

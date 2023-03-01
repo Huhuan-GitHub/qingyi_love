@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "attenion-list": "../../components/attention-list/attention-list",
+    "van-button": "@vant/weapp/button/index",
+    "simple-attention-button": "../../components/simple-attention-button/simple-attenion-button"
+  },
+  "navigationBarTitleText": "粉丝列表"
+}

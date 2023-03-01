@@ -24,7 +24,7 @@
         <text class="cuIcon-friend"></text> 好友
       </view>
     </view>
-    <view class="flex flex-sub flex-direction">
+    <view class="flex flex-sub flex-direction" catchtap="toFansList">
       <view class="text-xxl text-green">{{myAttentionedSize}}</view>
       <view class="margin-top-sm">
         <text class="cuIcon-like"></text> 粉丝

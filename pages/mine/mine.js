@@ -48,6 +48,15 @@ Page({
       })
   },
   /**
+   * 跳转到粉丝列表
+   * @param {*} e 
+   */
+  toFansList(e) {
+    wx.navigateTo({
+      url: '/pages/fansList/fansList',
+    })
+  },
+  /**
    * 跳转到我的关注页面
    * @param {*} e 
    */
