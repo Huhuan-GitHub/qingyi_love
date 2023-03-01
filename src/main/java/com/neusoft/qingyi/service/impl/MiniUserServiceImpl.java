@@ -186,13 +186,6 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
 
     @Override
     public ResponseResult<?> queryAttentionList(String openid, long pageNo, long pageSize) {
-//        Set<String> members = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + openid);
-//        Page<MiniUser> page = Page.of(pageNo, pageSize);
-//        LambdaQueryWrapper<MiniUser> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.in(MiniUser::getOpenid, members);
-//        miniUserMapper.selectPage(page, queryWrapper);
-//        List<MiniUser> attentionedMiniUserList = page.getRecords();
-//        return ResultUtils.success(attentionedMiniUserList);
         return ResultUtils.success(miniUserMapper.queryMiniUserAttentionList(openid, (pageNo - 1) * pageSize, pageSize));
     }
 
@@ -256,5 +249,28 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
             }
         }
         return ResultUtils.success(miniUserAttentions);
+    }
+
+    @Override
+    public ResponseResult<?> queryMiniUserFriendList(String openid, long pageNo, long pageSize) {
+        String key = RedisUtils.USER_ATTENTION_PREFIX + openid;
+        // 获取自己关注的openid集合
+        Set<String> myAttentionOpenidSet = stringRedisTemplate.opsForSet().members(key);
+        // 如果自己没有关注的人，那么就不可能有好友，直接返回
+        if (myAttentionOpenidSet == null) {
+            return ResultUtils.success();
+        }
+        Set<String> attenionOpenidSet = new HashSet<>(myAttentionOpenidSet.size());
+        for (String myAttentionOpenid : myAttentionOpenidSet) {
+            Set<String> members = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + myAttentionOpenid);
+            if (members != null && members.contains(openid)) {
+                attenionOpenidSet.add(myAttentionOpenid);
+            }
+        }
+        // 如果没有查询到共同好友，直接返回空
+        if (attenionOpenidSet.isEmpty()) {
+            return ResultUtils.success();
+        }
+        return ResultUtils.success(miniUserAttentionMapper.mybatisTest(attenionOpenidSet, openid));
     }
 }

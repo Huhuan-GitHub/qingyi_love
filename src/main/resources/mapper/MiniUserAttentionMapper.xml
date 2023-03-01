@@ -43,4 +43,11 @@
           and a.is_cancel_attention = 0 limit #{pageNo}
             , #{pageSize}
     </select>
+    <select id="mybatisTest" resultMap="MiniUserFansList">
+        select * from `t_mini_user_attention` as a where a.attentioned_openid in
+        <foreach collection="set" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and a.attention_openid = #{attentionOpenid}
+    </select>
 </mapper>

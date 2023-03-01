@@ -2,6 +2,7 @@ package com.neusoft.qingyi.controller;
 
 import com.neusoft.qingyi.common.ErrorCode;
 import com.neusoft.qingyi.common.ResultUtils;
+import com.neusoft.qingyi.mapper.MiniUserAttentionMapper;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/miniUser")
@@ -24,6 +27,9 @@ public class MiniUserController {
 
     @Resource
     private MiniUserService miniUserService;
+
+    @Resource
+    private MiniUserAttentionMapper miniUserAttentionMapper;
 
     @ApiOperation("小程序用户更新信息接口")
     @PostMapping("/updateMiniUserInfo")
@@ -59,6 +65,25 @@ public class MiniUserController {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         return ResultUtils.success(miniUserService.login(miniUser));
+    }
+
+    @ApiOperation("获取其他用户的主页信息接口")
+    @GetMapping("/getMiniUserHomePageDetails")
+    public ResponseResult<?> getMiniUserHomePageDetails(@RequestParam("miniId") Integer miniId) {
+        if (miniId == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        MiniUser miniUserHomePage = miniUserService.getMiniUserHomePage(miniId);
+        return ResultUtils.success(miniUserHomePage);
+    }
+
+    @ApiOperation("根据openid获取小程序用户信息")
+    @GetMapping("/getMiniUserInfoByOpenid")
+    public ResponseResult<?> getMiniUserInfoByOpenid(@RequestParam("openid") String openid) {
+        if (openid == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(miniUserService.getMiniUserByOpenid(openid));
     }
 
     @ApiOperation("获取小程序用户关注列表")
@@ -115,22 +140,10 @@ public class MiniUserController {
         return miniUserService.queryMiniUserFansList(openid, pageNo, pageSize);
     }
 
-    @ApiOperation("获取其他用户的主页信息接口")
-    @GetMapping("/getMiniUserHomePageDetails")
-    public ResponseResult<?> getMiniUserHomePageDetails(@RequestParam("miniId") Integer miniId) {
-        if (miniId == null) {
-            throw new QingYiException(ErrorCode.PARAMS_ERROR);
-        }
-        MiniUser miniUserHomePage = miniUserService.getMiniUserHomePage(miniId);
-        return ResultUtils.success(miniUserHomePage);
+    @ApiOperation("获取小程序用户好友列表")
+    @GetMapping("/getMiniUserFriendList")
+    public ResponseResult<?> getMiniUserFriendList(@RequestParam("openid") String openid, long pageNo, long pageSize) {
+        return miniUserService.queryMiniUserFriendList(openid, pageNo, pageSize);
     }
 
-    @ApiOperation("根据openid获取小程序用户信息")
-    @GetMapping("/getMiniUserInfoByOpenid")
-    public ResponseResult<?> getMiniUserInfoByOpenid(@RequestParam("openid") String openid) {
-        if (openid == null) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        return ResultUtils.success(miniUserService.getMiniUserByOpenid(openid));
-    }
 }
