@@ -68,7 +68,8 @@ public class MiniUserAttentionServiceImpl extends ServiceImpl<MiniUserAttentionM
             // 查询到了关注记录，但是记录是取消关注的，那么就进行更新操作即可
             attentionRecord.setIsCancelAttention(0);
             attentionRecord.setAttentionTime(new Date());
-            res = update(attentionRecord, null);
+            res = updateById(attentionRecord);
+//            res = update(attentionRecord, null);
         }
         if (res) {
             return ResultUtils.success(1);

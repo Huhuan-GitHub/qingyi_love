@@ -38,4 +38,8 @@ public interface MiniUserService extends IService<MiniUser> {
     ResponseResult<?> queryAttentionList(String openid, long pageNo, long pageSize);
 
     ResponseResult<?> cancelAttention(MiniUserAttention miniUserAttention);
+
+    ResponseResult<?> cancelAttention(Integer id);
+
+    ResponseResult<?> queryMiniUserFansList(String openid, long pageNo, long pageSize);
 }

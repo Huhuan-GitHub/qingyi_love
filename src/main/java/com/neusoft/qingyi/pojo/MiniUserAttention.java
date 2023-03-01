@@ -47,9 +47,23 @@ public class MiniUserAttention implements Serializable {
      */
     private Integer isCancelAttention;
 
+    /**
+     * 被关注的小程序用户
+     */
     @TableField(exist = false)
     private MiniUser attentionedMiniUser;
 
+    /**
+     * 发起关注的小程序用户
+     */
+    @TableField(exist = false)
+    private MiniUser attentionMiniUser;
+
+    /**
+     * 被关注的人是否关注了发起关注的人
+     */
+    @TableField(exist = false)
+    private boolean oppositeisAttention;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

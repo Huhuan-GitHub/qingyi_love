@@ -12,6 +12,18 @@
         <result property="cancelAttentionTime" column="cancel_attention_time" jdbcType="TIMESTAMP"/>
         <result property="isCancelAttention" column="is_cancel_attention" jdbcType="INTEGER"/>
     </resultMap>
+    <resultMap id="MiniUserFansList" type="com.neusoft.qingyi.pojo.MiniUserAttention">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="attentionOpenid" column="attention_openid" jdbcType="VARCHAR"/>
+        <result property="attentionedOpenid" column="attentioned_openid" jdbcType="VARCHAR"/>
+        <result property="attentionTime" column="attention_time" jdbcType="TIMESTAMP"/>
+        <result property="cancelAttentionTime" column="cancel_attention_time" jdbcType="TIMESTAMP"/>
+        <result property="isCancelAttention" column="is_cancel_attention" jdbcType="INTEGER"/>
+        <collection property="attentionMiniUser" ofType="com.neusoft.qingyi.pojo.MiniUser" column="attention_openid"
+                    select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
+        <collection property="attentionedMiniUser" ofType="com.neusoft.qingyi.pojo.MiniUser" column="attentioned_openid"
+                    select="com.neusoft.qingyi.mapper.MiniUserMapper.selectMiniUserByOpenid"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id
         ,attention_openid,attentioned_openid,
@@ -24,4 +36,11 @@
         where attention_openid = #{attentionOpenid}
           and attentioned_openid = #{attenionedOpenid}
     </update>
+    <select id="queryMiniUserFansList" resultMap="MiniUserFansList">
+        select *
+        from `t_mini_user_attention` as a
+        where a.attentioned_openid = #{openid}
+          and a.is_cancel_attention = 0 limit #{pageNo}
+            , #{pageSize}
+    </select>
 </mapper>

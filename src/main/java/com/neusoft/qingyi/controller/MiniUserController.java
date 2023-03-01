@@ -79,10 +79,10 @@ public class MiniUserController {
         return miniUserAttentionService.attentionMiniUser(miniUserAttention);
     }
 
-    @ApiOperation("小程序用户取消关注接口")
-    @PostMapping("/cancelAttention")
-    public ResponseResult<?> cancelAttention(@RequestBody MiniUserAttention miniUserAttention) {
-        return miniUserService.cancelAttention(miniUserAttention);
+    @ApiOperation("根据id取消关注接口")
+    @PostMapping("/cancelAttention/{id}")
+    public ResponseResult<?> cancelAttention(@PathVariable(value = "id") Integer id) {
+        return miniUserService.cancelAttention(id);
     }
 
     @ApiOperation("获取小程序用户的关注数量")
@@ -109,7 +109,11 @@ public class MiniUserController {
         return miniUserService.queryAttentionList(openid, pageNo, pageSize);
     }
 
-
+    @ApiOperation("获取小程序用户粉丝列表")
+    @GetMapping("/getMiniUserFansList")
+    public ResponseResult<?> getMiniUserFansList(@RequestParam("openid") String openid, long pageNo, long pageSize) {
+        return miniUserService.queryMiniUserFansList(openid, pageNo, pageSize);
+    }
 
     @ApiOperation("获取其他用户的主页信息接口")
     @GetMapping("/getMiniUserHomePageDetails")

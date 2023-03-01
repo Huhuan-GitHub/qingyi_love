@@ -111,6 +111,7 @@
     </select>
     <select id="queryMiniUserAttentionList" resultMap="AttentionList">
         SELECT u.*,
+               a.id,
                a.attention_time
         FROM `t_mini_user_attention` AS a
                  LEFT JOIN `t_mini_user` AS u ON u.openid = a.attentioned_openid

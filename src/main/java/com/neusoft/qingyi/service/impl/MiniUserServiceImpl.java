@@ -216,4 +216,45 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
             throw new QingYiException(ErrorCode.OPERATION_ERROR);
         }
     }
+
+    @Override
+    public ResponseResult<?> cancelAttention(Integer id) {
+        if (id == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        MiniUserAttention miniUserAttention = miniUserAttentionMapper.selectById(id);
+        if (miniUserAttention == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        miniUserAttention.setIsCancelAttention(1);
+        miniUserAttention.setCancelAttentionTime(new Date());
+        int updateRes = miniUserAttentionMapper.updateById(miniUserAttention);
+//        int updateRes = miniUserAttentionMapper.update(miniUserAttention, new QueryWrapper<>());
+        if (updateRes >= 1) {
+            String attentionOpenid = miniUserAttention.getAttentionOpenid();
+            String attenionedOpenid = miniUserAttention.getAttentionedOpenid();
+            String key = RedisUtils.USER_ATTENTION_PREFIX + attentionOpenid;
+            // 数据库删除成功后才删除缓存
+            stringRedisTemplate.opsForSet().remove(key, attenionedOpenid);
+            return ResultUtils.success("取消关注成功！");
+        } else {
+            throw new QingYiException(ErrorCode.OPERATION_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult<?> queryMiniUserFansList(String openid, long pageNo, long pageSize) {
+        List<MiniUserAttention> miniUserAttentions = miniUserAttentionMapper.queryMiniUserFansList(openid, (pageNo - 1) * pageSize, pageSize);
+        String key = RedisUtils.USER_ATTENTION_PREFIX + openid;
+        Set<String> members = stringRedisTemplate.opsForSet().members(key);
+        if (members != null) {
+            for (MiniUserAttention miniUserAttention : miniUserAttentions) {
+                String attentionOpenid = miniUserAttention.getAttentionOpenid();
+                if (members.contains(attentionOpenid)) {
+                    miniUserAttention.setOppositeisAttention(true);
+                }
+            }
+        }
+        return ResultUtils.success(miniUserAttentions);
+    }
 }
