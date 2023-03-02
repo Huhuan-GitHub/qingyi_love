@@ -1,5 +1,8 @@
 {
   "usingComponents": {
-    "posts-img": "../posts-img/posts-img"
+    "posts-img": "../posts-img/posts-img",
+    "back-top": "../../components/back-top/back-top",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-empty": "@vant/weapp/empty/index"
   }
 }

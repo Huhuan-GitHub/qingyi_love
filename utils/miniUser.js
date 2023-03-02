@@ -59,42 +59,6 @@ export function attentionMiniUser(params) {
     })
   })
 }
-
-// export function attentionMiniUser(params) {
-//   return new Promise((resolve, reject) => {
-//     wx.request({
-//       url: baseUrl + '/miniUser/attentionMiniUser',
-//       method: "POST",
-//       data: params,
-//       success: res => {
-//         resolve(res)
-//       },
-//       fail: err => {
-//         reject(err)
-//       }
-//     })
-//   })
-// }
-
-// /**
-//  * 取消关注小程序用户接口
-//  * @param {*} params 
-//  */
-// export function cancelAttentionMiniUser(params) {
-//   return new Promise((resolve, reject) => {
-//     wx.request({
-//       url: baseUrl + '/miniUser/cancelAttentionMiniUser',
-//       method: "POST",
-//       data: params,
-//       success: res => {
-//         resolve(res)
-//       },
-//       fail: err => {
-//         reject(err)
-//       }
-//     })
-//   })
-// }
 /**
  * 获取小程序用户openid接口
  */
@@ -170,4 +134,24 @@ export function updateMiniUser(avatar, params) {
     })
   }
   return m.submit(baseUrl + "/miniUser/updateMiniUserInfo");
+}
+
+/**
+ * 判断两个小程序用户之间是否互相关注
+ * @param {*} params 
+ */
+export function whetherMiniUsersEachOtherAttention(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + "/miniUser/whetherMiniUsersEachOtherAttention",
+      method: "GET",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
 }

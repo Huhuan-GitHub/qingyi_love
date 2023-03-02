@@ -1,0 +1,14 @@
+.back-top{
+  border: 1px #409eff solid;
+  border-radius: 50%;
+  background-color: #409eff;
+  width: 80rpx;
+  height: 80rpx;
+  position: fixed;
+  bottom: 45rpx;
+  right: 30rpx;
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -30,7 +30,7 @@
     </view>
   </view> -->
   <my-overlay isShow="{{isShowOverlay}}"></my-overlay>
-  <view class="posts-list-container">
+  <view class="posts-list-container" wx:if="{{miniHomePageData.postsList.length!==0}}">
     <view class="posts-list">
       <view class="posts-item" catchtap="toPostsDetails" data-pId="{{item.pid}}" wx:for="{{miniHomePageData.postsList}}" wx:key="item">
         <view class="posts-header">
@@ -48,10 +48,21 @@
           <view class="text-gray text-sm text-right">
             <!-- <text class="cuIcon-attentionfill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> 10 -->
             <text class="cuIcon-appreciatefill margin-lr-xs"></text>{{item.currentPostsLikeCount}}
-            <text class="cuIcon-messagefill margin-lr-xs" bindtap="toPostsDetails" data-pId="pid"></text> {{item.currentPostsCommentCount}}
+            <text class="cuIcon-messagefill margin-lr-xs" bindtap="toPostsDetails" data-pId="{{item.pid}}"></text> {{item.currentPostsCommentCount}}
           </view>
         </view>
       </view>
+    </view>
+    <view>
+    </view>
+  </view>
+  <view style="width: 50%;margin: auto;" wx:else>
+    <van-empty />
+  </view>
+  <!-- 发起聊天按钮 -->
+  <view class="suspended-button" catchtap="toChat" data-receiveMiniUser="{{miniHomePageData}}">
+    <view>
+      <van-icon name="chat-o" size="50rpx" color="white" />
     </view>
   </view>
 </scroll-view>

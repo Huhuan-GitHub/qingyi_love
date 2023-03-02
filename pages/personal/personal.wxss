@@ -13,7 +13,20 @@
   font-weight: 300;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
-
+.suspended-button{
+  border: 1px #b9b9b9 solid;
+  border-radius: 50%;
+  background-color: #b9b9b9;
+  width: 80rpx;
+  height: 80rpx;
+  position: fixed;
+  bottom: 45rpx;
+  right: 30rpx;
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .UCenter-bg text {
   opacity: 0.8;
 }
@@ -54,7 +67,7 @@ map,
 }
 
 .posts-item {
-  margin-bottom: 36rpx;
+  /* margin-bottom: 36rpx; */
 }
 
 .posts-header {

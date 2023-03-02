@@ -3,7 +3,8 @@ const {
   baseUrl
 } = require("../../utils/request")
 const {
-  getMiniUserHomePageDetails
+  getMiniUserHomePageDetails,
+  whetherMiniUsersEachOtherAttention
 } = require("../../utils/miniUser")
 Page({
 
@@ -23,6 +24,36 @@ Page({
     ],
     // 小程序用户主页数据
     miniHomePageData: {}
+  },
+  /**
+   * 跳转到聊天页面
+   * @param {*} e 
+   */
+  toChat(e) {
+    const receiveMiniUser = e.currentTarget.dataset.receiveminiuser;
+    const sendMiniUserOpenid = wx.getStorageSync('openid');
+    // 1.判断是否互相关注
+    const params = {
+      resourceOpenid: sendMiniUserOpenid,
+      targetOpenid: receiveMiniUser.openid
+    }
+    // 判断两个小程序用户之间是否互相关注
+    whetherMiniUsersEachOtherAttention(params).then(res => {
+      // 1.1 如果未互相关注，提示未互相关注，不能进行聊天
+      if (!res.data.data) {
+        wx.showToast({
+          title: '未互相关注不能聊天',
+          icon: "none"
+        })
+      } else {
+        // 1.2 已经相互关注，跳转到聊天界面
+        wx.navigateTo({
+          url: `/pages/chat/chat?sendMiniUser=${encodeURIComponent(JSON.stringify({openid:sendMiniUserOpenid}))}&receiveMiniUser=${encodeURIComponent(JSON.stringify(receiveMiniUser))}`
+        })
+      }
+    }).catch(err => {
+      console.error(err);
+    })
   },
   /**
    * 跳转到帖子详情页面
@@ -62,7 +93,6 @@ Page({
     }).catch(err => {
       console.log("请求主页信息失败！", err);
     })
-
   },
 
   /**

@@ -7,6 +7,9 @@ const {
 const {
   messageDateFormat
 } = require("../../utils/date")
+const {
+  whetherMiniUsersEachOtherAttention
+} = require("../../utils/miniUser")
 Page({
   /**
    * 页面的初始数据
@@ -38,21 +41,37 @@ Page({
       receiveMiniUser: this.data.receiveMiniUser,
       messageContent: this.data.message
     }
-    app.globalData.socket.send({
-      data: JSON.stringify(params),
-      success: res => {
-        console.log(res);
-        this.setData({
-          message: ""
+    whetherMiniUsersEachOtherAttention({
+      resourceOpenid: params.sendMiniUser.openid,
+      targetOpenid: params.receiveMiniUser.openid
+    }).then(res => {
+      // 如果未互相关注，提示未互相关注，不能进行聊天
+      if (!res.data.data) {
+        wx.showToast({
+          title: '未互相关注不能聊天哦',
+          icon: "none"
         })
-        this.scrollBottom();
-      },
-      fail: err => {
-        console.error(err);
+      } else {
+        // 已经互相关注了
+        app.globalData.socket.send({
+          data: JSON.stringify(params),
+          success: res => {
+            console.log(res);
+            this.setData({
+              message: ""
+            })
+            this.scrollBottom();
+          },
+          fail: err => {
+            console.error(err);
+          }
+        });
+        wx.pageScrollTo({
+          scrollTop: 999999
+        })
       }
-    });
-    wx.pageScrollTo({
-      scrollTop: 999999
+    }).catch(err => {
+      console.error(err);
     })
   },
   /**
@@ -81,7 +100,7 @@ Page({
     viewMessage({
       sendOpenid: this.data.currentOpenid === this.data.sendMiniUser.openid ? this.data.receiveMiniUser.openid : this.data.sendMiniUser.openid,
       receiveOpenid: this.data.currentOpenid,
-      hostOpenid:this.data.currentOpenid
+      hostOpenid: this.data.currentOpenid
     }).then(res => {
       console.log(res);
       let data = res.data.data;
@@ -96,11 +115,11 @@ Page({
     }).catch(err => {
       wx.showToast({
         title: '系统错误',
-        icon:"error"
+        icon: "error"
       })
-      setTimeout(()=>{
+      setTimeout(() => {
         wx.navigateBack({});
-      },1000)
+      }, 1000)
       console.error(err);
     })
   },
@@ -134,8 +153,7 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide() {
-  },
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载

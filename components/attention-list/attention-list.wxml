@@ -1,9 +1,8 @@
 <view>
   <view class="list-box">
-    <view class="list-item" wx:for="{{attentionList}}" wx:key="item">
+    <view class="list-item" wx:for="{{attentionList}}" wx:key="item" bindtap="toPersonal" data-openid="{{attentionType===1?item.attentionMiniUser.openid:item.attentionedMiniUser.openid}}">
       <view class="item-box">
-        <!-- <view class="cu-avatar xl round" style="background-image:url({{item.attentionedMiniUser===null?item.attentionMiniUser.avatar:item.attentionedMiniUser.avatar}});"></view> -->
-        <view class="cu-avatar xl round" style="background-image:url({{attentionType===1?item.attentionMiniUser.avatar:item.attentionedMiniUser.avatar}});"></view>
+        <miniuser-avatar miniUser="{{attentionType===1?item.attentionMiniUser:item.attentionedMiniUser}}" size="xl"></miniuser-avatar>
         <view class="base-info">
           <view class="nick-name">
             <!-- {{item.attentionedMiniUser===null?item.attentionMiniUser.username:item.attentionedMiniUser.username}} -->

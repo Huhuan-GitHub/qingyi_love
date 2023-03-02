@@ -1,0 +1,1 @@
+<view class="cu-avatar {{size}} round" style="background-image:url({{miniUser.avatar}});" data-miniId="{{miniUser.miniId}}" catchtap="toPersonal"></view>

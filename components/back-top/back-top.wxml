@@ -1,0 +1,5 @@
+<view class="back-top" bindtap="backTop">
+  <view class="back-top-icon">
+    <van-icon name="back-top" class="back-top-icon" size="50rpx" color="white" />
+  </view>
+</view>

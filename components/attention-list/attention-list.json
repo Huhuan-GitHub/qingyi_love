@@ -2,6 +2,7 @@
   "component": true,
   "usingComponents": {
     "van-button": "@vant/weapp/button/index",
-    "simple-attention-button": "../../components/simple-attention-button/simple-attenion-button"
+    "simple-attention-button": "../../components/simple-attention-button/simple-attenion-button",
+    "miniuser-avatar": "../miniuser-avatar/miniuser-avatar"
   }
 }
