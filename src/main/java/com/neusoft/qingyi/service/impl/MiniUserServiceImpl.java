@@ -12,10 +12,7 @@ import com.neusoft.qingyi.pojo.MiniUserAttention;
 import com.neusoft.qingyi.qingyiexception.QingYiException;
 import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.mapper.MiniUserMapper;
-import com.neusoft.qingyi.util.FileUtils;
-import com.neusoft.qingyi.util.MiniUserUtils;
-import com.neusoft.qingyi.util.RedisUtils;
-import com.neusoft.qingyi.util.ResponseResult;
+import com.neusoft.qingyi.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -272,5 +269,20 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
             return ResultUtils.success();
         }
         return ResultUtils.success(miniUserAttentionMapper.mybatisTest(attenionOpenidSet, openid));
+    }
+
+    @Override
+    public ResponseResult<?> queryMiniUserAttentionState(String resourceOpenid, String targetOpenid) {
+        if (resourceOpenid == null || targetOpenid == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        Set<String> resourceSet = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + resourceOpenid);
+        Set<String> targetSet = stringRedisTemplate.opsForSet().members(RedisUtils.USER_ATTENTION_PREFIX + targetOpenid);
+        // 如果都没有关注人，那么肯定不是共同关注
+        if (resourceSet == null || targetSet == null) {
+            return ResultUtils.success(false);
+        }
+        // 判断是否互相关注
+        return ResultUtils.success(resourceSet.contains(targetOpenid) && targetSet.contains(resourceOpenid));
     }
 }

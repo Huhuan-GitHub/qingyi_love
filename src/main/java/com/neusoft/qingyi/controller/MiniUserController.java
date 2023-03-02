@@ -10,6 +10,7 @@ import com.neusoft.qingyi.service.MiniUserAttentionService;
 import com.neusoft.qingyi.service.MiniUserService;
 import com.neusoft.qingyi.util.ResponseResult;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,9 +28,6 @@ public class MiniUserController {
 
     @Resource
     private MiniUserService miniUserService;
-
-    @Resource
-    private MiniUserAttentionMapper miniUserAttentionMapper;
 
     @ApiOperation("小程序用户更新信息接口")
     @PostMapping("/updateMiniUserInfo")
@@ -146,4 +144,9 @@ public class MiniUserController {
         return miniUserService.queryMiniUserFriendList(openid, pageNo, pageSize);
     }
 
+    @ApiOperation("判断两个小程序用户之间是否互相关注")
+    @GetMapping("/whetherMiniUsersEachOtherAttention")
+    public ResponseResult<?> getMiniUsersAttentionState(@Param("resourceOpenid") String resourceOpenid, @Param("targetOpenid") String targetOpenid) {
+        return miniUserService.queryMiniUserAttentionState(resourceOpenid, targetOpenid);
+    }
 }

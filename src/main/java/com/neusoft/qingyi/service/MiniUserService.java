@@ -44,4 +44,6 @@ public interface MiniUserService extends IService<MiniUser> {
     ResponseResult<?> queryMiniUserFansList(String openid, long pageNo, long pageSize);
 
     ResponseResult<?> queryMiniUserFriendList(String openid, long pageNo, long pageSize);
+
+    ResponseResult<?> queryMiniUserAttentionState(String resourceOpenid, String targetOpenid);
 }
