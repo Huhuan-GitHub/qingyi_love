@@ -76,6 +76,11 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser>
     }
 
     @Override
+    public MiniUser getMiniUserHomePage(String openid) {
+        return miniUserMapper.selectMiniUserHomePageByOpenid(openid);
+    }
+
+    @Override
     public MiniUser getMiniUserByOpenid(String openid) {
         return miniUserMapper.selectOne(new QueryWrapper<MiniUser>().eq("openid", openid));
     }

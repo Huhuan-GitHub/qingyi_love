@@ -119,4 +119,9 @@
           and a.is_cancel_attention = 0 limit #{pageNo}
             , #{pageSize}
     </select>
+    <select id="selectMiniUserHomePageByOpenid" resultMap="MiniUserHomePage">
+        select *
+        from `t_mini_user` as u
+        where u.openid = #{openid}
+    </select>
 </mapper>

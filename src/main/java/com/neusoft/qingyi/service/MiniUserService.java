@@ -17,6 +17,8 @@ import java.util.Map;
 public interface MiniUserService extends IService<MiniUser> {
     MiniUser getMiniUserHomePage(Integer miniId);
 
+    MiniUser getMiniUserHomePage(String openid);
+
     MiniUser getMiniUserByOpenid(String openid);
 
     MiniUser getMiniUserAttentionList(String openid);

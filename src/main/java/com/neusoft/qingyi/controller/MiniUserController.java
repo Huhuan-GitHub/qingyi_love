@@ -75,6 +75,16 @@ public class MiniUserController {
         return ResultUtils.success(miniUserHomePage);
     }
 
+    @ApiOperation("根据openid获取主页信息接口")
+    @GetMapping("/getMiniUserHomePageDetailsByOpenid")
+    public ResponseResult<?> getMiniUserHomePageDetailsByOpenid(@RequestParam("openid") String openid) {
+        if (openid == null) {
+            throw new QingYiException(ErrorCode.PARAMS_ERROR);
+        }
+        MiniUser miniUserHomePage = miniUserService.getMiniUserHomePage(openid);
+        return ResultUtils.success(miniUserHomePage);
+    }
+
     @ApiOperation("根据openid获取小程序用户信息")
     @GetMapping("/getMiniUserInfoByOpenid")
     public ResponseResult<?> getMiniUserInfoByOpenid(@RequestParam("openid") String openid) {
