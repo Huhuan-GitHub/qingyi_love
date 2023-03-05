@@ -155,3 +155,23 @@ export function whetherMiniUsersEachOtherAttention(params) {
     })
   })
 }
+
+/**
+ * 根据openid获取主页信息接口
+ * @param {*} params 
+ */
+export function getMiniUserHomePageDetailsByOpenid(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + "/miniUser/getMiniUserHomePageDetailsByOpenid",
+      method: "GET",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
+}

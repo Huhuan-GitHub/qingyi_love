@@ -5,10 +5,13 @@ const {
   getAttentionedSize,
   getMyFriendSize
 } = require("../../utils/mine")
-const {formatNumber} = require("../../utils/numberFormat")
+const {
+  formatNumber
+} = require("../../utils/numberFormat")
 const {
   getOpenid,
-  anonymousLogin
+  anonymousLogin,
+  getMiniUserHomePageDetailsByOpenid
 } = require("../../utils/miniUser");
 const app = getApp();
 Page({
@@ -25,7 +28,9 @@ Page({
     // 关注我的数量
     myAttentionedSize: 0,
     // 用户的好友数量
-    friendSize: 0
+    friendSize: 0,
+    // 小程序用户主页数据
+    miniHomePageData: {}
   },
   /**
    * 点击登录按钮触发的事件
@@ -61,7 +66,7 @@ Page({
    * 跳转到好友界面
    * @param {*} e 
    */
-  toFriendList(e){
+  toFriendList(e) {
     wx.navigateTo({
       url: '/pages/friendList/friendList',
     })
@@ -160,6 +165,23 @@ Page({
       })
     }).catch(err => {
       console.error(err);
+    })
+    // 请求后端获取主页信息
+    getMiniUserHomePageDetailsByOpenid({
+      openid: wx.getStorageSync('openid')
+    }).then(res => {
+      if (res.statusCode === 200) {
+        this.setData({
+          miniHomePageData: res.data.data
+        })
+        // 动态设置导航栏文字(用户昵称)
+        wx.setNavigationBarTitle({
+          title: res.data.data.username,
+        })
+      }
+      console.log(res)
+    }).catch(err => {
+      console.log("请求主页信息失败！", err);
     })
     console.log("onShow")
   },

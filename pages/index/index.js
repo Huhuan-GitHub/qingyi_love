@@ -5,7 +5,8 @@ const {
   baseUrl
 } = require("../../utils/request");
 const {
-  getPostsPage
+  getPostsPage,
+  postsList
 } = require("../../utils/index")
 Page({
   data: {
@@ -17,7 +18,11 @@ Page({
     // 每页显示的条数
     pageSize: 5,
     // 帖子列表
-    postsList: []
+    postsList: [],
+    // 最小时间
+    minTime: 0,
+    // 滚动分页偏移量
+    offset: 0
   },
   /**
    * 点击加载更多触发的事件
@@ -84,14 +89,7 @@ Page({
    * 上拉到底部触发的事件
    */
   onReachBottom() {
-    // 这里应该先请求数据，如果返回的数据不为空，那么页码才加一，否则页码不变
-    // this.getPostsByPage(this.data.currentPage, this.data.pageSize);
-    
-    // 滑动到底部了，页码+1
-    // this.setData({
-    //   currentPage: this.data.currentPage + 1
-    // });
-    // console.log("上拉到底部了");
+    this.getPostsList();
   },
   /**
    * 预览图片
@@ -108,6 +106,7 @@ Page({
   },
   onLoad() {
     // 初始化帖子列表
+    this.getPostsList();
     // this.getPostsByPage(this.data.currentPage, this.data.pageSize);
     // 初始化当前用户点赞列表
   },
@@ -133,8 +132,27 @@ Page({
     })
   },
   onShow() {
-    // 初始化帖子列表
-    this.getPostsByPage(this.data.currentPage, this.data.pageSize);
+  },
+  /**
+   * 滚动获取帖子
+   */
+  getPostsList() {
+    postsList({
+      lastId: this.data.minTime || new Date().getTime() + 1,
+      offset: this.data.offset
+    }).then(res => {
+      if (res.data.data) {
+        const data = res.data.data;
+        this.setData({
+          minTime: data.minTime,
+          offset: data.offset,
+          postsList: [...this.data.postsList, ...data.list]
+        })
+      }
+      console.log(res);
+    }).catch(err => {
+      console.error(err);
+    })
   },
   /**
    * 页面下拉刷新事件

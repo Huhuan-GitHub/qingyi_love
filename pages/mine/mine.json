@@ -1,7 +1,8 @@
 {
   "usingComponents": {
     "van-icon": "@vant/weapp/icon/index",
-    "van-button": "@vant/weapp/button/index"
+    "van-button": "@vant/weapp/button/index",
+    "personal-post-list":"../../components/personal-post-list/personal-post-list"
   },
   "navigationStyle":"custom",
   "navigationBarTitleText": "个人主页"

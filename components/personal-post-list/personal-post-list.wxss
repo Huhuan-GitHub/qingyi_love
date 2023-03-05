@@ -1,0 +1,29 @@
+@import "../../colorui/main.wxss";
+@import "../../colorui/icon.wxss";
+.posts-list-container {
+  background-color: #fff;
+  padding: 24rpx;
+}
+
+.posts-item {
+  /* margin-bottom: 36rpx; */
+}
+
+.posts-header {
+  line-height: 42rpx;
+}
+
+.posts-date {
+  font-size: 24rpx;
+  color: #aaaaaa;
+}
+
+.posts-content {
+  font-size: 28rpx;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.posts-img {
+  margin: 12rpx 0;
+}

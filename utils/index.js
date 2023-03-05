@@ -21,3 +21,23 @@ export function getPostsPage(params) {
     })
   })
 }
+
+/**
+ * 滚动分页获取帖子
+ * @param {*} params 
+ */
+export function postsList(params) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: baseUrl + '/posts',
+      method: "GET",
+      data: params,
+      success: res => {
+        resolve(res);
+      },
+      fail: err => {
+        reject(err);
+      }
+    })
+  })
+}
