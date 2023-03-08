@@ -27,6 +27,12 @@ public class RedisUtils {
 
     public static final String USER_ATTENTION_PREFIX = "ATTENTION::";
 
+    public static final String POST_HOT_PREFIX = "POST_HOT:";
+
+    public static final String LOCATION_MINIUSER = "location_miniuser:";
+
+    public static final String USER_LOCATION = "user:location";
+
     private static RedisTemplate<String, Object> redisTemplate;
 
     @Autowired

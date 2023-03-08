@@ -96,6 +96,8 @@ public class PostsServiceImpl extends ServiceImpl<PostsMapper, Posts>
 
     @Override
     public Posts getPostsDetails(Integer pId, String openid) {
+        // 每次预览帖子，帖子的浏览人数+1
+        stringRedisTemplate.opsForSet().add(RedisUtils.POST_HOT_PREFIX + pId, openid);
         return postsMapper.selectPostsDetailsByPid(pId, openid);
     }
 
