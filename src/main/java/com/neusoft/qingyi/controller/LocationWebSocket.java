@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,6 +43,8 @@ public class LocationWebSocket {
         LocationWebSocket.stringRedisTemplate = stringRedisTemplate;
     }
 
+    private static final double RADIUS = 100;
+
     @Autowired
     private void setLocationService(LocationService locationService) {
         LocationWebSocket.locationService = locationService;
@@ -51,6 +55,7 @@ public class LocationWebSocket {
         MiniUserLocationVo miniUserLocationVo = JSONUtil.toBean("{" + miniUserLocationVoJson + "}", MiniUserLocationVo.class);
         MiniUser miniUser = JSONUtil.toBean(stringRedisTemplate.opsForValue().get(RedisUtils.LOCATION_MINIUSER + miniUserLocationVo.getOpenid()), MiniUser.class);
         miniUserLocationVo.setMiniUser(miniUser);
+        miniUserLocationVo.setDistance(1);
         // 将小程序用户添加至地址服务
         locationService.addUserLocation(miniUserLocationVo);
         try {
@@ -71,6 +76,23 @@ public class LocationWebSocket {
         try {
             locationWebSockets.remove(this);
             sessionPool.remove(this.openid);
+            // 先把地址信息保存下来
+            List<Point> position = stringRedisTemplate.opsForGeo().position(RedisUtils.USER_LOCATION, this.openid);
+            if (position != null) {
+                Point point = position.get(0);
+                double longitude = point.getX();
+                double latitude = point.getY();
+                MiniUserLocationVo miniUserLocationVo = new MiniUserLocationVo();
+                miniUserLocationVo.setPoints(new double[]{longitude, latitude});
+                MiniUser miniUser = JSONUtil.toBean(stringRedisTemplate.opsForValue().get(RedisUtils.LOCATION_MINIUSER + this.openid), MiniUser.class);
+                miniUserLocationVo.setMiniUser(miniUser);
+                miniUserLocationVo.setOpenid(openid);
+                // 距离设置为-1，表示该用户是下线
+                miniUserLocationVo.setDistance(-1);
+                // 通知附近的用户，告知用户下线了
+                this.sendMessageToNearUser(miniUserLocationVo);
+            }
+            // 从Redis中清空地址信息
             locationService.removeUserLocation(this.openid);
             log.info("[{}]用户从地址服务断开连接，当前连接总数为：{}", openid, locationWebSockets.size());
         } catch (Exception e) {
@@ -81,14 +103,14 @@ public class LocationWebSocket {
     /**
      * 给附近的人发送地理位置消息
      *
-     * @param miniUserLocationVo 地理位置消息
+     * @param miniUserLocationVo 中心用户的地理信息
      */
     public void sendMessageToNearUser(MiniUserLocationVo miniUserLocationVo) {
         // 上线的用户的经纬度
         double longitude = miniUserLocationVo.getPoints()[0];
         double latitude = miniUserLocationVo.getPoints()[1];
         // 拿到附近的人
-        GeoResults<RedisGeoCommands.GeoLocation<String>> nearUserLocation = locationService.getNearUserLocation(longitude, latitude, 100);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> nearUserLocation = locationService.getNearUserLocation(longitude, latitude, RADIUS);
         if (nearUserLocation != null) {
             for (GeoResult<RedisGeoCommands.GeoLocation<String>> locationGeoResult : nearUserLocation) {
                 // 获取附近的人的openid
