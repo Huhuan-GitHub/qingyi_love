@@ -1,11 +1,16 @@
 package com.neusoft.qingyi.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.neusoft.qingyi.common.ResultUtils;
+import com.neusoft.qingyi.mapper.MiniUserMapper;
 import com.neusoft.qingyi.pojo.MiniUser;
 import com.neusoft.qingyi.service.LocationService;
 import com.neusoft.qingyi.util.RedisUtils;
+import com.neusoft.qingyi.util.ResponseResult;
 import com.neusoft.qingyi.vo.MiniUserLocationVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,27 +18,43 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 public class LocationServiceImpl implements LocationService {
-    @Resource
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private MiniUserMapper miniUserMapper;
 
     @Override
-    public void addUserLocation(String openid, double longitude, double latitude) {
+    public ResponseResult<?> addUserLocation(MiniUserLocationVo miniUserLocationVo) {
+        double[] points = miniUserLocationVo.getPoints();
+        String openid = miniUserLocationVo.getOpenid();
         // 存储到Redis中，使用geo结构存储
-        stringRedisTemplate.opsForGeo().add(RedisUtils.USER_LOCATION, new Point(longitude, latitude), openid);
+        Long addRes = stringRedisTemplate.opsForGeo().add(RedisUtils.USER_LOCATION, new Point(points[0], points[1]), miniUserLocationVo.getOpenid());
+        // 将用户信息也要存入Redis中
+        MiniUser miniUser = miniUserMapper.selectOne(new QueryWrapper<MiniUser>().eq("openid", openid));
+        if (miniUser == null) {
+            return ResultUtils.fail("进入匹配系统失败！");
+        }
+        stringRedisTemplate.opsForValue().set(RedisUtils.LOCATION_MINIUSER + openid, JSONUtil.toJsonStr(miniUser));
+        if (addRes != null && addRes >= 1) {
+            return ResultUtils.success();
+        } else {
+            return ResultUtils.fail("进入匹配系统失败！");
+        }
     }
 
     @Override
-    public List<MiniUserLocationVo> getNearbyUsers(double longitude, double latitude, double radius) {
+    public ResponseResult<?> getNearbyUsers(double longitude, double latitude, double radius) {
         // 创建一个圆形范围，以 (longitude, latitude) 为圆心，半径为 radius 公里
         Circle within = new Circle(new Point(longitude, latitude), new Distance(radius, Metrics.KILOMETERS));
 
         // 创建一个参数对象，用于指定查询结果包含距离信息
-        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance();
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates();
 
         // 执行地理空间查询，返回一个包含查询结果的 GeoResults 对象
         // 查询 user:location 的地理位置，并返回在 within 范围内的所有成员及与圆心的距离
@@ -62,11 +83,18 @@ public class LocationServiceImpl implements LocationService {
                 res.add(miniUserLocationVo);
             }
         }
-        return res;
+        return ResultUtils.success(res);
     }
 
     @Override
-    public void removeUserLocation(String openid) {
-        stringRedisTemplate.opsForGeo().remove(RedisUtils.USER_LOCATION, openid);
+    public ResponseResult<?> removeUserLocation(String openid) {
+        Long remove = stringRedisTemplate.opsForGeo().remove(RedisUtils.USER_LOCATION, openid);
+        // 指定时间后自动清空用户信息缓存
+        stringRedisTemplate.expire(RedisUtils.LOCATION_MINIUSER + openid, 3, TimeUnit.MINUTES);
+        if (remove != null && remove >= 1) {
+            return ResultUtils.success("成功清空地址信息");
+        } else {
+            return ResultUtils.fail("清空地址信息失败");
+        }
     }
 }
