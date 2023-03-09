@@ -22,21 +22,33 @@ Page({
    * 视野发生变化时触发触发的事件
    * @param {*} e 
    */
-  regionchange(e) {
-    console.log("视野变化");
-  },
+  regionchange(e) {},
   /**
    * 点击标记点触发的事件
    * @param {*} e 
    */
   makertap(e) {
-    const {
-      markerId
-    } = e.detail;
-    console.log(markerId);
+    const miniId = e.detail.markerId;
+    wx.navigateTo({
+      url: '/pages/personal/personal?mini_id=' + miniId,
+      success: res => {
+        console.log("跳转到个人主页成功")
+      },
+      fail: err => {
+        console.log("跳转到个人主页失败", err);
+      }
+    })
+  },
+  /**
+   * 请求用户授权地理位置
+   */
+  async askForLocationPermission() {
+    const authResult = await wx.authorize({
+      scope: 'scope.userLocation',
+    });
   },
   onLoad: function () {
-
+    this.askForLocationPermission();
   },
   onShow() {
     const openid = wx.getStorageSync('openid');
@@ -79,12 +91,10 @@ Page({
               latitude: thisLatitude,
               radius: 100
             }).then(result => {
-              console.log(result);
               const data = result.data.data;
               for (let i = 0; i < data.length; i++) {
                 this.showUserPointInMap(data[i]);
               }
-              console.log(this.data.markers);
             })
           },
           fail: err => {
@@ -95,29 +105,42 @@ Page({
         ws.onClose((res) => {
           console.log(`websocket连接关闭`);
         })
+        ws.onMessage(msg => {
+          // 添加mark标记点
+          const miniUserLocationVo = JSON.parse(msg.data);
+          this.showUserPointInMap(miniUserLocationVo);
+        })
         return [thisLongitude, thisLatitude];
+      }).catch(err => {
+        wx.showToast({
+          title: '请授权位置信息',
+          icon: "none"
+        })
       })
     }).catch(err => {
       console.error(err);
     })
+
   },
   /**
    * 将用户信息展示在地图上
    */
   showUserPointInMap(miniUserLocationVo) {
-    const marker = {
-      id: miniUserLocationVo.miniUser.openid,
-      longitude: miniUserLocationVo.points[0],
-      latitude: miniUserLocationVo.points[1],
-      iconPath: miniUserLocationVo.miniUser.avatar,
-      label: {},
-      width: 30,
-      height: 30
-    };
-    const newMarkers = this.data.markers;
-    newMarkers.push(marker);
-    this.setData({
-      markers: newMarkers
-    })
+    const isMiniUserExist = this.data.markers.some((item) => item.id === miniUserLocationVo.miniUser.miniId);
+    if (!isMiniUserExist) {
+      const marker = {
+        id: miniUserLocationVo.miniUser.miniId,
+        longitude: miniUserLocationVo.points[0],
+        latitude: miniUserLocationVo.points[1],
+        iconPath: miniUserLocationVo.miniUser.avatar,
+        label: {},
+        width: 30,
+        height: 30
+      };
+      this.setData({
+        markers: [...this.data.markers,marker]
+      })
+      console.log(this.data.markers);
+    }
   }
 })
