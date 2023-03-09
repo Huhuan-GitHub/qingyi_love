@@ -50,15 +50,16 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public ResponseResult<?> getNearbyUsers(double longitude, double latitude, double radius) {
-        // 创建一个圆形范围，以 (longitude, latitude) 为圆心，半径为 radius 公里
-        Circle within = new Circle(new Point(longitude, latitude), new Distance(radius, Metrics.KILOMETERS));
-
-        // 创建一个参数对象，用于指定查询结果包含距离信息
-        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates();
-
-        // 执行地理空间查询，返回一个包含查询结果的 GeoResults 对象
-        // 查询 user:location 的地理位置，并返回在 within 范围内的所有成员及与圆心的距离
-        GeoResults<RedisGeoCommands.GeoLocation<String>> results = stringRedisTemplate.opsForGeo().radius(RedisUtils.USER_LOCATION, within, args);
+//        // 创建一个圆形范围，以 (longitude, latitude) 为圆心，半径为 radius 公里
+//        Circle within = new Circle(new Point(longitude, latitude), new Distance(radius, Metrics.KILOMETERS));
+//
+//        // 创建一个参数对象，用于指定查询结果包含距离信息
+//        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates();
+//
+//        // 执行地理空间查询，返回一个包含查询结果的 GeoResults 对象
+//        // 查询 user:location 的地理位置，并返回在 within 范围内的所有成员及与圆心的距离
+//        GeoResults<RedisGeoCommands.GeoLocation<String>> results = stringRedisTemplate.opsForGeo().radius(RedisUtils.USER_LOCATION, within, args);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results = getNearUserLocation(longitude, latitude, radius);
         List<MiniUserLocationVo> res = new ArrayList<>();
         if (results != null) {
             // 遍历查询结果，并输出每个成员的名称和与圆心的距离
@@ -71,7 +72,6 @@ public class LocationServiceImpl implements LocationService {
                 double y = result.getContent().getPoint().getY();
                 // 获取成员与圆心的距离
                 double distance = result.getDistance().getValue();
-
                 /*
                 这里查询用户信息，会多次查询数据库，所以我们不直接查询数据库，不然会对数据库造成较大的压力，所以我们采用的方案是:
                     在用户连接到该服务的WebSocket的时候，那么我们就将对应的用户信息查询出来，存放到redis中，
@@ -96,5 +96,18 @@ public class LocationServiceImpl implements LocationService {
         } else {
             return ResultUtils.fail("清空地址信息失败");
         }
+    }
+
+    @Override
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> getNearUserLocation(double longitude, double latitude, double radius) {
+        // 创建一个圆形范围，以 (longitude, latitude) 为圆心，半径为 radius 公里
+        Circle within = new Circle(new Point(longitude, latitude), new Distance(radius, Metrics.KILOMETERS));
+
+        // 创建一个参数对象，用于指定查询结果包含距离信息
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates();
+
+        // 执行地理空间查询，返回一个包含查询结果的 GeoResults 对象
+        // 查询 user:location 的地理位置，并返回在 within 范围内的所有成员及与圆心的距离
+        return stringRedisTemplate.opsForGeo().radius(RedisUtils.USER_LOCATION, within, args);
     }
 }
