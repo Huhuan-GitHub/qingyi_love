@@ -80,7 +80,7 @@ Page({
           ],
           openid: openid,
           miniUser: null,
-          distance: -1
+          distance: 0
         };
         ws = wx.connectSocket({
           url: `${baseLocationWebSocket}/${encodeURIComponent(JSON.stringify(miniUserLocationVoJSON))}`,
@@ -102,8 +102,9 @@ Page({
             throw new Error;
           }
         })
+        // 断开WebSocket连接
         ws.onClose((res) => {
-          console.log(`websocket连接关闭`);
+          console.log(res);
         })
         ws.onMessage(msg => {
           // 添加mark标记点
@@ -126,21 +127,37 @@ Page({
    * 将用户信息展示在地图上
    */
   showUserPointInMap(miniUserLocationVo) {
-    const isMiniUserExist = this.data.markers.some((item) => item.id === miniUserLocationVo.miniUser.miniId);
-    if (!isMiniUserExist) {
-      const marker = {
-        id: miniUserLocationVo.miniUser.miniId,
-        longitude: miniUserLocationVo.points[0],
-        latitude: miniUserLocationVo.points[1],
-        iconPath: miniUserLocationVo.miniUser.avatar,
-        label: {},
-        width: 30,
-        height: 30
-      };
-      this.setData({
-        markers: [...this.data.markers,marker]
-      })
-      console.log(this.data.markers);
+    console.log(miniUserLocationVo);
+    // 大于等于0，表示上线
+    if (miniUserLocationVo.distance >= 0) {
+      const isMiniUserExist = this.data.markers.some((item) => item.id === miniUserLocationVo.miniUser.miniId);
+      if (!isMiniUserExist) {
+        const marker = {
+          id: miniUserLocationVo.miniUser.miniId,
+          longitude: miniUserLocationVo.points[0],
+          latitude: miniUserLocationVo.points[1],
+          iconPath: miniUserLocationVo.miniUser.avatar,
+          label: {},
+          width: 30,
+          height: 30
+        };
+        this.setData({
+          markers: [...this.data.markers, marker]
+        })
+        console.log(this.data.markers);
+      }
+    } else {
+      const markers = this.data.markers;
+      // 否则就是下线
+      for (let i = 0; i < markers.length; i++) {
+        if (markers[i].id === miniUserLocationVo.miniUser.miniId) {
+          markers.splice(i, 1);
+          // 需要将 i 减 1，否则会跳过下一个元素
+          i--;
+          break;
+        }
+      }
+      this.setData({markers:markers})
     }
   }
 })
